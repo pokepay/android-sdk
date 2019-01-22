@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".View02Activity">
+
+    <Button
+        android:id="@+id/button_oauth"
+        android:layout_width="188dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="oauth test" />
+
+    <EditText
+        android:id="@+id/text_oauth"
+        android:layout_width="153dp"
+        android:layout_height="46dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/button_oauth"
+        android:layout_toRightOf="@id/button_oauth"
+        android:text="input code" />
+
+    <Button
+        android:id="@+id/button_terminal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="116dp"
+        android:text="getTerminalInfo test" />
+
+    <Button
+        android:id="@+id/button_bill"
+        android:layout_width="184dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:text="bill test" />
+
+    <Button
+        android:id="@+id/button_cashtray"
+        android:layout_width="183dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="cashtray test" />
+
+    <Button
+        android:id="@+id/button_check"
+        android:layout_width="183dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="109dp"
+        android:text="check test" />
+
+</RelativeLayout>
