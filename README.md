@@ -74,26 +74,3 @@ new Thread(new Runnable() {
 }).start();
 ```
 
-## APIs
-### [Class] Pokepay.Client
-- ```accessToken``` (String): An access token to request Pokepay APIs.
-- ```isMerchant``` (Bool): A flag whether access as a merchant. (It should be an error if the access token isn't for merchant one.)
-
-### [Method] Client.getTerminalInfo
-Get the accessing ```Terminal``` informations.
-
-### [Method] Client.scanToken(String token, double amount)
-Scan a token and make a new transaction via Bank APIs.
-
-### [Method] Client.createToken(double amount, String description, int expiresIn)
-Make a new token for sending/receiving money, which can be done with ```scanToken```.
-
-### [Class] Pokepay.OAuthClient
-- ```clientId``` (String): OAuth client ID
-- ```clientSecret``` (String): OAuth client secret
-
-### [Method] OAuthClient.getAuthorizationUrl()
-Get the OAuth authorization URL to open with an external browser. (ex. https://www.pokepay.jp/oauth/authorize?client_id=xxxxxxxx&response_type=code)
-
-### [Method] OAuthClient.getAccessToken(String code)
-Exchange authorization code, a string in redirection URL, with an access token.
