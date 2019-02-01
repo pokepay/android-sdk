@@ -2,8 +2,11 @@ package jp.pokepay.pokepaylib;
 
 
 import jp.pokepay.pokepaylib.BankAPI.Bill.CreateBill;
+import jp.pokepay.pokepaylib.BankAPI.Bill.GetBill;
 import jp.pokepay.pokepaylib.BankAPI.Cashtray.CreateCashtray;
+import jp.pokepay.pokepaylib.BankAPI.Cashtray.GetCashtray;
 import jp.pokepay.pokepaylib.BankAPI.Check.CreateCheck;
+import jp.pokepay.pokepaylib.BankAPI.Check.GetCheck;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.GetTerminal;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithBill;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCashtray;
@@ -50,6 +53,27 @@ public class Pokepay {
             GetTerminal getTerminal = new GetTerminal();
             Terminal terminal = getTerminal.procSend(accessToken);
             return terminal;
+        }
+
+        public Object getTokenInfo(String token){
+            Object retInfo = null;
+            if(token.startsWith(constants.API_BASE_URL + "/cashtrays/")){
+                String uuid = token.substring((constants.API_BASE_URL + "/cashtrays/").length());
+                GetCashtray getCashtray = new GetCashtray(uuid);
+                retInfo = getCashtray.procSend(accessToken);
+
+            }
+            else if(token.startsWith(constants.API_BASE_URL + "/bills/")){
+                String uuid = token.substring((constants.API_BASE_URL + "/bills/").length());
+                GetBill getBill = new GetBill(uuid);
+                retInfo = getBill.procSend(accessToken);
+            }
+            else if(token.startsWith(constants.API_BASE_URL + "/checks/")){
+                String uuid = token.substring((constants.API_BASE_URL + "/checks/").length());
+                GetCheck getCheck = new GetCheck(uuid);
+                retInfo = getCheck.procSend(accessToken);
+            }
+            return retInfo;
         }
 
         public UserTransaction scanToken(String token){

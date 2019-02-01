@@ -31,14 +31,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="82dp"
         android:text="getTerminalInfo test" />
 
     <Button
         android:id="@+id/button_bill"
         android:layout_width="184dp"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="181dp"
         android:text="bill test" />
 
     <Button
@@ -46,7 +48,17 @@
         android:layout_width="183dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="86dp"
         android:text="cashtray test" />
+
+    <Button
+        android:id="@+id/button_info"
+        android:layout_width="183dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:text="GetTokenInfo test" />
 
     <Button
         android:id="@+id/button_check"
@@ -54,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="109dp"
+        android:layout_marginBottom="178dp"
         android:text="check test" />
 
 </RelativeLayout>

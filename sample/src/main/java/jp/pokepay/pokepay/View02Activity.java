@@ -168,6 +168,33 @@ public class View02Activity extends AppCompatActivity {
                 }).start();
             }
         });
+
+        Button button5 = (Button)findViewById(R.id.button_info);
+        button5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        handler.sendEmptyMessage(1);
+                        pokepay.NewClient(accessToken2);
+                        Check check = (Check)pokepay.client.createToken(1, "AndroidTest check");
+                        check.print();
+                        pokepay.NewClient(accessToken1);
+                        String str = "https://api-dev.pokepay.jp/checks/" + check.id;
+                        Check check1 = (Check) pokepay.client.getTokenInfo(str);
+                        String id = "error";
+                        if(check1 != null){
+                            id = "Success! getTokenInfo : ";
+                            id += check1.id;
+                        }
+                        Message msg = Message.obtain();
+                        msg.obj = id;
+                        handler.sendMessage(msg);
+                    }
+                }).start();
+            }
+        });
     }
 
     private Handler handler = new Handler() {

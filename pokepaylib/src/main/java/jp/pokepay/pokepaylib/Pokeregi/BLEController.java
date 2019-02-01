@@ -23,6 +23,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelUuid;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.res.TypedArrayUtils;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
@@ -31,6 +32,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
@@ -42,6 +44,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithJwt;
 
+import static android.content.ContentValues.TAG;
 import static java.lang.Thread.sleep;
 
 public class BLEController {
@@ -57,6 +60,8 @@ public class BLEController {
     private ArrayList<BluetoothGattCharacteristic> arrayList;
     private int arrayIdx = 0;
     private byte[] readJwt;
+    private byte[] writeJwt;
+    private int writeIdx = 0;
 
     private String aesSecretKey;
     final private String aesInitVector = "F0EE1BC8016A6335";
@@ -65,6 +70,7 @@ public class BLEController {
     public BLEController(String uuid, String accessToken, Context context){
         this.context = context;
         this.accessToken = accessToken;
+        readJwt = new byte[0];
         String code = uuid;
         aesSecretKey = code.substring(code.length()-16, code.length());
         char[] codeArray = code.substring(0, 8).toCharArray();
@@ -105,12 +111,30 @@ public class BLEController {
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState)
         {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                gatt.discoverServices();
+                if (gatt.requestMtu(512)) {
+                    Log.d(TAG, "Requested MTU successfully");
+                } else {
+                    Log.d(TAG, "Failed to request MTU");
+                }
+                //gatt.discoverServices();
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 if (mBleGatt != null)
                 {
                     mBleGatt.close();
                     mBleGatt = null;
+                }
+            }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @Override
+        public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+            // Exchange MTU Requestが完了してからサービスの検出を開始する
+            if (gatt != null) {
+                if (gatt.discoverServices()) {
+                    Log.d(TAG, "Started discovering services");
+                } else {
+                    Log.d(TAG, "Failed to start discovering services");
                 }
             }
         }
@@ -128,48 +152,96 @@ public class BLEController {
                 BluetoothGattService service = gatt.getService(UUID.fromString(serviceUUID));
                 if (service != null) {
                     arrayList = (ArrayList<BluetoothGattCharacteristic>) service.getCharacteristics();
+                    for(int i=0;i<arrayList.size();i++){
+                        System.out.println(i + ":" + arrayList.get(i).getUuid());
+                    }
                     gatt.readCharacteristic(arrayList.get(arrayIdx));
                 }
             }
         }
 
+
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
+            if( BluetoothGatt.GATT_SUCCESS != status ){
+                return;
+            }
             System.out.println(characteristic.getUuid().toString());
-            switch (arrayIdx){
-                case 0:
-                    readJwt = characteristic.getValue();
-                    arrayIdx++;
-                    gatt.readCharacteristic(arrayList.get(arrayIdx));
-                    break;
-                case 1:
-                    byte[] tmpBytes = characteristic.getValue();
-                    String jwt = new String(decodeAES128(readJwt), StandardCharsets.UTF_8) + new String(decodeAES128(tmpBytes), StandardCharsets.UTF_8);
-                    CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null);
-                    String result = createTransactionWithJwt.procSend(accessToken);
-                    System.out.println(result);
-                    arrayIdx++;
-                    if(result == null){
-                        arrayList.get(arrayIdx).setValue(encodeAES128("NG".getBytes()));
-                        System.out.println("NG");
+            final byte[] tmpBytes = characteristic.getValue();
+            System.out.println(Arrays.toString(tmpBytes) + ", " + tmpBytes.length + ", " + Arrays.toString(readJwt) + ", " + readJwt.length);
+            byte[] tmp = readJwt.clone();
+            readJwt = new byte[tmp.length + tmpBytes.length];
+            for(int i=0;i<tmp.length;i++){
+                readJwt[i] = tmp[i];
+            }
+            for(int i=0;i<tmpBytes.length;i++){
+                readJwt[tmp.length+i] = tmpBytes[i];
+            }
+            if(tmpBytes.length < 500){
+                arrayIdx++;
+                String jwt = new String(decodeAES128(readJwt), StandardCharsets.UTF_8);
+                CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null);
+                String result = createTransactionWithJwt.procSend(accessToken);
+                System.out.println(result);
+                if(result == null){
+                    arrayList.get(arrayIdx).setValue(encodeAES128("NG".getBytes()));
+                    System.out.println("NG");
+                }
+                else {
+                    writeJwt = encodeAES128(result.getBytes());
+                    int len = writeJwt.length - writeIdx*500;
+                    if(len >= 500){
+                        len = 500;
                     }
-                    else {
-                        arrayList.get(arrayIdx).setValue(encodeAES128(result.getBytes()).toString());
+                    byte[] value = new byte[len];
+                    for(int i=0;i<len;i++){
+                        value[i] = writeJwt[i];
                     }
-                    gatt.writeCharacteristic(arrayList.get(arrayIdx));
-                    break;
+                    writeIdx++;
+                    arrayList.get(arrayIdx).setValue(value);
+                    //arrayList.get(arrayIdx).setValue(writeJwt);
+                }
+                System.out.println(writeJwt.length);
+                System.out.println(arrayList.get(arrayIdx).getUuid());
+                gatt.writeCharacteristic(arrayList.get(arrayIdx));
+            }
+            else{
+                gatt.readCharacteristic(arrayList.get(arrayIdx));
             }
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
         @Override
         public void  onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             String TAG = "ScannerActivity";
             switch(status) {
                 case BluetoothGatt.GATT_SUCCESS:
                     Log.e(TAG, "onCharacteristicWrite: GATT_SUCCESS");
-                    bleResult = "SUCCESS";
+                    int len = writeJwt.length - writeIdx*500;
+                    System.out.println(writeJwt.length + ", " + len + ", " + writeIdx);
+                    if(len < 0){
+                        if(bleResult == "SUCCESS"){
+                            break;
+                        }
+                        byte[] z = new byte[0];
+                        arrayList.get(arrayIdx).setValue(z);
+                        gatt.writeCharacteristic(arrayList.get(arrayIdx));
+                        bleResult = "SUCCESS";
+                        break;
+                    }
+                    if(len >= 500){
+                        len = 500;
+                    }
+                    byte[] value = new byte[len];
+                    for(int i=0;i<len;i++){
+                        value[i] = writeJwt[i+writeIdx*500];
+                    }
+                    arrayList.get(arrayIdx).setValue(value);
+                    writeIdx++;
+                    gatt.writeCharacteristic(arrayList.get(arrayIdx));
+
                     break;
                 case BluetoothGatt.GATT_WRITE_NOT_PERMITTED:
                     Log.e(TAG, "onCharacteristicWrite: GATT_WRITE_NOT_PERMITTED");
