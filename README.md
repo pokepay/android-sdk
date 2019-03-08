@@ -1,6 +1,28 @@
 # Pokepay Android SDK
 
-## Installation
+## Installation　（.aar をDownload して使用）
+
+1. プロジェクトを作成
+2. Projectの build.gradle に追記
+```
+allprojects{
+  repositories {
+      .....
+      maven {
+          url  "https://dl.bintray.com/pokepay/maven"
+      }
+  }
+}
+```
+3. ライブラリを使用するModuleの build.gradle に追記
+```
+dependencies{
+  .....
+  implementation "jp.pocket-change.pokepay.android-sdk:pokepaylib:1.1.0@aar"
+}
+```
+
+## Installation　（ソースをコンパイルして使用）
 
 1. プロジェクトを作成
 2. File > New > ImportModuleからpokepaylibをインポート
@@ -8,7 +30,7 @@
 ```
 include ':pokepaylib'
 ```
-4. 作成したプロジェクトのbuild.gradleのdependencies内に追記
+4. ライブラリを使用するModuleの build.gradle の dependencies内に追記
 ```
 implementation project(':pokepaylib')
 ```
