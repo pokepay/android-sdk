@@ -57,19 +57,19 @@ public class Pokepay {
 
         public Object getTokenInfo(String token){
             Object retInfo = null;
-            if(token.startsWith(constants.API_BASE_URL + "/cashtrays/")){
+            if(token.startsWith(constants.WWW_BASE_URL + "/cashtrays/")){
                 String uuid = token.substring((constants.API_BASE_URL + "/cashtrays/").length());
                 GetCashtray getCashtray = new GetCashtray(uuid);
                 retInfo = getCashtray.procSend(accessToken);
 
             }
-            else if(token.startsWith(constants.API_BASE_URL + "/bills/")){
-                String uuid = token.substring((constants.API_BASE_URL + "/bills/").length());
+            else if(token.startsWith(constants.WWW_BASE_URL + "/bills/")){
+                String uuid = token.substring((constants.WWW_BASE_URL + "/bills/").length());
                 GetBill getBill = new GetBill(uuid);
                 retInfo = getBill.procSend(accessToken);
             }
-            else if(token.startsWith(constants.API_BASE_URL + "/checks/")){
-                String uuid = token.substring((constants.API_BASE_URL + "/checks/").length());
+            else if(token.startsWith(constants.WWW_BASE_URL + "/checks/")){
+                String uuid = token.substring((constants.WWW_BASE_URL + "/checks/").length());
                 GetCheck getCheck = new GetCheck(uuid);
                 retInfo = getCheck.procSend(accessToken);
             }
@@ -84,18 +84,18 @@ public class Pokepay {
         }
         public UserTransaction scanToken(String token, double amount, String accountId){
             UserTransaction userTransaction = null;
-            if(token.startsWith(constants.API_BASE_URL + "/cashtrays/")){
-                String uuid = token.substring((constants.API_BASE_URL + "/cashtrays/").length());
+            if(token.startsWith(constants.WWW_BASE_URL + "/cashtrays/")){
+                String uuid = token.substring((constants.WWW_BASE_URL + "/cashtrays/").length());
                 CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId);
                 userTransaction = createTransactionWithCashtray.procSend(accessToken);
             }
-            else if(token.startsWith(constants.API_BASE_URL + "/bills/")){
-                String uuid = token.substring((constants.API_BASE_URL + "/bills/").length());
+            else if(token.startsWith(constants.WWW_BASE_URL + "/bills/")){
+                String uuid = token.substring((constants.WWW_BASE_URL + "/bills/").length());
                 CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount);
                 userTransaction = createTransactionWithBill.procSend(accessToken);
             }
-            else if(token.startsWith(constants.API_BASE_URL + "/checks/")){
-                String uuid = token.substring((constants.API_BASE_URL + "/checks/").length());
+            else if(token.startsWith(constants.WWW_BASE_URL + "/checks/")){
+                String uuid = token.substring((constants.WWW_BASE_URL + "/checks/").length());
                 CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
                 userTransaction = createTransactionWithCheck.procSend(accessToken);
             }
