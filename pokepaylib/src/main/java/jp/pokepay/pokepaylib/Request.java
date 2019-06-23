@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Request {
 
@@ -31,49 +33,74 @@ public class Request {
         }
     };
 
+    private static void addHeaders(HttpURLConnection con, final Map<String, String> headers) {
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if (key != null && value != null) {
+                con.setRequestProperty(key, value);
+            }
+        }
+    }
+
+    private static Map<String, Object> removeNullEntries(Map<String, Object> map) {
+        if (map == null) return null;
+        final Map<String, Object> ret = new HashMap<String, Object>();
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            final String key = entry.getKey();
+            final Object value = entry.getValue();
+            if (key != null && value != null) {
+                ret.put(key, value);
+            }
+        }
+        return ret;
+    }
+
     public static <T> T send(final Class<T> cls, final String url, final Method meth) {
-        return send(cls, url, meth, null);
+        return send(cls, url, meth, null, null);
     }
 
-    public static <T> T send(final Class<T> cls, final String url, final Method meth, final String body) {
-        return send(cls, url, meth, body, null, null);
+    public static <T> T send(final Class<T> cls, final String url, final Method meth, final Map<String, Object> parameters) {
+        return send(cls, url, meth, parameters, null);
     }
 
-    public static <T> T send(final Class<T> cls, final String url, final Method meth, final String body, final String headerS, final String headerS1) {
-        // System.out.println(url + ", " + meth + ", " + body + ": " + headerS + ", " + headerS1);
+    public static <T> T send(final Class<T> cls, final String url, final Method meth, final Map<String, Object> parametersRaw, final Map<String, String> headers) {
         HttpURLConnection con = null;
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
+        Map<String, Object> parameters = removeNullEntries(parametersRaw);
         try {
-            URL u = new URL(url);
-            con = (HttpURLConnection) u.openConnection();
-            con.setRequestMethod(meth.toString());
             switch (meth) {
             case GET: {
+                String queryString = "";
+                if (parameters != null) {
+                    String [][] queryParameters = new String[parameters.size()][2];
+                    int counter = 0;
+                    for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                        queryParameters[counter][0] = entry.getKey();
+                        queryParameters[counter][1] = String.valueOf(entry.getValue());
+                    }
+                    queryString = QueryString.build(queryParameters);
+                }
+                URL u = new URL(url + queryString);
+                con = (HttpURLConnection) u.openConnection();
+                con.setRequestMethod(meth.toString());
                 con.setRequestProperty("accept", "application/json");
-                if(headerS != null && headerS1 != null){
-                    con.setRequestProperty(headerS, headerS1);
-                }
-                if (body != null){
-                    con.setDoOutput(true);
-                    con.setRequestProperty("Accept-Language", "jp");
-                    con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                    con.setRequestProperty("accept", "application/json");
-                    con.setRequestProperty("Content-Length", String.valueOf(body.length()));
-                    OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
-                    out.write(body);
-                    out.flush();
-                }
+                con.setRequestProperty("accept", "*/*");
+                addHeaders(con, headers);
                 break;
             }
             case POST: {
-                if(headerS != null && headerS1 != null){
-                    con.setRequestProperty(headerS, headerS1);
-                }
-                if(body != null) {
+                URL u = new URL(url);
+                con = (HttpURLConnection) u.openConnection();
+                con.setRequestMethod(meth.toString());
+                con.setRequestProperty("accept", "application/json");
+                con.setRequestProperty("accept", "*/*");
+                addHeaders(con, headers);
+                if(parameters != null) {
+                    final String body = JsonConverter.toString(parameters);
                     con.setDoOutput(true);
                     con.setRequestProperty("Accept-Language", "jp");
                     con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                    con.setRequestProperty("accept", "application/json");
                     con.setRequestProperty("Content-Length", String.valueOf(body.length()));
                     OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
                     out.write(body);
@@ -82,31 +109,49 @@ public class Request {
                 break;
             }
             case DELETE: {
+                URL u = new URL(url);
+                con = (HttpURLConnection) u.openConnection();
+                con.setRequestMethod(meth.toString());
                 con.setRequestProperty("accept", "application/json");
                 con.setRequestProperty("accept", "*/*");
-                if(headerS != null && headerS1 != null){
-                    con.setRequestProperty(headerS, headerS1);
-                }
+                addHeaders(con, headers);
                 break;
             }
             case PATCH: {
-                con.setDoOutput(true);
-                con.setRequestProperty("Accept-Language", "jp");
-                con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                if(headerS != null && headerS1 != null){
-                    con.setRequestProperty(headerS, headerS1);
-                }
+                URL u = new URL(url);
+                con = (HttpURLConnection) u.openConnection();
+                con.setRequestMethod(meth.toString());
                 con.setRequestProperty("accept", "application/json");
-                con.setRequestProperty("Content-Length", String.valueOf(body.length()));
-                OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
-                out.write(body);
-                out.flush();
+                con.setRequestProperty("accept", "*/*");
+                addHeaders(con, headers);
+                if(parameters != null) {
+                    final String body = JsonConverter.toString(parameters);
+                    con.setDoOutput(true);
+                    con.setRequestProperty("Accept-Language", "jp");
+                    con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
+                    con.setRequestProperty("Content-Length", String.valueOf(body.length()));
+                    OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+                    out.write(body);
+                    out.flush();
+                }
                 break;
             }
             case PUT: {
+                URL u = new URL(url);
+                con = (HttpURLConnection) u.openConnection();
+                con.setRequestMethod(meth.toString());
                 con.setRequestProperty("accept", "application/json");
-                if(headerS != null && headerS1 != null){
-                    con.setRequestProperty(headerS, headerS1);
+                con.setRequestProperty("accept", "*/*");
+                addHeaders(con, headers);
+                if(parameters != null) {
+                    final String body = JsonConverter.toString(parameters);
+                    con.setDoOutput(true);
+                    con.setRequestProperty("Accept-Language", "jp");
+                    con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
+                    con.setRequestProperty("Content-Length", String.valueOf(body.length()));
+                    OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+                    out.write(body);
+                    out.flush();
                 }
                 break;
             }

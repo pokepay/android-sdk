@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.Account;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.Account;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -21,24 +24,12 @@ public class CreateAccount extends BankRequest {
         return Request.Method.POST;
     }
 
-    protected final String body() {
-        boolean flag = false;
-        String str = "{";
-        if(name != null){
-            str += "\"name\":\"" + name;
-            flag = true;
-        }
-        if(privateMoneyId != null) {
-            str += "\", \"private_money_id\":\"" + privateMoneyId;
-            flag = true;
-        }
-        if(flag) {
-            str += "\"}";
-        }
-        else{
-            str += "}";
-        }
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("name", name);
+            put("private_money_id", privateMoneyId);
+        }};
     }
 
     public final Account send(String accessToken) {

@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.Transaction;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.JwtResult;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -21,13 +24,12 @@ public class CreateTransactionWithJwt extends BankRequest {
         return Request.Method.POST;
     }
 
-    protected final String body() {
-        String str = "{\"data\":\"" + data;
-        if(accountId != null) {
-            str += "\", \"account_id\":\"" + accountId;
-        }
-        str += "\"}";
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("data", data);
+            put("account_id", accountId);
+        }};
     }
 
     public final JwtResult send(String accessToken) {

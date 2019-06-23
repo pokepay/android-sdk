@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.Cashtray;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.Cashtray;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -25,29 +28,13 @@ public class UpdateCashtray extends BankRequest {
         return Request.Method.PATCH;
     }
 
-    protected final String body() {
-        boolean flag = false;
-        String str = "{";
-        if(amount >= 0) {
-            str += "\"amount\":\"" + (int) amount;
-            flag = true;
-        }
-        if(description != null) {
-            str += "\", \"description\":\"" + description;
-            flag = true;
-        }
-        if(expiresIn >= 0){
-            str += "\", \"expires_in\":\"" + expiresIn;
-            flag = true;
-        }
-
-        if(flag) {
-            str += "\"}";
-        }
-        else{
-            str += "}";
-        }
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("amount", amount >= 0 ? amount : null);
+            put("description", description);
+            put("expires_in", expiresIn >= 0 ? expiresIn : null);
+        }};
     }
 
     public final Cashtray send(String accessToken) {

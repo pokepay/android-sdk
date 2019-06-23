@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.User;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.NoContent;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -19,10 +22,11 @@ public class RegisterUserEmail extends BankRequest {
         return Request.Method.POST;
     }
 
-    protected final String body() {
-        String str = "{\"token\":\"" + token;
-        str += "\"}";
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("token", token);
+        }};
     }
 
     public final NoContent send(String accessToken) {

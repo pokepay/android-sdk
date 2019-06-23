@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.Terminal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.Terminal;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -23,12 +26,13 @@ public class UpdateTerminal extends BankRequest {
         return Request.Method.PATCH;
     }
 
-    protected final String body() {
-        String str = "{\"account_id\":\"" + accountId;
-        str += "\", \"name\":\"" + name;
-        str += "\", \"push_token\":\"" + pushToken;
-        str += "\"}";
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("account_id", accountId);
+            put("name", name);
+            put("push_token", pushToken);
+        }};
     }
 
     public final Terminal send(String accessToken) {

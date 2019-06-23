@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.OAuthAPI.Token;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.AccessToken;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequest;
 import jp.pokepay.pokepaylib.Request;
@@ -23,15 +26,15 @@ public class RefreshAccessToken extends OAuthRequest {
     protected final Request.Method method() {
         return Request.Method.POST;
     }
-
-    protected final String body() {
-        String str = "{";
-        str += "\"refresh_token\":\"" + refreshToken;
-        str += "\", \"grant_type\":\"" + grantType;
-        str += "\", \"client_id\":\"" + clientId;
-        str += "\", \"client_secret\":\"" + clientSecret;
-        str += "\"}";
-        return str;
+    
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("refresh_token", refreshToken);
+            put("grant_type", grantType);
+            put("client_id", clientId);
+            put("client_secret", clientSecret);
+        }};
     }
 
     public final AccessToken send() {

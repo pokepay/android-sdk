@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.Bill;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.Bill;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -23,25 +26,12 @@ public class UpdateBill extends BankRequest {
         return Request.Method.PATCH;
     }
 
-    protected final String body() {
-        boolean flag = false;
-        String str = "{";
-        if(amount >= 0) {
-            str += "\"amount\":\"" + (int) amount;
-            flag = true;
-        }
-        if(description != null) {
-            str += "\", \"description\":\"" + description;
-            flag = true;
-        }
-
-        if(flag) {
-            str += "\"}";
-        }
-        else{
-            str += "}";
-        }
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("amount", amount >= 0 ? amount : null);
+            put("description", description);
+        }};
     }
 
     public final Bill send(String accessToken) {

@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.User;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.User;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -21,11 +24,11 @@ public class UpdateUser extends BankRequest {
         return Request.Method.PATCH;
     }
 
-    protected final String body() {
-        if (name == null) {
-            return "{}";
-        }
-        return "{\"name\":\"" + name + "\"}";
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("name", name);
+        }};
     }
 
     public final User send(String accessToken) {

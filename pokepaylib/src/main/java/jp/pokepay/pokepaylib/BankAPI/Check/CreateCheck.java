@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.Check;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.Check;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -23,28 +26,13 @@ public class CreateCheck extends BankRequest {
         return Request.Method.POST;
     }
 
-    protected final String body() {
-        boolean flag = false;
-        String str = "{";
-        if(amount != -1) {
-            str += "\"amount\":\"" + amount;
-            flag = true;
-        }
-        if(description != null) {
-            str += "\", \"description\":\"" + description;
-            flag = true;
-        }
-        if(accountId != null) {
-            str += "\", \"account_id\":\"" + accountId;
-            flag = true;
-        }
-        if(flag) {
-            str += "\"}";
-        }
-        else{
-            str += "}";
-        }
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("amount", amount >= 0 ? amount : null);
+            put("description", description);
+            put("account_id", accountId);
+        }};
     }
 
     public final Check send(String accessToken) {

@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.Transaction;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -23,16 +26,13 @@ public class CreateTransactionWithBill extends BankRequest {
         return Request.Method.POST;
     }
 
-    protected final String body() {
-        String str = "{\"bill_id\":\"" + billId;
-        if(accountId != null) {
-            str += "\", \"account_id\":\"" + accountId;
-        }
-        if(amount >= 0) {
-            str += "\", \"amount\":\"" + amount;
-        }
-        str += "\"}";
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("bill_id", billId);
+            put("account_id", accountId);
+            put("amount", amount);
+        }};
     }
 
     public final UserTransaction send(String accessToken) {

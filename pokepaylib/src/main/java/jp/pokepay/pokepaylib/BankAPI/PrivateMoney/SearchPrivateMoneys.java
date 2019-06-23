@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.PrivateMoney;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.QueryString;
 import jp.pokepay.pokepaylib.Responses.PaginatedPrivateMoney;
 import jp.pokepay.pokepaylib.Request;
@@ -21,19 +24,22 @@ public class SearchPrivateMoneys extends BankRequest {
     }
 
     protected final String path() {
-        return "/private-moneys" + (
-            QueryString.build(new String[][]{
-                    {"name", name},
-                    {"include_exclusive", Boolean.toString(includeExclusive)},
-                    {"before", before},
-                    {"after", after},
-                    {"per_page", perPage > 0 ? Integer.toString(perPage) : null },
-                })
-            );
+        return "/private-moneys";
     }
 
     protected final Request.Method method() {
         return Request.Method.GET;
+    }
+
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("name", name);
+            put("include_exclusive", includeExclusive);
+            put("before", before);
+            put("after", after);
+            put("per_page", perPage > 0 ? perPage : null);
+        }};
     }
 
     public PaginatedPrivateMoney send(String accessToken) {

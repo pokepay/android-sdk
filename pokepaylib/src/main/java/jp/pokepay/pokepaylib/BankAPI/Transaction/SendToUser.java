@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.Transaction;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -27,19 +30,14 @@ public class SendToUser extends BankRequest {
         return Request.Method.POST;
     }
 
-    protected final String body() {
-        String str = "{\"amount\":\"" + amount;
-        if (receiverTerminalId != null) {
-            str += "\", \"receiver_terminal_id\":\"" + receiverTerminalId;
-        }
-        if (senderAccountId != null) {
-            str += "\", \"sender_account_id\":\"" + senderAccountId;
-        }
-        if (description != null) {
-            str += "\", \"description\":\"" + description;
-        }
-        str += "\"}";
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("amount", amount);
+            put("receiver_terminal_id", receiverTerminalId);
+            put("sender_account_id", senderAccountId);
+            put("description", description);
+        }};
     }
 
     public final UserTransaction send(String accessToken) {

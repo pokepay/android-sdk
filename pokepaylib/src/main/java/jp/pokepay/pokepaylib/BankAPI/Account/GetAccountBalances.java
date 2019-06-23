@@ -1,9 +1,11 @@
 package jp.pokepay.pokepaylib.BankAPI.Account;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.PaginatedAccountBalances;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
-import jp.pokepay.pokepaylib.QueryString;
 
 public class GetAccountBalances extends BankRequest {
     public String id;
@@ -19,17 +21,20 @@ public class GetAccountBalances extends BankRequest {
     }
 
     protected final String path() {
-        return "/accounts/" + id + "/balances" + (
-            QueryString.build(new String[][]{
-                    {"before", before},
-                    {"after", after},
-                    {"per_page", perPage > 0 ? Integer.toString(perPage) : null },
-                })
-            );
+        return "/accounts/" + id + "/balances";
     }
 
     protected final Request.Method method() {
         return Request.Method.GET;
+    }
+
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("before", before);
+            put("after", after);
+            put("per_page", perPage > 0 ? perPage : null);
+        }};
     }
 
     public final PaginatedAccountBalances send(String accessToken) {

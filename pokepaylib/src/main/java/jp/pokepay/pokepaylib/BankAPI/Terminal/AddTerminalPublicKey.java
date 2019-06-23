@@ -1,5 +1,8 @@
 package jp.pokepay.pokepaylib.BankAPI.Terminal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.Responses.ServerKey;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -19,8 +22,11 @@ public class AddTerminalPublicKey extends BankRequest {
         return Request.Method.POST;
     }
 
-    protected final String body() {
-        return "{\"key\":\"" + key + "\"}";
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("key", key);
+        }};
     }
 
     public final ServerKey send(String accessToken) {
