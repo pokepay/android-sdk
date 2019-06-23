@@ -106,28 +106,29 @@ public class Pokepay {
             return userTransaction;
         }
 
-        public Object createToken(double amount, String description) {
+        public String createToken(double amount, String description) {
             return createToken(amount, description,-1);
         }
-        public Object createToken(double amount, String description, int expiresIn) {
+        public String createToken(double amount, String description, int expiresIn) {
             return createToken(amount, description, expiresIn, null);
         }
-        public Object createToken(double amount, String description, int expiresIn, String accountId) {
-            // FIXME: FUCK Object.
-            if(isMerchant){
+        public String createToken(double amount, String description, int expiresIn, String accountId) {
+            if (isMerchant) {
                 CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn);
                 Cashtray cashtray = createCashtray.send(accessToken);
-                return cashtray;
-            }
-            else if(amount < 0){
-                CreateBill createBill = new CreateBill(amount*(-1), description, accountId);
+                return constants.WWW_BASE_URL + "/cashtrays/" + cashtray.id;
+            } else if (amount < 0) {
+                CreateBill createBill = new CreateBill(-amount, description, accountId);
                 Bill bill = createBill.send(accessToken);
-                return bill;
-            }
-            else{
+                return constants.WWW_BASE_URL + "/bills/" + bill.id;
+            } else if (amount > 0) {
                 CreateCheck createCheck = new CreateCheck(amount, description, accountId);
                 Check check = createCheck.send(accessToken);
-                return check;
+                return constants.WWW_BASE_URL + "/checks/" + check.id;
+            } else { // amount == 0
+                CreateBill createBill = new CreateBill(-1, description, accountId);
+                Bill bill = createBill.send(accessToken);
+                return constants.WWW_BASE_URL + "/bills/" + bill.id;
             }
         }
     }

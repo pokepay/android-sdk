@@ -98,10 +98,9 @@ public class View02Activity extends AppCompatActivity {
                     public void run() {
                         handler.sendEmptyMessage(1);
                         pokepay.NewClient(accessToken1);
-                        Bill bill = (Bill)pokepay.client.createToken(-1, "AndroidTest bill");
+                        String token = pokepay.client.createToken(-1, "AndroidTest bill");
                         pokepay.NewClient(accessToken2, true);
-                        String str = "https://api-dev.pokepay.jp/bills/" + bill.id;
-                        UserTransaction userTransaction = pokepay.client.scanToken(str);
+                        UserTransaction userTransaction = pokepay.client.scanToken(token);
                         String id = "error";
                         if(userTransaction != null){
                             id = "Success! transactionID : ";
@@ -124,11 +123,9 @@ public class View02Activity extends AppCompatActivity {
                     public void run() {
                         handler.sendEmptyMessage(1);
                         pokepay.NewClient(accessToken2, true);
-                        Cashtray cashtray = (Cashtray)pokepay.client.createToken(1, "AndroidTest cashtray");
-                        cashtray.print();
+                        String token = pokepay.client.createToken(1, "AndroidTest cashtray");
                         pokepay.NewClient(accessToken1);
-                        String str = "https://api-dev.pokepay.jp/cashtrays/" + cashtray.id;
-                        UserTransaction userTransaction = pokepay.client.scanToken(str);
+                        UserTransaction userTransaction = pokepay.client.scanToken(token);
                         String id = "error";
                         if(userTransaction != null){
                             id = "Success! transactionID : ";
@@ -151,11 +148,9 @@ public class View02Activity extends AppCompatActivity {
                     public void run() {
                         handler.sendEmptyMessage(1);
                         pokepay.NewClient(accessToken2);
-                        Check check = (Check)pokepay.client.createToken(1, "AndroidTest check");
-                        check.print();
+                        String token = pokepay.client.createToken(1, "AndroidTest check");
                         pokepay.NewClient(accessToken1);
-                        String str = "https://api-dev.pokepay.jp/checks/" + check.id;
-                        UserTransaction userTransaction = pokepay.client.scanToken(str);
+                        UserTransaction userTransaction = pokepay.client.scanToken(token);
                         String id = "error";
                         if(userTransaction != null){
                             id = "Success! transactionID : ";
@@ -178,11 +173,9 @@ public class View02Activity extends AppCompatActivity {
                     public void run() {
                         handler.sendEmptyMessage(1);
                         pokepay.NewClient(accessToken2);
-                        Check check = (Check)pokepay.client.createToken(1, "AndroidTest check");
-                        check.print();
+                        String token = pokepay.client.createToken(1, "AndroidTest check");
                         pokepay.NewClient(accessToken1);
-                        String str = "https://api-dev.pokepay.jp/checks/" + check.id;
-                        Check check1 = (Check) pokepay.client.getTokenInfo(str);
+                        Check check1 = (Check) pokepay.client.getTokenInfo(token);
                         String id = "error";
                         if(check1 != null){
                             id = "Success! getTokenInfo : ";
