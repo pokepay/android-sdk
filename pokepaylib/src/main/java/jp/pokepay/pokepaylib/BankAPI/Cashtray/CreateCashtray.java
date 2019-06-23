@@ -1,46 +1,42 @@
 package jp.pokepay.pokepaylib.BankAPI.Cashtray;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.Cashtray;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class CreateCashtray {
+public class CreateCashtray extends BankRequest {
+
     public double amount;
     public String description;
     public int expiresIn;
 
-    private Constants constants = new Constants();
-
-    public CreateCashtray(double amount, String description, int expiresIn){
+    public CreateCashtray(double amount, String description, int expiresIn) {
         this.amount = amount;
         this.description = description;
         this.expiresIn = expiresIn;
     }
 
-    public Cashtray procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Cashtray cashtray = (Cashtray)sendRequest.proc(new Cashtray(), "POST", makeJson(), "Authorization", str);
-        return cashtray;
+    protected final String path() {
+        return "/cashtrays";
     }
 
-    // ToDo:サーバに沿ったurlの作り方を調べる
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/cashtrays";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.POST;
     }
 
-    private String makeJson() {
+    protected final String body() {
         String str = "{\"amount\":\"" + (int)amount;
-        if(description != null) {
+        if (description != null) {
             str += "\", \"description\":\"" + description;
         }
-        if(expiresIn != -1){
+        if (expiresIn != -1) {
             str += "\", \"expires_in\":\"" + expiresIn;
         }
         str += "\"}";
         return str;
+    }
+
+    public final Cashtray send(String accessToken) {
+        return super.send(Cashtray.class, accessToken);
     }
 }

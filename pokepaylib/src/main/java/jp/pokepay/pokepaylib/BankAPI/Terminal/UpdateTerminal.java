@@ -1,41 +1,37 @@
 package jp.pokepay.pokepaylib.BankAPI.Terminal;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.Terminal;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class UpdateTerminal {
+public class UpdateTerminal extends BankRequest {
     public String accountId;
     public String name;
     public String pushToken;
 
-    private Constants constants = new Constants();
-
-    public UpdateTerminal(String accountId, String name, String pushToken){
+    public UpdateTerminal(String accountId, String name, String pushToken) {
         this.accountId = accountId;
         this.name      = name;
         this.pushToken = pushToken;
     }
 
-    public Terminal procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Terminal terminal = (Terminal) sendRequest.proc(new Terminal(), "PATCH", makeJson(), "Authorization", str);
-        return terminal;
+    protected final String path() {
+        return "/terminal";
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/terminal";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.PATCH;
     }
 
-    private String makeJson() {
+    protected final String body() {
         String str = "{\"account_id\":\"" + accountId;
         str += "\", \"name\":\"" + name;
         str += "\", \"push_token\":\"" + pushToken;
         str += "\"}";
         return str;
+    }
+
+    public final Terminal send(String accessToken) {
+        return super.send(Terminal.class, accessToken);
     }
 }

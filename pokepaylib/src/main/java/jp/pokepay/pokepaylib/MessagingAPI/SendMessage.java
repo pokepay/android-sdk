@@ -1,10 +1,10 @@
 package jp.pokepay.pokepaylib.MessagingAPI;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.Message;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class SendMessage {
+public class SendMessage extends BankRequest {
     public String toUserId;
     public double amount;
     public String subject;
@@ -12,9 +12,7 @@ public class SendMessage {
     public String fromAccountId;
     public String requestId;
 
-    private Constants constants = new Constants();
-
-    public SendMessage(String toUserId, double amount, String subject, String body, String fromAccountId, String requestId){
+    public SendMessage(String toUserId, double amount, String subject, String body, String fromAccountId, String requestId) {
         this.toUserId = toUserId;
         this.amount = amount;
         this.subject = subject;
@@ -23,21 +21,15 @@ public class SendMessage {
         this.requestId = requestId;
     }
 
-    public Message procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Message message = (Message)sendRequest.proc(new Message(), "POST", makeJson(), "Authorization", str);
-        return message;
+    protected final String path() {
+        return "/messages";
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/messages";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.POST;
     }
 
-    private String makeJson() {
+    protected final String body() {
         String str = "{\"to_user_id\":\"" + toUserId;
         if(amount > -1){
             str += "\", \"amount\":\"" + amount;
@@ -52,5 +44,9 @@ public class SendMessage {
         }
         str += "\"}";
         return str;
+    }
+
+    public final Message send(String accessToken) {
+        return super.send(Message.class, accessToken);
     }
 }

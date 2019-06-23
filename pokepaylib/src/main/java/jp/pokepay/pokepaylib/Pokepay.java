@@ -1,6 +1,5 @@
 package jp.pokepay.pokepaylib;
 
-
 import jp.pokepay.pokepaylib.BankAPI.Bill.CreateBill;
 import jp.pokepay.pokepaylib.BankAPI.Bill.GetBill;
 import jp.pokepay.pokepaylib.BankAPI.Cashtray.CreateCashtray;
@@ -11,7 +10,7 @@ import jp.pokepay.pokepaylib.BankAPI.Terminal.GetTerminal;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithBill;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCashtray;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCheck;
-import jp.pokepay.pokepaylib.OAuthAPI.ExchangeAuthCode;
+import jp.pokepay.pokepaylib.OAuthAPI.Token.ExchangeAuthCode;
 import jp.pokepay.pokepaylib.Responses.AccessToken;
 import jp.pokepay.pokepaylib.Responses.Bill;
 import jp.pokepay.pokepaylib.Responses.Cashtray;
@@ -51,27 +50,28 @@ public class Pokepay {
 
         public Terminal getTerminalInfo(){
             GetTerminal getTerminal = new GetTerminal();
-            Terminal terminal = getTerminal.procSend(accessToken);
+            Terminal terminal = getTerminal.send(accessToken);
             return terminal;
         }
 
         public Object getTokenInfo(String token){
+            // FIXME: FUCK. DONT USE OBJECT.
             Object retInfo = null;
             if(token.startsWith(constants.WWW_BASE_URL + "/cashtrays/")){
                 String uuid = token.substring((constants.API_BASE_URL + "/cashtrays/").length());
                 GetCashtray getCashtray = new GetCashtray(uuid);
-                retInfo = getCashtray.procSend(accessToken);
+                retInfo = getCashtray.send(accessToken);
 
             }
             else if(token.startsWith(constants.WWW_BASE_URL + "/bills/")){
                 String uuid = token.substring((constants.WWW_BASE_URL + "/bills/").length());
                 GetBill getBill = new GetBill(uuid);
-                retInfo = getBill.procSend(accessToken);
+                retInfo = getBill.send(accessToken);
             }
             else if(token.startsWith(constants.WWW_BASE_URL + "/checks/")){
                 String uuid = token.substring((constants.WWW_BASE_URL + "/checks/").length());
                 GetCheck getCheck = new GetCheck(uuid);
-                retInfo = getCheck.procSend(accessToken);
+                retInfo = getCheck.send(accessToken);
             }
             return retInfo;
         }
@@ -87,17 +87,17 @@ public class Pokepay {
             if(token.startsWith(constants.WWW_BASE_URL + "/cashtrays/")){
                 String uuid = token.substring((constants.WWW_BASE_URL + "/cashtrays/").length());
                 CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId);
-                userTransaction = createTransactionWithCashtray.procSend(accessToken);
+                userTransaction = createTransactionWithCashtray.send(accessToken);
             }
             else if(token.startsWith(constants.WWW_BASE_URL + "/bills/")){
                 String uuid = token.substring((constants.WWW_BASE_URL + "/bills/").length());
                 CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount);
-                userTransaction = createTransactionWithBill.procSend(accessToken);
+                userTransaction = createTransactionWithBill.send(accessToken);
             }
             else if(token.startsWith(constants.WWW_BASE_URL + "/checks/")){
                 String uuid = token.substring((constants.WWW_BASE_URL + "/checks/").length());
                 CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
-                userTransaction = createTransactionWithCheck.procSend(accessToken);
+                userTransaction = createTransactionWithCheck.send(accessToken);
             }
             else{
                 //invalid token
@@ -106,26 +106,27 @@ public class Pokepay {
             return userTransaction;
         }
 
-        public Object createToken(double amount, String description){
+        public Object createToken(double amount, String description) {
             return createToken(amount, description,-1);
         }
-        public Object createToken(double amount, String description, int expiresIn){
+        public Object createToken(double amount, String description, int expiresIn) {
             return createToken(amount, description, expiresIn, null);
         }
-        public Object createToken(double amount, String description, int expiresIn, String accountId){
+        public Object createToken(double amount, String description, int expiresIn, String accountId) {
+            // FIXME: FUCK Object.
             if(isMerchant){
                 CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn);
-                Cashtray cashtray = createCashtray.procSend(accessToken);
+                Cashtray cashtray = createCashtray.send(accessToken);
                 return cashtray;
             }
             else if(amount < 0){
                 CreateBill createBill = new CreateBill(amount*(-1), description, accountId);
-                Bill bill = createBill.procSend(accessToken);
+                Bill bill = createBill.send(accessToken);
                 return bill;
             }
             else{
                 CreateCheck createCheck = new CreateCheck(amount, description, accountId);
-                Check check = createCheck.procSend(accessToken);
+                Check check = createCheck.send(accessToken);
                 return check;
             }
         }
@@ -146,7 +147,7 @@ public class Pokepay {
 
         public AccessToken getAccessToken(String code){
             ExchangeAuthCode exchangeAuthCode = new ExchangeAuthCode(code, clientId, clientSecret);
-            AccessToken accessToken = exchangeAuthCode.procSend();
+            AccessToken accessToken = exchangeAuthCode.send();
             return accessToken;
         }
     }

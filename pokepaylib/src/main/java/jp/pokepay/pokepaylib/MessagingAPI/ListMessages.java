@@ -1,37 +1,30 @@
 package jp.pokepay.pokepaylib.MessagingAPI;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.PaginatedMessages;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class ListMessages {
+public class ListMessages extends BankRequest {
     public String before;
     public String after;
     public int perPage;
 
-    private Constants constants = new Constants();
-
-    public ListMessages(String before, String after, int perPage){
+    public ListMessages(String before, String after, int perPage) {
         this.before = before;
         this.after = after;
         this.perPage = perPage;
     }
 
-    public PaginatedMessages procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        PaginatedMessages paginatedMessages = (PaginatedMessages) sendRequest.proc(new PaginatedMessages(), "GET", null, "Authorization", str);
-        return paginatedMessages;
+    protected final String path() {
+        return "/messages";
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/messages";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.GET;
     }
 
-    private String makeJson(){
+    protected final String body() {
+        // FIXME: FUCK
         boolean flag = false;
         String str = "{";
         if(before != null){
@@ -60,5 +53,9 @@ public class ListMessages {
             str += "}";
         }
         return str;
+    }
+
+    public final PaginatedMessages send(String accessToken) {
+        return super.send(PaginatedMessages.class, accessToken);
     }
 }

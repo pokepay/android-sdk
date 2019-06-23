@@ -1,30 +1,27 @@
 package jp.pokepay.pokepaylib.BankAPI.User;
 
-import jp.pokepay.pokepaylib.Constants;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Responses.NoContent;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class DeleteUserEmail {
+public class DeleteUserEmail extends BankRequest {
     public String id;
     public String email;
-
-    private Constants constants = new Constants();
 
     public DeleteUserEmail(String id, String email){
         this.id = id;
         this.email = email;
     }
 
-    public String procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        String ret = (String)sendRequest.proc(new String(), "DELETE", null, "Authorization", str);
-        return ret;
+    protected final String path() {
+        return "/users/" + id + "/emails/" + email;
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/users/" + id + "/emails/" + email;
+    protected final Request.Method method() {
+        return Request.Method.DELETE;
+    }
 
-        return url;
+    public final NoContent send(String accessToken) {
+        return super.send(NoContent.class, accessToken);
     }
 }

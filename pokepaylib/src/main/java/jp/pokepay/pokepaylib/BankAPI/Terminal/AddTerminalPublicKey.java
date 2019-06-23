@@ -1,33 +1,29 @@
 package jp.pokepay.pokepaylib.BankAPI.Terminal;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.ServerKey;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class AddTerminalPublicKey {
+public class AddTerminalPublicKey extends BankRequest {
     public String key;
 
-    private Constants constants = new Constants();
-
-    public AddTerminalPublicKey(String key){
+    public AddTerminalPublicKey(String key) {
         this.key = key;
     }
 
-    public ServerKey procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        ServerKey serverKey =  (ServerKey)sendRequest.proc(new ServerKey(), "POST", makeJson(), "Authorization", str);
-        return serverKey;
+    protected final String path() {
+        return "/terminal/keys";
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/terminal/keys";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.POST;
     }
 
-    private String makeJson(){
+    protected final String body() {
         return "{\"key\":\"" + key + "\"}";
+    }
+
+    public final ServerKey send(String accessToken) {
+        return super.send(ServerKey.class, accessToken);
     }
 }

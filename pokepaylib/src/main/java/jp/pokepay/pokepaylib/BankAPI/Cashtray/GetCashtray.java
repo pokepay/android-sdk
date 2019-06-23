@@ -1,29 +1,25 @@
 package jp.pokepay.pokepaylib.BankAPI.Cashtray;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.Cashtray;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class GetCashtray {
+public class GetCashtray extends BankRequest {
     public String id;
 
-    private Constants constants = new Constants();
-
-    public GetCashtray(String id){
+    public GetCashtray(String id) {
         this.id = id;
     }
 
-    public Cashtray procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Cashtray cashtray = (Cashtray)sendRequest.proc(new Cashtray(), "GET", null, "Authorization", str);
-        return cashtray;
+    protected final String path() {
+        return "/cashtrays/" + id;
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/cashtrays/" + id;
+    protected final Request.Method method() {
+        return Request.Method.GET;
+    }
 
-        return url;
+    public final Cashtray send(String accessToken) {
+        return super.send(Cashtray.class, accessToken);
     }
 }

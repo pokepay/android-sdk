@@ -43,6 +43,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithJwt;
+import jp.pokepay.pokepaylib.Responses.JwtResult;
 
 import static android.content.ContentValues.TAG;
 import static java.lang.Thread.sleep;
@@ -183,7 +184,8 @@ public class BLEController {
                 arrayIdx++;
                 String jwt = new String(decodeAES128(readJwt), StandardCharsets.UTF_8);
                 CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null);
-                String result = createTransactionWithJwt.procSend(accessToken);
+                JwtResult jwtResult = createTransactionWithJwt.send(accessToken);
+                String result = jwtResult.data;
                 System.out.println(result);
                 if(result == null){
                     arrayList.get(arrayIdx).setValue(encodeAES128("NG".getBytes()));

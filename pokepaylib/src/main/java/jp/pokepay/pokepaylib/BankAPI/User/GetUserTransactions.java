@@ -1,39 +1,32 @@
 package jp.pokepay.pokepaylib.BankAPI.User;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.PaginatedTransactions;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class GetUserTransactions {
+public class GetUserTransactions extends BankRequest {
     public String id;
     public String before;
     public String after;
     public int perPage;
 
-    private Constants constants = new Constants();
-
-    public GetUserTransactions(String id, String before, String after, int perPage){
+    public GetUserTransactions(String id, String before, String after, int perPage) {
         this.id = id;
         this.before = before;
         this.after = after;
         this.perPage = perPage;
     }
 
-    public PaginatedTransactions procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        PaginatedTransactions paginatedTransactions = (PaginatedTransactions)sendRequest.proc(new PaginatedTransactions(), "GET", null, "Authorization", str);
-        return paginatedTransactions;
+    protected final String path() {
+        return "/users/" + id + "/transactions";
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/users/" + id + "/transactions";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.GET;
     }
 
-    private String makeJson(){
+    protected final String body() {
+        // FIXME: fuck
         boolean flag = false;
         String str = "{";
         if(before != null){
@@ -62,5 +55,9 @@ public class GetUserTransactions {
             str += "}";
         }
         return str;
+    }
+
+    public final PaginatedTransactions send(String accessToken) {
+        return super.send(PaginatedTransactions.class, accessToken);
     }
 }

@@ -1,29 +1,25 @@
 package jp.pokepay.pokepaylib.BankAPI.Account;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.Account;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class GetAccount {
+public class GetAccount extends BankRequest {
     public String id;
-
-    private Constants constants = new Constants();
 
     public GetAccount(String id){
         this.id = id;
     }
 
-    public Account procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Account account = (Account)sendRequest.proc(new Account(), "GET", null, "Authorization", str);
-        return account;
+    protected final String path() {
+        return "/accounts/" + id;
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/accounts/" + id;
+    protected final Request.Method method() {
+        return Request.Method.GET;
+    }
 
-        return url;
+    public final Account send(String accessToken) {
+        return super.send(Account.class, accessToken);
     }
 }

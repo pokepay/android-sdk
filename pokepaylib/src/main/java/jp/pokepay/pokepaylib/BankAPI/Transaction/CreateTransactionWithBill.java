@@ -1,38 +1,29 @@
 package jp.pokepay.pokepaylib.BankAPI.Transaction;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class CreateTransactionWithBill {
+public class CreateTransactionWithBill extends BankRequest {
     public String billId;
     public String accountId;
     public double amount;
 
-    Constants constants = new Constants();
-
-    public CreateTransactionWithBill(String billId, String accountId, double amount){
+    public CreateTransactionWithBill(String billId, String accountId, double amount) {
         this.billId    = billId;
         this.accountId = accountId;
         this.amount    = amount;
     }
 
-    public UserTransaction procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        UserTransaction userTransaction = (UserTransaction)sendRequest.proc(new UserTransaction(), "POST", makeJson(), "Authorization", str);
-        return userTransaction;
+    protected final String path() {
+        return "/transactions";
     }
 
-
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/transactions";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.POST;
     }
 
-    private String makeJson() {
+    protected final String body() {
         String str = "{\"bill_id\":\"" + billId;
         if(accountId != null) {
             str += "\", \"account_id\":\"" + accountId;
@@ -44,4 +35,7 @@ public class CreateTransactionWithBill {
         return str;
     }
 
+    public final UserTransaction send(String accessToken) {
+        return super.send(UserTransaction.class, accessToken);
+    }
 }

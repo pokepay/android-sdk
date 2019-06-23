@@ -1,29 +1,25 @@
 package jp.pokepay.pokepaylib.MessagingAPI;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.Message;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class GetMessage {
+public class GetMessage extends BankRequest {
     public String id;
 
-    private Constants constants = new Constants();
-
-    public GetMessage(String id){
+    public GetMessage(String id) {
         this.id = id;
     }
 
-    public Message procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Message message = (Message) sendRequest.proc(new Message(), "GET", null, "Authorization", str);
-        return message;
+    protected final String path() {
+        return "/messages/" + id;
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/messages/" + id;
+    protected final Request.Method method() {
+        return Request.Method.GET;
+    }
 
-        return url;
+    public final Message send(String accessToken) {
+        return super.send(Message.class, accessToken);
     }
 }

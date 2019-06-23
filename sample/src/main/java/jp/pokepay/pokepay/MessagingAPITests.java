@@ -24,34 +24,31 @@ public class MessagingAPITests {
         
         // ユーザ１のterminalを取得　（user id 取得のため） //
         GetTerminal getTerminal = new GetTerminal();
-        Terminal terminal = getTerminal.procSend(accessToken1);
+        Terminal terminal = getTerminal.send(accessToken1);
         if(terminal == null){
             return false;
         }
 
         // メッセージを送る fromユーザ２ toユーザ１ //
         SendMessage sendMessage = new SendMessage(terminal.user.id, -2, "messageing tests", "body", null, null);
-        Message message = sendMessage.procSend(accessToken2);
+        Message message = sendMessage.send(accessToken2);
         if(message == null){
             return false;
         }
 
         // 未読数を取得
         GetUnreadCount getUnreadCount = new GetUnreadCount();
-        MessageUnreadCount messageUnreadCount = getUnreadCount.procSend(accessToken1);
+        MessageUnreadCount messageUnreadCount = getUnreadCount.send(accessToken1);
         if(messageUnreadCount == null){
             return false;
         }
 
         // メッセージを取得
         ListMessages listMessages = new ListMessages(null, null, 30);
-        PaginatedMessages paginatedMessages = listMessages.procSend(accessToken1);
+        PaginatedMessages paginatedMessages = listMessages.send(accessToken1);
         if(paginatedMessages == null){
             return false;
         }
-
-        // ToDo:ReceiveMessageAttachmentのテストは、仕様がわからないため保留
-
 
         return true;
     }

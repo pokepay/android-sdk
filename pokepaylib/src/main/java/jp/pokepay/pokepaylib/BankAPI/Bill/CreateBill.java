@@ -1,37 +1,29 @@
 package jp.pokepay.pokepaylib.BankAPI.Bill;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.Bill;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class CreateBill {
+public class CreateBill extends BankRequest {
     public double amount;
     public String description;
     public String accountId;
 
-    private Constants constants = new Constants();
-
-    public CreateBill(double amount, String description, String accountId){
+    public CreateBill(double amount, String description, String accountId) {
         this.amount = amount;
         this.description = description;
         this.accountId = accountId;
     }
 
-    public Bill procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Bill bill = (Bill)sendRequest.proc(new Bill(), "POST", makeJson(), "Authorization", str);
-        return bill;
+    protected final String path() {
+        return "/bills";
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/bills";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.POST;
     }
 
-    private String makeJson() {
+    protected final String body() {
         String str = "{\"amount\":\"" + (int)amount;
         if(description != null) {
             str += "\", \"description\":\"" + description;
@@ -41,5 +33,9 @@ public class CreateBill {
         }
         str += "\"}";
         return str;
+    }
+
+    public final Bill send(String accessToken) {
+        return super.send(Bill.class, accessToken);
     }
 }

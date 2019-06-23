@@ -1,38 +1,29 @@
 package jp.pokepay.pokepaylib.BankAPI.Bill;
 
-import jp.pokepay.pokepaylib.Constants;
 import jp.pokepay.pokepaylib.Responses.Bill;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class UpdateBill {
+public class UpdateBill extends BankRequest {
     public String id;
     public double amount;
     public String description;
 
-    private Constants constants = new Constants();
-
-    public UpdateBill(String id, double amount, String description){
+    public UpdateBill(String id, double amount, String description) {
         this.id = id;
         this.amount = amount;
         this.description = description;
     }
 
-
-    public Bill procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Bill bill = (Bill)sendRequest.proc(new Bill(), "PATCH", makeJson(), "Authorization", str);
-        return bill;
+    protected final String path() {
+        return "/bills/" + id;
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/bills/" + id;
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.PATCH;
     }
 
-    private String makeJson() {
+    protected final String body() {
         boolean flag = false;
         String str = "{";
         if(amount >= 0) {
@@ -53,4 +44,7 @@ public class UpdateBill {
         return str;
     }
 
+    public final Bill send(String accessToken) {
+        return super.send(Bill.class, accessToken);
+    }
 }
