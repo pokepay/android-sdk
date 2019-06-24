@@ -1,6 +1,8 @@
 package jp.pokepay.pokepaylib.Responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class Message {
@@ -22,19 +24,12 @@ public class Message {
         attachment = new MessageAttachment();
     }
 
-
-    public void print(){
-        System.out.println("PrivateMoney(");
-        System.out.println("id: \"" + id + "\",");
-        System.out.println("subject: \"" + subject + "\",");
-        System.out.println("body: \"" + body + "\",");
-        System.out.print("fromUser: ");
-        from_user.print();
-        System.out.print("toUser: ");
-        to_user.print();
-        System.out.println("isUnread: \"" + is_unread + "\",");
-        System.out.print("attachment: ");
-        attachment.print();
-        System.out.println("),");
+    public String toString() {
+        try {
+            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

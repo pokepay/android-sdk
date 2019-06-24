@@ -1,6 +1,8 @@
 package jp.pokepay.pokepaylib.Responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class User {
@@ -8,15 +10,14 @@ public class User {
     public String name;
     public String is_merchant;
 
-    public User(){
+    public User() {}
 
-    }
-
-    public void print(){
-        System.out.println("User(");
-        System.out.println("id: \"" + id + "\",");
-        System.out.println("name: \"" + name + "\",");
-        System.out.println("isMerchant: \"" + is_merchant + "\",");
-        System.out.println("),");
+    public String toString() {
+        try {
+            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

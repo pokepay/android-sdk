@@ -1,6 +1,8 @@
 package jp.pokepay.pokepaylib.Responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Date;
 
@@ -15,12 +17,12 @@ public class MessageAttachment {
         expires_at = new Date();
     }
 
-    public void print(){
-        System.out.println("PrivateMoney(");
-        System.out.println("moneyAmount: \"" + money_amount + "\",");
-        System.out.println("pointAmount: \"" + point_amount + "\",");
-        System.out.println("isReceived: \"" + is_received + "\",");
-        System.out.println("expiresAt: \"" + expires_at + "\",");
-        System.out.println("),");
+    public String toString() {
+        try {
+            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

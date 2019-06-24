@@ -1,6 +1,8 @@
 package jp.pokepay.pokepaylib.Responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class AccessToken {
@@ -9,16 +11,14 @@ public class AccessToken {
     public String token_type;
     public int    expires_in;
 
-    public AccessToken(){
+    public AccessToken() {}
 
-    }
-
-    public void print(){
-        System.out.println("AccessToken(");
-        System.out.println("accessToken: \"" + access_token + "\",");
-        System.out.println("refreshToken: \"" + refresh_token + "\",");
-        System.out.println("tokenType: \"" + token_type + "\",");
-        System.out.println("expiresIn: \"" + expires_in + "\",");
-        System.out.println("),");
+    public String toString() {
+        try {
+            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

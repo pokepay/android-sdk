@@ -1,6 +1,8 @@
 package jp.pokepay.pokepaylib.Responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class PaginatedMessages {
@@ -14,16 +16,12 @@ public class PaginatedMessages {
         this.items = new Message[2];
     }
 
-    public void print(){
-        System.out.println("PaginatedMessages(");
-        System.out.println("perPage: \"" + per_page + "\",");
-        System.out.println("count: \"" + count + "\",");
-        System.out.println("next: \"" + next + "\",");
-        System.out.println("prev: \"" + prev + "\",");
-        for(int i=0;i<items.length;i++) {
-            System.out.print("Message: ");
-            items[i].print();
+    public String toString() {
+        try {
+            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "";
         }
-        System.out.println("),");
     }
 }
