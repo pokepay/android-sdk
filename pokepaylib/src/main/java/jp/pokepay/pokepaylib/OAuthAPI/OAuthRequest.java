@@ -7,8 +7,6 @@ import jp.pokepay.pokepaylib.Request;
 
 public abstract class OAuthRequest {
 
-    private final Env env = Env.current();
-
     protected abstract String path();
     protected abstract Request.Method method();
 
@@ -17,7 +15,7 @@ public abstract class OAuthRequest {
     }
 
     protected <T> T send(Class<T> cls) {
-        String url = env.WWW_BASE_URL() + path();
+        String url = Env.current().WWW_BASE_URL() + path();
         T response = Request.send(cls, url, method(), parameters());
         return response;
     }

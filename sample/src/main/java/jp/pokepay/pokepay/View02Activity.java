@@ -11,10 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import jp.pokepay.pokepaylib.Env;
 import jp.pokepay.pokepaylib.Pokepay;
 import jp.pokepay.pokepaylib.Responses.AccessToken;
-import jp.pokepay.pokepaylib.Responses.Bill;
-import jp.pokepay.pokepaylib.Responses.Cashtray;
 import jp.pokepay.pokepaylib.Responses.Check;
 import jp.pokepay.pokepaylib.Responses.Terminal;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
@@ -25,23 +24,21 @@ public class View02Activity extends AppCompatActivity {
     private String clientSecret = "2CZtBW6hzTCYRZhLLsPxdoeG7ktpDGrJ4GsfxTjLOjXFHQeizsSBUNR0";
     private String accessToken1 = "7mL_asUSVHUZhW11nDJzlm-Xa7-01VjgVBPi8Hd43UAqYpMCEfEuzLPGWfKr0VU9";
     private String accessToken2 = "oNTvWHFqv512JJQhUVgAwCx7LphHVpHFAp_jDMQ62THIN9iOwNfUXA9nMkI66xoA";// 購入客を想定(残高あり)
-    Pokepay pokepay;
     EditText editTextOauth;
     private ProgressDialog progressDialog;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view02);
 
-        pokepay = new Pokepay();
-
         progressDialog = new ProgressDialog(View02Activity.this);
         progressDialog.setTitle("通信中");
         progressDialog.setMessage("Please wait...");
         progressDialog.setIndeterminate(true);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        Pokepay.setEnv(Env.DEVELOPMENT);
 
         editTextOauth = (EditText) findViewById(R.id.text_oauth);
         Button button0 = (Button)findViewById(R.id.button_oauth);
@@ -75,8 +72,8 @@ public class View02Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        pokepay.NewClient(accessToken1);
-                        Terminal terminal = pokepay.client.getTerminalInfo();
+                        Pokepay.Client client = Pokepay.NewClient(accessToken1);
+                        Terminal terminal = client.getTerminalInfo();
                         String id = "error";
                         if(terminal != null){
                             id = "Success! id : ";
@@ -98,10 +95,10 @@ public class View02Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        pokepay.NewClient(accessToken1);
-                        String token = pokepay.client.createToken(-1, "AndroidTest bill");
-                        pokepay.NewClient(accessToken2, true);
-                        UserTransaction userTransaction = pokepay.client.scanToken(token);
+                        Pokepay.Client client = Pokepay.NewClient(accessToken1);
+                        String token = client.createToken(-1, "AndroidTest bill");
+                        client = Pokepay.NewClient(accessToken2, true);
+                        UserTransaction userTransaction = client.scanToken(token);
                         String id = "error";
                         if(userTransaction != null){
                             id = "Success! transactionID : ";
@@ -123,10 +120,10 @@ public class View02Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        pokepay.NewClient(accessToken2, true);
-                        String token = pokepay.client.createToken(1, "AndroidTest cashtray");
-                        pokepay.NewClient(accessToken1);
-                        UserTransaction userTransaction = pokepay.client.scanToken(token);
+                        Pokepay.Client client = Pokepay.NewClient(accessToken2, true);
+                        String token = client.createToken(1, "AndroidTest cashtray");
+                        client = Pokepay.NewClient(accessToken1);
+                        UserTransaction userTransaction = client.scanToken(token);
                         String id = "error";
                         if(userTransaction != null){
                             id = "Success! transactionID : ";
@@ -148,10 +145,10 @@ public class View02Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        pokepay.NewClient(accessToken2);
-                        String token = pokepay.client.createToken(1, "AndroidTest check");
-                        pokepay.NewClient(accessToken1);
-                        UserTransaction userTransaction = pokepay.client.scanToken(token);
+                        Pokepay.Client client = Pokepay.NewClient(accessToken2);
+                        String token = client.createToken(1, "AndroidTest check");
+                        client = Pokepay.NewClient(accessToken1);
+                        UserTransaction userTransaction = client.scanToken(token);
                         String id = "error";
                         if(userTransaction != null){
                             id = "Success! transactionID : ";
@@ -173,10 +170,10 @@ public class View02Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        pokepay.NewClient(accessToken2);
-                        String token = pokepay.client.createToken(1, "AndroidTest check");
-                        pokepay.NewClient(accessToken1);
-                        TokenInfo info = pokepay.client.getTokenInfo(token);
+                        Pokepay.Client client = Pokepay.NewClient(accessToken2);
+                        String token = client.createToken(1, "AndroidTest check");
+                        client = Pokepay.NewClient(accessToken1);
+                        TokenInfo info = client.getTokenInfo(token);
                         String id = "error";
                         if (info.type == TokenInfo.Type.CHECK) {
                             Check check1 = (Check)info.info;

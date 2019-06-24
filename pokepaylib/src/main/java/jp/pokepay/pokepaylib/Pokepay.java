@@ -17,37 +17,28 @@ import jp.pokepay.pokepaylib.Responses.Cashtray;
 import jp.pokepay.pokepaylib.Responses.Check;
 import jp.pokepay.pokepaylib.Responses.Terminal;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
-import jp.pokepay.pokepaylib.Env;
-import jp.pokepay.pokepaylib.TokenInfo;
 
 public class Pokepay {
-    public Client client;
-    public OAuthClient oAuthClient;
-    public Env env;
 
-    public Pokepay() {
-        this.env = Env.DEVELOPMENT;
-        Env.setCurrent(this.env);
-    }
+    public Pokepay() {}
 
-    public Pokepay(Env env) {
-        this.env = env;
+    public static void setEnv(Env env) {
         Env.setCurrent(env);
     }
 
-    public void NewClient(String accessToken) {
-        NewClient(accessToken, false);
+    public static Client NewClient(String accessToken) {
+        return NewClient(accessToken, false);
     }
 
-    public void NewClient(String accessToken, boolean isMerchant) {
-        this.client = new Client(accessToken, isMerchant);
+    public static Client NewClient(String accessToken, boolean isMerchant) {
+        return new Client(accessToken, isMerchant);
     }
 
-    public void NewOAuthClient(String clientId, String clientSecret) {
-        this.oAuthClient = new OAuthClient(clientId, clientSecret);
+    public static OAuthClient NewOAuthClient(String clientId, String clientSecret) {
+        return new OAuthClient(clientId, clientSecret);
     }
 
-    public class Client {
+    public static class Client {
         private String accessToken;
         private boolean isMerchant;
 
@@ -63,6 +54,7 @@ public class Pokepay {
         }
 
         public TokenInfo getTokenInfo(String token) {
+            Env env = Env.current();
             if (token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")) {
                 String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
                 GetCashtray getCashtray = new GetCashtray(uuid);
@@ -101,7 +93,8 @@ public class Pokepay {
         public UserTransaction scanToken(String token, double amount) {
             return scanToken(token, amount, null);
         }
-        public UserTransaction scanToken(String token, double amount, String accountId){
+        public UserTransaction scanToken(String token, double amount, String accountId) {
+            Env env = Env.current();
             UserTransaction userTransaction = null;
             if(token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")){
                 String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
@@ -132,6 +125,7 @@ public class Pokepay {
             return createToken(amount, description, expiresIn, null);
         }
         public String createToken(double amount, String description, int expiresIn, String accountId) {
+            Env env = Env.current();
             if (isMerchant) {
                 CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn);
                 Cashtray cashtray = createCashtray.send(accessToken);
@@ -152,17 +146,17 @@ public class Pokepay {
         }
     }
 
-    public class OAuthClient {
+    public static class OAuthClient {
         private String clientId;
         private String clientSecret;
 
-        public OAuthClient(String clientId, String clientSecret){
+        public OAuthClient(String clientId, String clientSecret) {
             this.clientId = clientId;
             this.clientSecret = clientSecret;
         }
 
         public String getAuthorizationUrl(){
-            return env.WWW_BASE_URL() + "/oauth/authorize?client_id=" + clientId + "&response_type=code";
+            return Env.current().WWW_BASE_URL() + "/oauth/authorize?client_id=" + clientId + "&response_type=code";
         }
 
         public AccessToken getAccessToken(String code){
