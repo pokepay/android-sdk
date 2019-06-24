@@ -18,6 +18,7 @@ import jp.pokepay.pokepaylib.Responses.Cashtray;
 import jp.pokepay.pokepaylib.Responses.Check;
 import jp.pokepay.pokepaylib.Responses.Terminal;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
+import jp.pokepay.pokepaylib.TokenInfo;
 
 public class View02Activity extends AppCompatActivity {
     private String clientId = "LlMbGiWr7ouItgi5-7mRSQ";
@@ -175,11 +176,14 @@ public class View02Activity extends AppCompatActivity {
                         pokepay.NewClient(accessToken2);
                         String token = pokepay.client.createToken(1, "AndroidTest check");
                         pokepay.NewClient(accessToken1);
-                        Check check1 = (Check) pokepay.client.getTokenInfo(token);
+                        TokenInfo info = pokepay.client.getTokenInfo(token);
                         String id = "error";
-                        if(check1 != null){
-                            id = "Success! getTokenInfo : ";
-                            id += check1.id;
+                        if (info.type == TokenInfo.Type.CHECK) {
+                            Check check1 = (Check)info.info;
+                            if(check1 != null){
+                                id = "Success! getTokenInfo : ";
+                                id += check1.id;
+                            }
                         }
                         Message msg = Message.obtain();
                         msg.obj = id;
