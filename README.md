@@ -26,17 +26,34 @@ implementation project(':pokepaylib')
 ## Usage
 
 ```java
-Pokepay pokepay = new Pokepay();
+// SetEnv //
+Pokepay.setEnv(Env.DEVELOPMENT); // or Env.SANDBOX, Env.PRODUCTION
+
 // Input AccessToken //
-pokepay.NewClient("ZhwMsfoAyWZMGrCAKrrofmwYHV82GkUcf3kYSZYYf1oDKVvFAPIKuefyQoc1KDVr");
+Pokepay.Client client = new Pokepay.Client("ZhwMsfoAyWZMGrCAKrrofmwYHV82GkUcf3kYSZYYf1oDKVvFAPIKuefyQoc1KDVr");
 
 // getTerminalInfo //
 new Thread(new Runnable() {
     @Override
     public void run() {
-        pokepay.NewClient(accessToken1);
-        Terminal terminal = pokepay.client.getTerminalInfo();
-        // => Terminal(id: "45046d7f-aa33-4d26-8cb0-8971aae5a487", name: "", hardwareId: "4e5c5d18-b27f-4b32-a0e0-e8900686fe23", pushToken: nil, user: Pokepay.User(id: "4abed0cc-6431-446f-aaf5-bebc208d84c1", name: "", isMerchant: true), account: Pokepay.Account(id: "1b4533c0-651c-4e79-8444-346419b18c77", name: "", balance: -15357.0, isSuspended: false, privateMoney: Pokepay.PrivateMoney(id: "090bf006-7450-4ed9-8da1-977ea3ff332c", name: "PocketBank", organization: Pokepay.Organization(code: "pocketchange", name: "ポケットチェンジ"), maxBalance: 30000.0, expirationType: "static")))
+        try {
+            Terminal terminal = client.getTerminalInfo();
+            // => Terminal(id: "45046d7f-aa33-4d26-8cb0-8971aae5a487", name: "", hardwareId: "4e5c5d18-b27f-4b32-a0e0-e8900686fe23", pushToken: nil, user: Pokepay.User(id: "4abed0cc-6431-446f-aaf5-bebc208d84c1", name: "", isMerchant: true), account: Pokepay.Account(id: "1b4533c0-651c-4e79-8444-346419b18c77", name: "", balance: -15357.0, isSuspended: false, privateMoney: Pokepay.PrivateMoney(id: "090bf006-7450-4ed9-8da1-977ea3ff332c", name: "PocketBank", organization: Pokepay.Organization(code: "pocketchange", name: "ポケットチェンジ"), maxBalance: 30000.0, expirationType: "static")))
+        } catch (ProcessingError err) {
+            // err is Runtime error.
+            // The caller should be wrong.
+            // Fix it.
+        } catch (BankRequestError err) {
+            // err is mainly API Errors
+            // It occurres status code other than 200.
+            // err.error = BankError{}
+            // err.statusCode = int
+        } catch (OAuthRequestError err) {
+            // err is mainly API Errors
+            // It occurres status code other than 200.
+            // err.error = OAuthError{}
+            // err.statusCode = int
+        }
     }
 }).start();
 
@@ -44,7 +61,7 @@ new Thread(new Runnable() {
 new Thread(new Runnable() {
     @Override
     public void run() {
-        Cashtray cashtray = (Cashtray)pokepay.client.createToken(1, "AndroidTest cashtray");
+        Cashtray cashtray = (Cashtray)client.createToken(1, "AndroidTest cashtray");
         //like 'https://www.pokepay.jp/cashtrays/dc204118-9e3b-493c-b396-b9259ce28663'
     }
 }).start();
@@ -53,7 +70,7 @@ new Thread(new Runnable() {
 new Thread(new Runnable() {
     @Override
     public void run() {
-        UserTransaction userTransaction = pokepay.client.scanToken("https://www.pokepay.jp/cashtrays/dc204118-9e3b-493c-b396-b9259ce28663");
+        UserTransaction userTransaction = client.scanToken("https://www.pokepay.jp/cashtrays/dc204118-9e3b-493c-b396-b9259ce28663");
     }
 }).start();
 ```
@@ -73,12 +90,11 @@ pokepay.oAuthClient.getAuthorizationUrl();
 4. Exchange the authorization code for an access token
 
 ```java
-Pokepay pokepay = new Pokepay();
-pokepay.NewOAuthClient(clientId, clientSecret);
+Pokepay.OAuthClient oclient = new Pokepay.OAuthClient(clientId, clientSecret);
 new Thread(new Runnable() {
     @Override
     public void run() {
-        AccessToken accessToken = pokepay.oAuthClient.getAccessToken(code);
+        AccessToken accessToken = oclient.getAccessToken(code);
     }
     // => AccessToken(accessToken: "dXX1Guh7Ze0F_s6L8mAk-t4DXxvO2wd_IwWXbQBGdNo0nkj01tYA9EKY992H_mMP", refreshToken: "XKOfCZmLuRjLggDZzDfz", tokenType: "Bearer", expiresIn: 2591999)
 }).start();
