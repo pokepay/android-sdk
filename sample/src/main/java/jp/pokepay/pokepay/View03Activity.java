@@ -197,7 +197,6 @@ public class View03Activity extends AppCompatActivity {
 
         editTextUser = (EditText) findViewById(R.id.textUser);
         Button button7 = (Button)findViewById(R.id.buttonUser);
-        button7.setEnabled(false);
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -27,7 +27,7 @@ public class View02Activity extends AppCompatActivity {
     private String clientId = "LlMbGiWr7ouItgi5-7mRSQ";
     private String clientSecret = "2CZtBW6hzTCYRZhLLsPxdoeG7ktpDGrJ4GsfxTjLOjXFHQeizsSBUNR0";
     private String accessToken1 = "7mL_asUSVHUZhW11nDJzlm-Xa7-01VjgVBPi8Hd43UAqYpMCEfEuzLPGWfKr0VU9";
-    private String accessToken2 = "oNTvWHFqv512JJQhUVgAwCx7LphHVpHFAp_jDMQ62THIN9iOwNfUXA9nMkI66xoA";// 購入客を想定(残高あり)
+    private String accessToken2 = "oNTvWHFqv512JJQhUVgAwCx7LphHVpHFAp_jDMQ62THIN9iOwNfUXA9nMkI66xoA"; // 購入客を想定(残高あり)
     EditText editTextOauth;
     private ProgressDialog progressDialog;
 
@@ -131,7 +131,7 @@ public class View02Activity extends AppCompatActivity {
                         final Message msg = Message.obtain();
                         try {
                             Pokepay.Client client = new Pokepay.Client(accessToken2, true);
-                            final String token = client.createToken(-1, "AndroidTest cashtray");
+                            final String token = client.createToken(1, "AndroidTest cashtray");
                             client = new Pokepay.Client(accessToken1);
                             final UserTransaction userTransaction = client.scanToken(token);
                             msg.obj = "Success transaction: " + userTransaction.toString();

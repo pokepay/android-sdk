@@ -18,6 +18,7 @@ import java.util.Map;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
 import jp.pokepay.pokepaylib.Responses.BankError;
+import jp.pokepay.pokepaylib.Responses.NoContent;
 import jp.pokepay.pokepaylib.Responses.OAuthError;
 
 public class Request {
@@ -218,15 +219,18 @@ public class Request {
             final ObjectMapper mapper = new ObjectMapper();
             if (HttpURLConnection.HTTP_OK <= status && status < HttpURLConnection.HTTP_MULT_CHOICE) {
                 final String responseBody = getResponseBody(con.getInputStream(), encoding);
+                if (cls == NoContent.class && responseBody == "") {
+                    return (R)(new NoContent());
+                }
                 return mapper.readValue(responseBody, cls);
             } else {
                 final String responseBody = getResponseBody(con.getErrorStream(), encoding);
                 if (errCls == BankRequestError.class) {
                     final BankError error = mapper.readValue(responseBody, BankError.class);
-                    throw new BankRequestError(error);
+                    throw new BankRequestError(status, error);
                 } else if (errCls == OAuthRequestError.class) {
                     final OAuthError error = mapper.readValue(responseBody, OAuthError.class);
-                    throw new OAuthRequestError(error);
+                    throw new OAuthRequestError(status, error);
                 } else {
                     throw new ProcessingError("Invalid Error type specified");
                 }
