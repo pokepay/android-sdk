@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.MessagingAPI;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.MessageUnreadCount;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -16,7 +18,7 @@ public class GetUnreadCount extends BankRequest {
         return Request.Method.GET;
     }
 
-    public final MessageUnreadCount send(String accessToken) {
+    public final MessageUnreadCount send(String accessToken) throws ProcessingError, BankRequestError {
         return super.send(MessageUnreadCount.class, accessToken);
     }
 }

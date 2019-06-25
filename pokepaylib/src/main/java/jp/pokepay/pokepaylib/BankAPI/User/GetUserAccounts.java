@@ -3,6 +3,8 @@ package jp.pokepay.pokepaylib.BankAPI.User;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.PaginatedAccounts;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -37,7 +39,7 @@ public class GetUserAccounts extends BankRequest {
         }};
     }
 
-    public final PaginatedAccounts send(String accessToken) {
+    public final PaginatedAccounts send(String accessToken) throws ProcessingError, BankRequestError {
         return super.send(PaginatedAccounts.class, accessToken);
     }
 }

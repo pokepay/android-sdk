@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.Check;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.Check;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -19,7 +21,7 @@ public class GetCheck extends BankRequest {
         return Request.Method.GET;
     }
 
-    public final Check send(String accessToken) {
+    public final Check send(String accessToken) throws ProcessingError, BankRequestError {
         return super.send(Check.class, accessToken);
     }
 }

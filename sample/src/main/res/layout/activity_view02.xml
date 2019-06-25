@@ -14,6 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
         android:text="oauth test" />
 
     <EditText
@@ -31,7 +34,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="82dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="80dp"
         android:text="getTerminalInfo test" />
 
     <Button
@@ -40,33 +45,42 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="181dp"
+        android:layout_marginTop="160dp"
         android:text="bill test" />
 
     <Button
         android:id="@+id/button_cashtray"
         android:layout_width="183dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="86dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="false"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="240dp"
+        android:layout_marginEnd="0dp"
         android:text="cashtray test" />
 
     <Button
         android:id="@+id/button_info"
         android:layout_width="183dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="400dp"
         android:text="GetTokenInfo test" />
 
     <Button
         android:id="@+id/button_check"
         android:layout_width="183dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="178dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="320dp"
         android:text="check test" />
 
 </RelativeLayout>

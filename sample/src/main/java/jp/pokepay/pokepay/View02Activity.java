@@ -11,8 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.Env;
+import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
 import jp.pokepay.pokepaylib.Pokepay;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.AccessToken;
 import jp.pokepay.pokepaylib.Responses.Check;
 import jp.pokepay.pokepaylib.Responses.Terminal;
@@ -49,15 +53,17 @@ public class View02Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        pokepay.NewOAuthClient(clientId, clientSecret);
-                        AccessToken accessToken = pokepay.oAuthClient.getAccessToken(editTextOauth.getText().toString());
-                        String token = "error";
-                        if(accessToken != null){
-                            token = "Success! accessToken : ";
-                            token += accessToken.access_token;
+                        final Message msg = Message.obtain();
+                        final Pokepay.OAuthClient client = new Pokepay.OAuthClient(clientId, clientSecret);
+                        try {
+                            final String code = "piwRz0Rljk/AB63y0aZo7uYZ2GyjGdDR";
+                            final AccessToken accessToken = client.getAccessToken(code);
+                            msg.obj = "Success! accessToken : " + accessToken.toString();
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (OAuthRequestError e) {
+                            msg.obj = "OAuthRequestError: " + e.toString();
                         }
-                        Message msg = Message.obtain();
-                        msg.obj = token;
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -72,15 +78,16 @@ public class View02Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        Pokepay.Client client = Pokepay.NewClient(accessToken1);
-                        Terminal terminal = client.getTerminalInfo();
-                        String id = "error";
-                        if(terminal != null){
-                            id = "Success! id : ";
-                            id += terminal.id;
+                        final Message msg = Message.obtain();
+                        try {
+                            final Pokepay.Client client = new Pokepay.Client(accessToken1);
+                            final Terminal terminal = client.getTerminalInfo();
+                            msg.obj = "Success! terminal: " + terminal.toString();
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
                         }
-                        Message msg = Message.obtain();
-                        msg.obj = id;
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -95,17 +102,18 @@ public class View02Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        Pokepay.Client client = Pokepay.NewClient(accessToken1);
-                        String token = client.createToken(-1, "AndroidTest bill");
-                        client = Pokepay.NewClient(accessToken2, true);
-                        UserTransaction userTransaction = client.scanToken(token);
-                        String id = "error";
-                        if(userTransaction != null){
-                            id = "Success! transactionID : ";
-                            id += userTransaction.id;
+                        final Message msg = Message.obtain();
+                        try {
+                            Pokepay.Client client = new Pokepay.Client(accessToken1);
+                            final String token = client.createToken(1, "AndroidTest bill");
+                            client = new Pokepay.Client(accessToken2, true);
+                            final UserTransaction userTransaction = client.scanToken(token);
+                            msg.obj = "Success transaction: " + userTransaction.toString();
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
                         }
-                        Message msg = Message.obtain();
-                        msg.obj = id;
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -120,17 +128,18 @@ public class View02Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        Pokepay.Client client = Pokepay.NewClient(accessToken2, true);
-                        String token = client.createToken(1, "AndroidTest cashtray");
-                        client = Pokepay.NewClient(accessToken1);
-                        UserTransaction userTransaction = client.scanToken(token);
-                        String id = "error";
-                        if(userTransaction != null){
-                            id = "Success! transactionID : ";
-                            id += userTransaction.id;
+                        final Message msg = Message.obtain();
+                        try {
+                            Pokepay.Client client = new Pokepay.Client(accessToken2, true);
+                            final String token = client.createToken(-1, "AndroidTest cashtray");
+                            client = new Pokepay.Client(accessToken1);
+                            final UserTransaction userTransaction = client.scanToken(token);
+                            msg.obj = "Success transaction: " + userTransaction.toString();
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
                         }
-                        Message msg = Message.obtain();
-                        msg.obj = id;
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -145,17 +154,18 @@ public class View02Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        Pokepay.Client client = Pokepay.NewClient(accessToken2);
-                        String token = client.createToken(1, "AndroidTest check");
-                        client = Pokepay.NewClient(accessToken1);
-                        UserTransaction userTransaction = client.scanToken(token);
-                        String id = "error";
-                        if(userTransaction != null){
-                            id = "Success! transactionID : ";
-                            id += userTransaction.id;
+                        final Message msg = Message.obtain();
+                        try {
+                            Pokepay.Client client = new Pokepay.Client(accessToken2);
+                            final String token = client.createToken(1, "AndroidTest check");
+                            client = new Pokepay.Client(accessToken1);
+                            UserTransaction userTransaction = client.scanToken(token);
+                            msg.obj = "Success transaction: " + userTransaction.toString();
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
                         }
-                        Message msg = Message.obtain();
-                        msg.obj = id;
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -170,20 +180,27 @@ public class View02Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        Pokepay.Client client = Pokepay.NewClient(accessToken2);
-                        String token = client.createToken(1, "AndroidTest check");
-                        client = Pokepay.NewClient(accessToken1);
-                        TokenInfo info = client.getTokenInfo(token);
-                        String id = "error";
-                        if (info.type == TokenInfo.Type.CHECK) {
-                            Check check1 = (Check)info.info;
-                            if(check1 != null){
-                                id = "Success! getTokenInfo : ";
-                                id += check1.id;
+                        final Message msg = Message.obtain();
+                        try {
+                            Pokepay.Client client = new Pokepay.Client(accessToken2);
+                            final String token = client.createToken(1, "AndroidTest check");
+                            client = new Pokepay.Client(accessToken1);
+                            final TokenInfo info = client.getTokenInfo(token);
+                            if (info.type == TokenInfo.Type.CHECK) {
+                                Check check1 = (Check) info.info;
+                                if (check1 != null) {
+                                    msg.obj = "Success! getTokenInfo: " + check1.toString();
+                                } else {
+                                    msg.obj = "Error! data was null";
+                                }
+                            } else {
+                                msg.obj = "Error! unmatched info.type";
                             }
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
                         }
-                        Message msg = Message.obtain();
-                        msg.obj = id;
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -191,12 +208,12 @@ public class View02Activity extends AppCompatActivity {
         });
     }
 
-    private Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            if(msg.what == 1){
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 1) {
                 progressDialog.show();
-            }
-            else {
+            } else {
                 progressDialog.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(View02Activity.this);
                 builder.setMessage(msg.obj.toString())
@@ -206,6 +223,7 @@ public class View02Activity extends AppCompatActivity {
                         });
                 builder.show();
             }
+            return true;
         }
-    };
+    });
 }

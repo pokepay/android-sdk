@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.Terminal;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.Terminal;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -16,7 +18,7 @@ public class GetTerminal extends BankRequest {
         return Request.Method.GET;
     }
 
-    public final Terminal send(String accessToken) {
+    public final Terminal send(String accessToken) throws ProcessingError, BankRequestError {
         return super.send(Terminal.class, accessToken);
     }
 }

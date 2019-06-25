@@ -3,8 +3,9 @@ package jp.pokepay.pokepaylib.BankAPI.PrivateMoney;
 import java.util.HashMap;
 import java.util.Map;
 
-import jp.pokepay.pokepaylib.QueryString;
-import jp.pokepay.pokepaylib.Responses.PaginatedPrivateMoney;
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.PaginatedPrivateMoneys;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
@@ -42,7 +43,7 @@ public class SearchPrivateMoneys extends BankRequest {
         }};
     }
 
-    public PaginatedPrivateMoney send(String accessToken) {
-        return super.send(PaginatedPrivateMoney.class, accessToken);
+    public PaginatedPrivateMoneys send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(PaginatedPrivateMoneys.class, accessToken);
     }
 }

@@ -3,6 +3,8 @@ package jp.pokepay.pokepaylib.BankAPI.Terminal;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.ServerKey;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -29,7 +31,7 @@ public class AddTerminalPublicKey extends BankRequest {
         }};
     }
 
-    public final ServerKey send(String accessToken) {
+    public final ServerKey send(String accessToken) throws ProcessingError, BankRequestError {
         return super.send(ServerKey.class, accessToken);
     }
 }

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jp.pokepay.pokepaylib.Response;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class NoContent extends Response {
-
-    public NoContent() {}
-
+public class OAuthError extends Response {
+    public String error;
 }

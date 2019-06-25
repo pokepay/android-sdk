@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jp.pokepay.pokepaylib.Response;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class NoContent extends Response {
-
-    public NoContent() {}
-
+public class BankError extends Response {
+    public String type;
+    public String message;
 }

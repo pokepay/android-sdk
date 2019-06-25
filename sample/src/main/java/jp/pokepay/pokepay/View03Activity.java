@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+
 
 public class View03Activity extends AppCompatActivity {
     LowLevelAPITests lowLevelAPITests;
@@ -38,9 +41,15 @@ public class View03Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        boolean result = lowLevelAPITests.AccountTest();
-                        Message msg = Message.obtain();
-                        msg.obj = "result : " + String.valueOf(result);
+                        final Message msg = Message.obtain();
+                        try {
+                            final String result = lowLevelAPITests.AccountTest();
+                            msg.obj = "AccountTest: \n" + result;
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
+                        }
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -55,9 +64,15 @@ public class View03Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        boolean result = lowLevelAPITests.BillTest();
-                        Message msg = Message.obtain();
-                        msg.obj = "result : " + String.valueOf(result);
+                        final Message msg = Message.obtain();
+                        try {
+                            final String result = lowLevelAPITests.BillTest();
+                            msg.obj = "BillTest: \n" + result;
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
+                        }
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -72,9 +87,15 @@ public class View03Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        boolean result = lowLevelAPITests.CashtrayTest();
-                        Message msg = Message.obtain();
-                        msg.obj = "result : " + String.valueOf(result);
+                        final Message msg = Message.obtain();
+                        try {
+                            final String result = lowLevelAPITests.CashtrayTest();
+                            msg.obj = "CashtrayTest: \n" + result;
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
+                        }
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -89,9 +110,15 @@ public class View03Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        boolean result = lowLevelAPITests.CheckTest();
-                        Message msg = Message.obtain();
-                        msg.obj = "result : " + String.valueOf(result);
+                        final Message msg = Message.obtain();
+                        try {
+                            final String result = lowLevelAPITests.CheckTest();
+                            msg.obj = "CheckTest: \n" + result;
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
+                        }
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -106,9 +133,15 @@ public class View03Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        boolean result = lowLevelAPITests.PrivateMoneyTest();
-                        Message msg = Message.obtain();
-                        msg.obj = "result : " + String.valueOf(result);
+                        final Message msg = Message.obtain();
+                        try {
+                            final String result = lowLevelAPITests.PrivateMoneyTest();
+                            msg.obj = "PrivateMoneyTest: \n" + result;
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
+                        }
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -124,9 +157,15 @@ public class View03Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        boolean result = lowLevelAPITests.TerminalTest(editTextTerminal.getText().toString());
-                        Message msg = Message.obtain();
-                        msg.obj = "result : " + String.valueOf(result);
+                        final Message msg = Message.obtain();
+                        try {
+                            final String result = lowLevelAPITests.TerminalTest(editTextTerminal.getText().toString());
+                            msg.obj = "TerminalTest: \n" + result;
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
+                        }
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -141,9 +180,15 @@ public class View03Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        boolean result = lowLevelAPITests.TransactionTest();
-                        Message msg = Message.obtain();
-                        msg.obj = "result : " + String.valueOf(result);
+                        final Message msg = Message.obtain();
+                        try {
+                            final String result = lowLevelAPITests.TransactionTest();
+                            msg.obj = "TransactionTest: \n" + result;
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
+                        }
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -160,9 +205,15 @@ public class View03Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        boolean result = lowLevelAPITests.UserTest(editTextUser.getText().toString());
-                        Message msg = Message.obtain();
-                        msg.obj = "result : " + String.valueOf(result);
+                        final Message msg = Message.obtain();
+                        try {
+                            final String result = lowLevelAPITests.UserTest(editTextUser.getText().toString());
+                            msg.obj = "UserTest: \n" + result;
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
+                        }
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -177,10 +228,10 @@ public class View03Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        MessagingAPITests messagingAPITests = new MessagingAPITests();
-                        boolean result = messagingAPITests.AllTests();
-                        Message msg = Message.obtain();
-                        msg.obj = "result : " + String.valueOf(result);
+                        final Message msg = Message.obtain();
+                        final MessagingAPITests messagingAPITests = new MessagingAPITests();
+                        final String res = messagingAPITests.AllTests();
+                        msg.obj = "result: " + res;
                         handler.sendMessage(msg);
                     }
                 }).start();
@@ -188,8 +239,9 @@ public class View03Activity extends AppCompatActivity {
         });
     }
 
-    private Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
             if (msg.what == 1) {
                 progressDialog.show();
             } else {
@@ -202,6 +254,7 @@ public class View03Activity extends AppCompatActivity {
                 builder.show();
                 progressDialog.dismiss();
             }
+            return true;
         }
-    };
+    });
 }

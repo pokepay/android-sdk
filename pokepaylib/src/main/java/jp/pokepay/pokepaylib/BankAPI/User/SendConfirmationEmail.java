@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.User;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.NoContent;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -21,7 +23,7 @@ public class SendConfirmationEmail extends BankRequest {
         return Request.Method.PUT;
     }
 
-    public final NoContent send(String accessToken) {
+    public final NoContent send(String accessToken) throws ProcessingError, BankRequestError {
         return super.send(NoContent.class, accessToken);
     }
 }

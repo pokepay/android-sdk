@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.MessagingAPI;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.Message;
 import jp.pokepay.pokepaylib.Responses.MessageAttachment;
 import jp.pokepay.pokepaylib.Request;
@@ -20,7 +22,7 @@ public class ReceiveMessageAttachment extends BankRequest {
         return Request.Method.POST;
     }
 
-    public final MessageAttachment send(String accessToken) {
+    public final MessageAttachment send(String accessToken) throws ProcessingError, BankRequestError {
         return super.send(MessageAttachment.class, accessToken);
     }
 }

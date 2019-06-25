@@ -1,11 +1,10 @@
 package jp.pokepay.pokepaylib.Responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jp.pokepay.pokepaylib.Response;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class Cashtray {
+public class Cashtray extends Response {
     public String id;
     public double amount;
     public String description;
@@ -17,14 +16,5 @@ public class Cashtray {
     public Cashtray() {
         user = new User();
         private_money = new PrivateMoney();
-    }
-
-    public String toString() {
-        try {
-            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return "";
-        }
     }
 }

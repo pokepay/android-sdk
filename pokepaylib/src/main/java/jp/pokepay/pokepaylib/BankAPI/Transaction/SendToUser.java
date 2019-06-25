@@ -3,6 +3,8 @@ package jp.pokepay.pokepaylib.BankAPI.Transaction;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
@@ -40,7 +42,7 @@ public class SendToUser extends BankRequest {
         }};
     }
 
-    public final UserTransaction send(String accessToken) {
+    public final UserTransaction send(String accessToken) throws ProcessingError, BankRequestError {
         return super.send(UserTransaction.class, accessToken);
     }
 }

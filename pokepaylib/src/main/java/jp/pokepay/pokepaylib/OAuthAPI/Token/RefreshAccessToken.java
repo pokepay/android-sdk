@@ -3,6 +3,8 @@ package jp.pokepay.pokepaylib.OAuthAPI.Token;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.AccessToken;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequest;
 import jp.pokepay.pokepaylib.Request;
@@ -37,7 +39,7 @@ public class RefreshAccessToken extends OAuthRequest {
         }};
     }
 
-    public final AccessToken send() {
+    public final AccessToken send() throws ProcessingError, OAuthRequestError {
         return super.send(AccessToken.class);
     }
 }

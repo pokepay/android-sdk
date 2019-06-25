@@ -2,8 +2,11 @@ package jp.pokepay.pokepaylib.OAuthAPI;
 
 import java.util.Map;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.Env;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.Responses.OAuthError;
 
 public abstract class OAuthRequest {
 
@@ -14,10 +17,13 @@ public abstract class OAuthRequest {
         return null;
     }
 
-    protected <T> T send(Class<T> cls) {
+    protected <T> T send(Class<T> cls) throws ProcessingError, OAuthRequestError {
         String url = Env.current().WWW_BASE_URL() + path();
-        T response = Request.send(cls, url, method(), parameters());
-        return response;
+        try {
+            return Request.send(cls, OAuthRequestError.class, url, method(), parameters());
+        } catch (BankRequestError e) {
+            throw new RuntimeException("PANIC! This must not be happened");
+        }
     }
 
 }
