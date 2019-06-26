@@ -41,16 +41,16 @@ new Thread(new Runnable() {
             // => Terminal(id: "45046d7f-aa33-4d26-8cb0-8971aae5a487", name: "", hardwareId: "4e5c5d18-b27f-4b32-a0e0-e8900686fe23", pushToken: nil, user: Pokepay.User(id: "4abed0cc-6431-446f-aaf5-bebc208d84c1", name: "", isMerchant: true), account: Pokepay.Account(id: "1b4533c0-651c-4e79-8444-346419b18c77", name: "", balance: -15357.0, isSuspended: false, privateMoney: Pokepay.PrivateMoney(id: "090bf006-7450-4ed9-8da1-977ea3ff332c", name: "PocketBank", organization: Pokepay.Organization(code: "pocketchange", name: "ポケットチェンジ"), maxBalance: 30000.0, expirationType: "static")))
         } catch (ProcessingError err) {
             // err is Runtime error.
-            // The caller should be wrong.
-            // Fix it.
+            // The caller may be wrong.
+            // Please check your code.
         } catch (BankRequestError err) {
             // err is mainly API Errors
-            // It occurres status code other than 2xx
+            // It occurres when the status code is other than 2xx (in BankAPI, MessagingAPI)
             // err.error => pokepaylib.Responses.BankError{}
             // err.statusCode => int
         } catch (OAuthRequestError err) {
             // err is mainly API Errors
-            // It occurres status code other than 2xx
+            // It occurres when the status code is other than 2xx (in OAuthAPI)
             // err.error => pokepaylib.Responses.OAuthError{}
             // err.statusCode => int
         }
