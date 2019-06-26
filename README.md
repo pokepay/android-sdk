@@ -45,14 +45,14 @@ new Thread(new Runnable() {
             // Fix it.
         } catch (BankRequestError err) {
             // err is mainly API Errors
-            // It occurres status code other than 200.
-            // err.error = BankError{}
-            // err.statusCode = int
+            // It occurres status code other than 2xx
+            // err.error => pokepaylib.Responses.BankError{}
+            // err.statusCode => int
         } catch (OAuthRequestError err) {
             // err is mainly API Errors
-            // It occurres status code other than 200.
-            // err.error = OAuthError{}
-            // err.statusCode = int
+            // It occurres status code other than 2xx
+            // err.error => pokepaylib.Responses.OAuthError{}
+            // err.statusCode => int
         }
     }
 }).start();
