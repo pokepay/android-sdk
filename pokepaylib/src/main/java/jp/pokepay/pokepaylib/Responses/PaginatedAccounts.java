@@ -12,6 +12,6 @@ public class PaginatedAccounts extends Response {
     public Account items[];
 
     public PaginatedAccounts(){
-        items = new Account[2];
+        items = new Account[]{};
     }
 }

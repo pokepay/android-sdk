@@ -11,6 +11,6 @@ public class PaginatedAccountBalances extends Response {
     public String  prev;
     public AccountBalance items[];
     public PaginatedAccountBalances(){
-        items = new AccountBalance[2];
+        items = new AccountBalance[]{};
     }
 }

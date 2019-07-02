@@ -10,14 +10,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.json.JSONObject;
+
 public class JsonConverter {
 
     private static ObjectMapper mapper = new ObjectMapper();
 
     public static String toString(final Map<String, Object> map)
             throws JsonGenerationException, JsonMappingException, IOException {
-        String json = mapper.writeValueAsString(map);
-        return json;
+        final JSONObject j = new JSONObject(map);
+        return j.toString();
     }
 
     public static <T> T toObject(final String jsonString, final Class<T> cls)
