@@ -1,51 +1,40 @@
 package jp.pokepay.pokepaylib.BankAPI.Account;
 
-import jp.pokepay.pokepaylib.Constants;
-import jp.pokepay.pokepaylib.Responses.Account;
-import jp.pokepay.pokepaylib.SendRequest;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CreateAccount {
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.Account;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+
+public class CreateAccount extends BankRequest {
     public String name;
     public String privateMoneyId;
 
-    private Constants constants = new Constants();
-
-    public CreateAccount(String name, String privateMoneyId){
+    public CreateAccount(String name, String privateMoneyId) {
         this.name = name;
         this.privateMoneyId = privateMoneyId;
     }
 
-    public Account procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Account account = (Account)sendRequest.proc(new Account(), "POST", makeJson(), "Authorization", str);
-        return account;
+    protected final String path() {
+        return "/accounts";
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/accounts";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.POST;
     }
 
-    private String makeJson() {
-        boolean flag = false;
-        String str = "{";
-        if(name != null){
-            str += "\"name\":\"" + name;
-            flag = true;
-        }
-        if(privateMoneyId != null) {
-            str += "\", \"private_money_id\":\"" + privateMoneyId;
-            flag = true;
-        }
-        if(flag) {
-            str += "\"}";
-        }
-        else{
-            str += "}";
-        }
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("name", name);
+            put("private_money_id", privateMoneyId);
+        }};
+    }
+
+    public final Account send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(Account.class, accessToken);
     }
 }

@@ -1,44 +1,40 @@
 package jp.pokepay.pokepaylib.BankAPI.Transaction;
 
-import jp.pokepay.pokepaylib.Constants;
-import jp.pokepay.pokepaylib.Responses.Jwt;
-import jp.pokepay.pokepaylib.SendRequest;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CreateTransactionWithJwt {
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.JwtResult;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+
+public class CreateTransactionWithJwt extends BankRequest {
     public String data;
     public String accountId;
 
-    private Constants constants = new Constants();
-
-    public CreateTransactionWithJwt(String data, String accountId){
+    public CreateTransactionWithJwt(String data, String accountId) {
         this.data = data;
         this.accountId = accountId;
     }
 
-    public String procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Jwt jwt = (Jwt)sendRequest.proc(new Jwt(), "POST", makeJson(), "Authorization", str);
-        if(jwt == null){
-            return null;
-        }
-        return jwt.data;
+    protected final String path() {
+        return "/transactions";
     }
 
-
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/transactions";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.POST;
     }
 
-    private String makeJson() {
-        String str = "{\"data\":\"" + data;
-        if(accountId != null) {
-            str += "\", \"account_id\":\"" + accountId;
-        }
-        str += "\"}";
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("data", data);
+            put("account_id", accountId);
+        }};
+    }
+
+    public final JwtResult send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(JwtResult.class, accessToken);
     }
 }

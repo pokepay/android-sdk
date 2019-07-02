@@ -1,66 +1,45 @@
 package jp.pokepay.pokepaylib.BankAPI.User;
 
-import jp.pokepay.pokepaylib.Constants;
-import jp.pokepay.pokepaylib.Responses.PaginatedTransactions;
-import jp.pokepay.pokepaylib.SendRequest;
+import java.util.HashMap;
+import java.util.Map;
 
-public class GetUserTransactions {
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.PaginatedTransactions;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+
+public class GetUserTransactions extends BankRequest {
     public String id;
     public String before;
     public String after;
     public int perPage;
 
-    private Constants constants = new Constants();
-
-    public GetUserTransactions(String id, String before, String after, int perPage){
+    public GetUserTransactions(String id, String before, String after, int perPage) {
         this.id = id;
         this.before = before;
         this.after = after;
         this.perPage = perPage;
     }
 
-    public PaginatedTransactions procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        PaginatedTransactions paginatedTransactions = (PaginatedTransactions)sendRequest.proc(new PaginatedTransactions(), "GET", null, "Authorization", str);
-        return paginatedTransactions;
+    protected final String path() {
+        return "/users/" + id + "/transactions";
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/users/" + id + "/transactions";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.GET;
     }
 
-    private String makeJson(){
-        boolean flag = false;
-        String str = "{";
-        if(before != null){
-            str += "\"before\":\"" + before;
-            flag = true;
-        }
-        if(after != null) {
-            if(flag){
-                str += "\", ";
-            }
-            str += "\"after\":\"" + after;
-            flag = true;
-        }
-        if(perPage >= 0) {
-            if(flag){
-                str += "\", ";
-            }
-            str += "\"per_page\":\"" + perPage;
-            flag = true;
-        }
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("before", before);
+            put("after", after);
+            put("per_page", perPage > 0 ? perPage : null);
+        }};
+    }
 
-        if(flag) {
-            str += "\"}";
-        }
-        else{
-            str += "}";
-        }
-        return str;
+    public final PaginatedTransactions send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(PaginatedTransactions.class, accessToken);
     }
 }

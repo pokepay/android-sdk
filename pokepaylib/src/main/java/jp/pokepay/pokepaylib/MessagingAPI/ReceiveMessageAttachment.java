@@ -1,31 +1,28 @@
 package jp.pokepay.pokepaylib.MessagingAPI;
 
-import jp.pokepay.pokepaylib.Constants;
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.Message;
 import jp.pokepay.pokepaylib.Responses.MessageAttachment;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class ReceiveMessageAttachment {
+public class ReceiveMessageAttachment extends BankRequest {
     public Message message;
 
-    private Constants constants = new Constants();
-
-    public ReceiveMessageAttachment(Message message){
+    public ReceiveMessageAttachment(Message message) {
         this.message = message;
     }
 
-    public MessageAttachment procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        MessageAttachment messageAttachment = (MessageAttachment) sendRequest.proc(new MessageAttachment(), "POST", null, "Authorization", str);
-        return messageAttachment;
+    protected final String path() {
+        return "/messages/" + message.id + "/attachment/receive";
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/messages/" + message.id + "/attachment/receive";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.POST;
     }
 
+    public final MessageAttachment send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(MessageAttachment.class, accessToken);
+    }
 }

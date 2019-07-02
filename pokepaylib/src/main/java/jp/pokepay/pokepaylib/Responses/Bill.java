@@ -1,9 +1,10 @@
 package jp.pokepay.pokepaylib.Responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jp.pokepay.pokepaylib.Response;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class Bill {
+public class Bill extends Response {
     public String id;
     public double amount;
     public String description;
@@ -13,18 +14,8 @@ public class Bill {
     public boolean is_disabled;
     public String token;
 
-    public Bill(){
+    public Bill() {
         user = new User();
         private_money = new PrivateMoney();
-    }
-
-    public void print(){
-        System.out.println("Bill(");
-        System.out.println("id: \"" + id + "\",");
-        System.out.println("amount: \"" + amount + "\",");
-        System.out.println("description: \"" + description + "\",");
-        System.out.print("User: ");
-        user.print();
-        System.out.println("),");
     }
 }

@@ -1,6 +1,6 @@
 package jp.pokepay.pokepaylib;
 
-
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.BankAPI.Bill.CreateBill;
 import jp.pokepay.pokepaylib.BankAPI.Bill.GetBill;
 import jp.pokepay.pokepaylib.BankAPI.Cashtray.CreateCashtray;
@@ -11,7 +11,8 @@ import jp.pokepay.pokepaylib.BankAPI.Terminal.GetTerminal;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithBill;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCashtray;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCheck;
-import jp.pokepay.pokepaylib.OAuthAPI.ExchangeAuthCode;
+import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
+import jp.pokepay.pokepaylib.OAuthAPI.Token.ExchangeAuthCode;
 import jp.pokepay.pokepaylib.Responses.AccessToken;
 import jp.pokepay.pokepaylib.Responses.Bill;
 import jp.pokepay.pokepaylib.Responses.Cashtray;
@@ -20,133 +21,128 @@ import jp.pokepay.pokepaylib.Responses.Terminal;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class Pokepay {
-    public Client client;
-    public OAuthClient oAuthClient;
 
-    private Constants constants = new Constants();
-
-    public Pokepay(){
-
+    public static void setEnv(Env env) {
+        Env.setCurrent(env);
     }
 
-    public void NewClient(String accessToken){
-        NewClient(accessToken, false);
-    }
-    public void NewClient(String accessToken, boolean isMerchant){
-        this.client = new Client(accessToken, isMerchant);
-    }
-
-    public void NewOAuthClient(String clientId, String clientSecret){
-        this.oAuthClient = new OAuthClient(clientId, clientSecret);
-    }
-
-    public class Client {
+    public static class Client {
         private String accessToken;
         private boolean isMerchant;
 
-        public Client(String accessToken, boolean isMerchant){
+        public Client(String accessToken) {
+            this.accessToken = accessToken;
+            this.isMerchant = false;
+        }
+
+        public Client(String accessToken, boolean isMerchant) {
             this.accessToken = accessToken;
             this.isMerchant  = isMerchant;
         }
 
-        public Terminal getTerminalInfo(){
-            GetTerminal getTerminal = new GetTerminal();
-            Terminal terminal = getTerminal.procSend(accessToken);
-            return terminal;
+        public Terminal getTerminalInfo() throws ProcessingError, BankRequestError {
+            return new GetTerminal().send(accessToken);
         }
 
-        public Object getTokenInfo(String token){
-            Object retInfo = null;
-            if(token.startsWith(constants.WWW_BASE_URL + "/cashtrays/")){
-                String uuid = token.substring((constants.API_BASE_URL + "/cashtrays/").length());
-                GetCashtray getCashtray = new GetCashtray(uuid);
-                retInfo = getCashtray.procSend(accessToken);
-
+        public TokenInfo getTokenInfo(String token) throws ProcessingError, BankRequestError {
+            final Env env = Env.current();
+            if (token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")) {
+                final String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
+                return new TokenInfo(
+                    TokenInfo.Type.CASHTRAY,
+                    new GetCashtray(uuid).send(accessToken)
+                );
+            } else if (token.startsWith(env.WWW_BASE_URL() + "/bills/")) {
+                final String uuid = token.substring((env.WWW_BASE_URL() + "/bills/").length());
+                return new TokenInfo(
+                    TokenInfo.Type.BILL,
+                    new GetBill(uuid).send(accessToken)
+                );
+            } else if (token.startsWith(env.WWW_BASE_URL() + "/checks/")) {
+                final String uuid = token.substring((env.WWW_BASE_URL() + "/checks/").length());
+                return new TokenInfo(
+                    TokenInfo.Type.CHECK,
+                    new GetCheck(uuid).send(accessToken)
+                );
+            } else if (token.matches("^[A-Z0-9]{25}$")) {
+                return new TokenInfo(
+                    TokenInfo.Type.POKEREGI,
+                    null
+                );
             }
-            else if(token.startsWith(constants.WWW_BASE_URL + "/bills/")){
-                String uuid = token.substring((constants.WWW_BASE_URL + "/bills/").length());
-                GetBill getBill = new GetBill(uuid);
-                retInfo = getBill.procSend(accessToken);
-            }
-            else if(token.startsWith(constants.WWW_BASE_URL + "/checks/")){
-                String uuid = token.substring((constants.WWW_BASE_URL + "/checks/").length());
-                GetCheck getCheck = new GetCheck(uuid);
-                retInfo = getCheck.procSend(accessToken);
-            }
-            return retInfo;
+            throw new ProcessingError("Unknown token format");
         }
 
-        public UserTransaction scanToken(String token){
-            return scanToken(token, -1);
+        public UserTransaction scanToken(String token) throws ProcessingError, BankRequestError {
+            return scanToken(token, -1, null);
         }
-        public UserTransaction scanToken(String token, double amount) {
+        public UserTransaction scanToken(String token, double amount) throws ProcessingError, BankRequestError {
             return scanToken(token, amount, null);
         }
-        public UserTransaction scanToken(String token, double amount, String accountId){
-            UserTransaction userTransaction = null;
-            if(token.startsWith(constants.WWW_BASE_URL + "/cashtrays/")){
-                String uuid = token.substring((constants.WWW_BASE_URL + "/cashtrays/").length());
+        public UserTransaction scanToken(String token, double amount, String accountId) throws ProcessingError, BankRequestError {
+            final Env env = Env.current();
+            if(token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")){
+                String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
                 CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId);
-                userTransaction = createTransactionWithCashtray.procSend(accessToken);
+                return createTransactionWithCashtray.send(accessToken);
             }
-            else if(token.startsWith(constants.WWW_BASE_URL + "/bills/")){
-                String uuid = token.substring((constants.WWW_BASE_URL + "/bills/").length());
+            else if(token.startsWith(env.WWW_BASE_URL() + "/bills/")){
+                String uuid = token.substring((env.WWW_BASE_URL() + "/bills/").length());
                 CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount);
-                userTransaction = createTransactionWithBill.procSend(accessToken);
+                return createTransactionWithBill.send(accessToken);
             }
-            else if(token.startsWith(constants.WWW_BASE_URL + "/checks/")){
-                String uuid = token.substring((constants.WWW_BASE_URL + "/checks/").length());
+            else if(token.startsWith(env.WWW_BASE_URL() + "/checks/")){
+                String uuid = token.substring((env.WWW_BASE_URL() + "/checks/").length());
                 CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
-                userTransaction = createTransactionWithCheck.procSend(accessToken);
+                return createTransactionWithCheck.send(accessToken);
             }
-            else{
-                //invalid token
-
-            }
-            return userTransaction;
+            throw new ProcessingError("Unknown token format");
         }
 
-        public Object createToken(double amount, String description){
-            return createToken(amount, description,-1);
+        public String createToken(double amount, String description) throws ProcessingError, BankRequestError {
+            return createToken(amount, description,-1, null);
         }
-        public Object createToken(double amount, String description, int expiresIn){
+        public String createToken(double amount, String description, int expiresIn) throws ProcessingError, BankRequestError {
             return createToken(amount, description, expiresIn, null);
         }
-        public Object createToken(double amount, String description, int expiresIn, String accountId){
-            if(isMerchant){
+        public String createToken(double amount, String description, int expiresIn, String accountId) throws ProcessingError, BankRequestError {
+            final Env env = Env.current();
+            if (isMerchant) {
                 CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn);
-                Cashtray cashtray = createCashtray.procSend(accessToken);
-                return cashtray;
-            }
-            else if(amount < 0){
-                CreateBill createBill = new CreateBill(amount*(-1), description, accountId);
-                Bill bill = createBill.procSend(accessToken);
-                return bill;
-            }
-            else{
+                Cashtray cashtray = createCashtray.send(accessToken);
+                return env.WWW_BASE_URL() + "/cashtrays/" + cashtray.id;
+            } else if (amount < 0) {
+                CreateBill createBill = new CreateBill(-amount, description, accountId);
+                Bill bill = createBill.send(accessToken);
+                return env.WWW_BASE_URL() + "/bills/" + bill.id;
+            } else if (amount > 0) {
                 CreateCheck createCheck = new CreateCheck(amount, description, accountId);
-                Check check = createCheck.procSend(accessToken);
-                return check;
+                Check check = createCheck.send(accessToken);
+                return env.WWW_BASE_URL() + "/checks/" + check.id;
+            } else { // amount == 0
+                CreateBill createBill = new CreateBill(-1, description, accountId);
+                Bill bill = createBill.send(accessToken);
+                return env.WWW_BASE_URL() + "/bills/" + bill.id;
             }
         }
     }
 
-    public class OAuthClient {
+    public static class OAuthClient {
         private String clientId;
         private String clientSecret;
 
-        public OAuthClient(String clientId, String clientSecret){
+        public OAuthClient(String clientId, String clientSecret) {
             this.clientId = clientId;
             this.clientSecret = clientSecret;
         }
 
-        public String getAuthorizationUrl(){
-            return constants.WWW_BASE_URL + "/oauth/authorize?client_id=" + clientId + "&response_type=code";
+        public String getAuthorizationUrl() {
+            return Env.current().WWW_BASE_URL() + "/oauth/authorize?client_id=" + clientId + "&response_type=code";
         }
 
-        public AccessToken getAccessToken(String code){
+        public AccessToken getAccessToken(String code) throws ProcessingError, OAuthRequestError {
             ExchangeAuthCode exchangeAuthCode = new ExchangeAuthCode(code, clientId, clientSecret);
-            AccessToken accessToken = exchangeAuthCode.procSend();
+            AccessToken accessToken = exchangeAuthCode.send();
             return accessToken;
         }
     }

@@ -1,10 +1,15 @@
 package jp.pokepay.pokepaylib.MessagingAPI;
 
-import jp.pokepay.pokepaylib.Constants;
-import jp.pokepay.pokepaylib.Responses.Message;
-import jp.pokepay.pokepaylib.SendRequest;
+import java.util.HashMap;
+import java.util.Map;
 
-public class SendMessage {
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.Message;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+
+public class SendMessage extends BankRequest {
     public String toUserId;
     public double amount;
     public String subject;
@@ -12,9 +17,7 @@ public class SendMessage {
     public String fromAccountId;
     public String requestId;
 
-    private Constants constants = new Constants();
-
-    public SendMessage(String toUserId, double amount, String subject, String body, String fromAccountId, String requestId){
+    public SendMessage(String toUserId, double amount, String subject, String body, String fromAccountId, String requestId) {
         this.toUserId = toUserId;
         this.amount = amount;
         this.subject = subject;
@@ -23,34 +26,27 @@ public class SendMessage {
         this.requestId = requestId;
     }
 
-    public Message procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Message message = (Message)sendRequest.proc(new Message(), "POST", makeJson(), "Authorization", str);
-        return message;
+    protected final String path() {
+        return "/messages";
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/messages";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.POST;
     }
 
-    private String makeJson() {
-        String str = "{\"to_user_id\":\"" + toUserId;
-        if(amount > -1){
-            str += "\", \"amount\":\"" + amount;
-        }
-        str += "\", \"subject\":\"" + subject;
-        str += "\", \"body\":\"" + body;
-        if(fromAccountId != null) {
-            str += "\", \"from_account_id\":\"" + fromAccountId;
-        }
-        if(requestId != null) {
-            str += "\", \"_request_id\":\"" + requestId;
-        }
-        str += "\"}";
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("to_user_id", toUserId);
+            put("amount", amount > 0 ? amount : null);
+            put("subject", subject);
+            put("body", body);
+            put("from_account_id", fromAccountId);
+            put("request_id", requestId);
+        }};
+    }
+
+    public final Message send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(Message.class, accessToken);
     }
 }

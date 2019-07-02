@@ -1,56 +1,42 @@
 package jp.pokepay.pokepaylib.BankAPI.Check;
 
-import jp.pokepay.pokepaylib.Constants;
-import jp.pokepay.pokepaylib.Responses.Check;
-import jp.pokepay.pokepaylib.SendRequest;
+import java.util.HashMap;
+import java.util.Map;
 
-public class UpdateCheck {
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.Check;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+
+public class UpdateCheck extends BankRequest {
     public String id;
     public double amount;
     public String description;
 
-    private Constants constants = new Constants();
-
-    public UpdateCheck(String id, double amount, String description){
+    public UpdateCheck(String id, double amount, String description) {
         this.id = id;
         this.amount = amount;
         this.description = description;
     }
 
-
-    public Check procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Check check = (Check)sendRequest.proc(new Check(), "PATCH", makeJson(), "Authorization", str);
-        return check;
+    protected final String path() {
+        return "/checks/" + id;
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/checks/" + id;
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.PATCH;
     }
 
-    private String makeJson() {
-        boolean flag = false;
-        String str = "{";
-        if(amount > 0) {
-            str += "\"amount\":\"" + (int) amount;
-            flag = true;
-        }
-        if(description != null) {
-            str += "\", \"description\":\"" + description;
-            flag = true;
-        }
-
-        if(flag) {
-            str += "\"}";
-        }
-        else{
-            str += "}";
-        }
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("amount", amount >= 0 ? amount : null);
+            put("description", description);
+        }};
     }
 
+    public final Check send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(Check.class, accessToken);
+    }
 }

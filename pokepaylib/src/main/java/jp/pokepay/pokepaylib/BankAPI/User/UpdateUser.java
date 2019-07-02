@@ -1,38 +1,39 @@
 package jp.pokepay.pokepaylib.BankAPI.User;
 
-import jp.pokepay.pokepaylib.Constants;
-import jp.pokepay.pokepaylib.Responses.User;
-import jp.pokepay.pokepaylib.SendRequest;
+import java.util.HashMap;
+import java.util.Map;
 
-public class UpdateUser {
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.User;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+
+public class UpdateUser extends BankRequest {
     public String id;
     public String name;
 
-    private Constants constants = new Constants();
-
-    public UpdateUser(String id, String name){
+    public UpdateUser(String id, String name) {
         this.id   = id;
         this.name = name;
     }
 
-    public User procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        User user = (User) sendRequest.proc(new User(), "PATCH", makeJson(), "Authorization", str);
-        return user;
+    protected final String path() {
+        return "/users/" + id;
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/users/" + id;
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.PATCH;
     }
 
-    private String makeJson() {
-        if(name == null){
-            return "{}";
-        }
-        return "{\"name\":\"" + name + "\"}";
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("name", name);
+        }};
+    }
+
+    public final User send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(User.class, accessToken);
     }
 }

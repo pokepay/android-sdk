@@ -1,9 +1,10 @@
 package jp.pokepay.pokepaylib.Responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jp.pokepay.pokepaylib.Response;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class Message {
+public class Message extends Response {
     public String id;
     public String subject;
     public String body;
@@ -20,21 +21,5 @@ public class Message {
         send_by   = new User();
         send_to   = new User();
         attachment = new MessageAttachment();
-    }
-
-
-    public void print(){
-        System.out.println("PrivateMoney(");
-        System.out.println("id: \"" + id + "\",");
-        System.out.println("subject: \"" + subject + "\",");
-        System.out.println("body: \"" + body + "\",");
-        System.out.print("fromUser: ");
-        from_user.print();
-        System.out.print("toUser: ");
-        to_user.print();
-        System.out.println("isUnread: \"" + is_unread + "\",");
-        System.out.print("attachment: ");
-        attachment.print();
-        System.out.println("),");
     }
 }

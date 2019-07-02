@@ -1,28 +1,27 @@
 package jp.pokepay.pokepaylib.BankAPI.Cashtray;
 
-import jp.pokepay.pokepaylib.Constants;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.NoContent;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class DeleteCashtray {
+public class DeleteCashtray extends BankRequest {
     public String id;
 
-    private Constants constants = new Constants();
-
-    public DeleteCashtray(String id){
+    public DeleteCashtray(String id) {
         this.id = id;
     }
 
-    public String procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        String ret = (String)sendRequest.proc(new String(), "DELETE", null, "Authorization", str);
-        return ret;
+    protected final String path() {
+        return "/cashtrays/" + id;
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/cashtrays/" + id;
+    protected final Request.Method method() {
+        return Request.Method.DELETE;
+    }
 
-        return url;
+    public final NoContent send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(NoContent.class, accessToken);
     }
 }

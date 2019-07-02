@@ -1,46 +1,43 @@
 package jp.pokepay.pokepaylib.BankAPI.Cashtray;
 
-import jp.pokepay.pokepaylib.Constants;
-import jp.pokepay.pokepaylib.Responses.Cashtray;
-import jp.pokepay.pokepaylib.SendRequest;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CreateCashtray {
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.Cashtray;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+
+public class CreateCashtray extends BankRequest {
     public double amount;
     public String description;
     public int expiresIn;
 
-    private Constants constants = new Constants();
-
-    public CreateCashtray(double amount, String description, int expiresIn){
+    public CreateCashtray(double amount, String description, int expiresIn) {
         this.amount = amount;
         this.description = description;
         this.expiresIn = expiresIn;
     }
 
-    public Cashtray procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Cashtray cashtray = (Cashtray)sendRequest.proc(new Cashtray(), "POST", makeJson(), "Authorization", str);
-        return cashtray;
+    protected final String path() {
+        return "/cashtrays";
     }
 
-    // ToDo:サーバに沿ったurlの作り方を調べる
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/cashtrays";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.POST;
     }
 
-    private String makeJson() {
-        String str = "{\"amount\":\"" + (int)amount;
-        if(description != null) {
-            str += "\", \"description\":\"" + description;
-        }
-        if(expiresIn != -1){
-            str += "\", \"expires_in\":\"" + expiresIn;
-        }
-        str += "\"}";
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("amount", amount > 0 ? amount : null);
+            put("description", description);
+            put("expires_in", expiresIn >= 0 ? expiresIn : null);
+        }};
+    }
+
+    public final Cashtray send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(Cashtray.class, accessToken);
     }
 }

@@ -1,56 +1,42 @@
 package jp.pokepay.pokepaylib.BankAPI.Bill;
 
-import jp.pokepay.pokepaylib.Constants;
-import jp.pokepay.pokepaylib.Responses.Bill;
-import jp.pokepay.pokepaylib.SendRequest;
+import java.util.HashMap;
+import java.util.Map;
 
-public class UpdateBill {
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.Bill;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+
+public class UpdateBill extends BankRequest {
     public String id;
     public double amount;
     public String description;
 
-    private Constants constants = new Constants();
-
-    public UpdateBill(String id, double amount, String description){
+    public UpdateBill(String id, double amount, String description) {
         this.id = id;
         this.amount = amount;
         this.description = description;
     }
 
-
-    public Bill procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Bill bill = (Bill)sendRequest.proc(new Bill(), "PATCH", makeJson(), "Authorization", str);
-        return bill;
+    protected final String path() {
+        return "/bills/" + id;
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/bills/" + id;
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.PATCH;
     }
 
-    private String makeJson() {
-        boolean flag = false;
-        String str = "{";
-        if(amount >= 0) {
-            str += "\"amount\":\"" + (int) amount;
-            flag = true;
-        }
-        if(description != null) {
-            str += "\", \"description\":\"" + description;
-            flag = true;
-        }
-
-        if(flag) {
-            str += "\"}";
-        }
-        else{
-            str += "}";
-        }
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("amount", amount >= 0 ? amount : null);
+            put("description", description);
+        }};
     }
 
+    public final Bill send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(Bill.class, accessToken);
+    }
 }

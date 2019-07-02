@@ -1,7 +1,6 @@
 package jp.pokepay.pokepaylib.Pokeregi;
 
 import android.annotation.TargetApi;
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -15,16 +14,9 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.ParcelUuid;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.res.TypedArrayUtils;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import java.nio.charset.StandardCharsets;
@@ -43,6 +35,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithJwt;
+import jp.pokepay.pokepaylib.Responses.JwtResult;
 
 import static android.content.ContentValues.TAG;
 import static java.lang.Thread.sleep;
@@ -173,24 +166,21 @@ public class BLEController {
             System.out.println(Arrays.toString(tmpBytes) + ", " + tmpBytes.length + ", " + Arrays.toString(readJwt) + ", " + readJwt.length);
             byte[] tmp = readJwt.clone();
             readJwt = new byte[tmp.length + tmpBytes.length];
-            for(int i=0;i<tmp.length;i++){
+            for (int i=0;i<tmp.length;i++) {
                 readJwt[i] = tmp[i];
             }
-            for(int i=0;i<tmpBytes.length;i++){
+            for (int i=0;i<tmpBytes.length;i++) {
                 readJwt[tmp.length+i] = tmpBytes[i];
             }
-            if(tmpBytes.length < 500){
+            if (tmpBytes.length < 500) {
                 arrayIdx++;
                 String jwt = new String(decodeAES128(readJwt), StandardCharsets.UTF_8);
                 CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null);
-                String result = createTransactionWithJwt.procSend(accessToken);
-                System.out.println(result);
-                if(result == null){
-                    arrayList.get(arrayIdx).setValue(encodeAES128("NG".getBytes()));
-                    System.out.println("NG");
-                }
-                else {
-                    writeJwt = encodeAES128(result.getBytes());
+                try {
+                    JwtResult jwtResult = createTransactionWithJwt.send(accessToken);
+                    String data = jwtResult.data;
+                    // System.out.println(data);
+                    writeJwt = encodeAES128(data.getBytes());
                     int len = writeJwt.length - writeIdx*500;
                     if(len >= 500){
                         len = 500;
@@ -201,13 +191,14 @@ public class BLEController {
                     }
                     writeIdx++;
                     arrayList.get(arrayIdx).setValue(value);
-                    //arrayList.get(arrayIdx).setValue(writeJwt);
+                } catch (Exception e) {
+                    arrayList.get(arrayIdx).setValue(encodeAES128("NG".getBytes()));
+                    System.out.println("NG");
                 }
                 System.out.println(writeJwt.length);
                 System.out.println(arrayList.get(arrayIdx).getUuid());
                 gatt.writeCharacteristic(arrayList.get(arrayIdx));
-            }
-            else{
+            } else {
                 gatt.readCharacteristic(arrayList.get(arrayIdx));
             }
         }

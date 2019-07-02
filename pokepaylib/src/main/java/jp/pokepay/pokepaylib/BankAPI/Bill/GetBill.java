@@ -1,29 +1,27 @@
 package jp.pokepay.pokepaylib.BankAPI.Bill;
 
-import jp.pokepay.pokepaylib.Constants;
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.Bill;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class GetBill {
+public class GetBill extends BankRequest {
     public String id;
 
-    private Constants constants = new Constants();
-
-    public GetBill(String id){
+    public GetBill(String id) {
         this.id = id;
     }
 
-    public Bill procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Bill bill = (Bill)sendRequest.proc(new Bill(), "GET", null, "Authorization", str);
-        return bill;
+    protected final String path() {
+        return "/bills/" + id;
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/bills/" + id;
+    protected final Request.Method method() {
+        return Request.Method.GET;
+    }
 
-        return url;
+    public final Bill send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(Bill.class, accessToken);
     }
 }

@@ -1,9 +1,10 @@
 package jp.pokepay.pokepaylib.Responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jp.pokepay.pokepaylib.Response;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class UserTransaction {
+public class UserTransaction extends Response {
     public String  id;
     public User    user;
     public double  balance;
@@ -19,21 +20,5 @@ public class UserTransaction {
     public UserTransaction(){
         user = new User();
         account = new Account();
-    }
-
-    public void print(){
-        System.out.println("UserTransaction(");
-        System.out.println("id: \"" + id + "\",");
-        System.out.print("user: ");
-        user.print();
-        System.out.println("balance: \"" + balance + "\",");
-        System.out.println("amount: \"" + amount + "\",");
-        System.out.println("moneyAmount: \"" + money_amount + "\",");
-        System.out.println("pointAmount: \"" + point_amount + "\",");
-        System.out.print("account: ");
-        account.print();
-        System.out.println("description: \"" + description + "\",");
-        System.out.println("doneAt: \"" + done_at + "\",");
-        System.out.println("),");
     }
 }

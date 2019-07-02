@@ -1,26 +1,24 @@
 package jp.pokepay.pokepaylib.BankAPI.Terminal;
 
-import jp.pokepay.pokepaylib.Constants;
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.Terminal;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class GetTerminal {
-    Constants constants = new Constants();
+public class GetTerminal extends BankRequest {
 
-    public GetTerminal(){
+    public GetTerminal(){}
+
+    protected final String path() {
+        return "/terminal";
     }
 
-    public Terminal procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        Terminal terminal = (Terminal)sendRequest.proc(new Terminal(), "GET", null, "Authorization", str);
-        return terminal;
+    protected final Request.Method method() {
+        return Request.Method.GET;
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/terminal";
-
-        return url;
+    public final Terminal send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(Terminal.class, accessToken);
     }
 }

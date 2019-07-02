@@ -4,7 +4,8 @@ package jp.pokepay.pokepay;
 import jp.pokepay.pokepaylib.BankAPI.Account.CreateAccount;
 import jp.pokepay.pokepaylib.BankAPI.Account.GetAccount;
 import jp.pokepay.pokepaylib.BankAPI.Account.GetAccountTransactions;
-import jp.pokepay.pokepaylib.BankAPI.Account.GetBalances;
+import jp.pokepay.pokepaylib.BankAPI.Account.GetAccountBalances;
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.BankAPI.Bill.CreateBill;
 import jp.pokepay.pokepaylib.BankAPI.Bill.DeleteBill;
 import jp.pokepay.pokepaylib.BankAPI.Bill.GetBill;
@@ -17,7 +18,7 @@ import jp.pokepay.pokepaylib.BankAPI.Check.CreateCheck;
 import jp.pokepay.pokepaylib.BankAPI.Check.DeleteCheck;
 import jp.pokepay.pokepaylib.BankAPI.Check.GetCheck;
 import jp.pokepay.pokepaylib.BankAPI.Check.UpdateCheck;
-import jp.pokepay.pokepaylib.BankAPI.PrivateMoney.SearchPrivateMoney;
+import jp.pokepay.pokepaylib.BankAPI.PrivateMoney.SearchPrivateMoneys;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.AddTerminalPublicKey;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.GetTerminal;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.UpdateTerminal;
@@ -29,13 +30,17 @@ import jp.pokepay.pokepaylib.BankAPI.User.GetUserAccounts;
 import jp.pokepay.pokepaylib.BankAPI.User.GetUserTransactions;
 import jp.pokepay.pokepaylib.BankAPI.User.RegisterUserEmail;
 import jp.pokepay.pokepaylib.BankAPI.User.SendConfirmationEmail;
+import jp.pokepay.pokepaylib.Env;
+import jp.pokepay.pokepaylib.Pokepay;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.Account;
 import jp.pokepay.pokepaylib.Responses.Bill;
 import jp.pokepay.pokepaylib.Responses.Cashtray;
 import jp.pokepay.pokepaylib.Responses.Check;
+import jp.pokepay.pokepaylib.Responses.NoContent;
 import jp.pokepay.pokepaylib.Responses.PaginatedAccountBalances;
 import jp.pokepay.pokepaylib.Responses.PaginatedAccounts;
-import jp.pokepay.pokepaylib.Responses.PaginatedPrivateMoney;
+import jp.pokepay.pokepaylib.Responses.PaginatedPrivateMoneys;
 import jp.pokepay.pokepaylib.Responses.PaginatedTransactions;
 import jp.pokepay.pokepaylib.Responses.ServerKey;
 import jp.pokepay.pokepaylib.Responses.Terminal;
@@ -45,281 +50,219 @@ public class LowLevelAPITests {
     private String accessToken1 = "7mL_asUSVHUZhW11nDJzlm-Xa7-01VjgVBPi8Hd43UAqYpMCEfEuzLPGWfKr0VU9";// 購入店を想定
     private String accessToken2 = "oNTvWHFqv512JJQhUVgAwCx7LphHVpHFAp_jDMQ62THIN9iOwNfUXA9nMkI66xoA";// 購入客を想定(残高あり)
 
-    public LowLevelAPITests(){
-
+    public LowLevelAPITests() {
+        Pokepay.setEnv(Env.DEVELOPMENT);
     }
 
     // 全てのテストを一括で行う //
-    public void AllTests(){
-        System.out.println("AccoutTest:" + AccountTest());
-        System.out.println("BillTest:" + BillTest());
-        System.out.println("CashtrayTest:" + CashtrayTest());
-        System.out.println("CheckTest:" + CheckTest());
-        System.out.println("PrivateMoneyTest:" + PrivateMoneyTest());
-        System.out.println("TerminalTest:" + TerminalTest("pubkey"));
-        System.out.println("TransactionTest:" + TransactionTest());
-        System.out.println("UserTest:" + UserTest("xxxxxxxxx@xxxx.xxx"));
+    public void AllTests() {
+        try {
+            System.out.println("AccoutTest:" + AccountTest());
+            System.out.println("BillTest:" + BillTest());
+            System.out.println("CashtrayTest:" + CashtrayTest());
+            System.out.println("CheckTest:" + CheckTest());
+            System.out.println("PrivateMoneyTest:" + PrivateMoneyTest());
+            System.out.println("TerminalTest:" + TerminalTest("pubkey"));
+            System.out.println("TransactionTest:" + TransactionTest());
+            System.out.println("UserTest:" + UserTest("xxxxxxxxx@xxxx.xxx"));
+        } catch (BankRequestError e) {
+            System.out.println("Oh no BankRequstError occurred");
+            System.out.println(e.toString());
+        } catch (ProcessingError e){
+            System.out.println("Oh no ProcessingError occurred");
+            System.out.println(e.toString());
+        }
     }
 
 
-    public boolean AccountTest(){
+    public String AccountTest() throws BankRequestError, ProcessingError {
         // privateMoneyIdでアカウントの作成 //
         CreateAccount createAccount = new CreateAccount("accountTest", "216d1e39-3acb-454e-9fbf-74c33c5bfd5d");
-        Account account = createAccount.procSend(accessToken1);
-        if(account == null){
-            return false;
-        }
+        Account account = createAccount.send(accessToken1);
         // アカウントの確認 //
         GetAccount getAccount = new GetAccount(account.id);
-        account = getAccount.procSend(accessToken1);
-        if(account == null){
-            return false;
-        }
+        account = getAccount.send(accessToken1);
         // アカウントidからTransactionの取得 //
         GetAccountTransactions getAccountTransactions = new GetAccountTransactions(account.id, null, null, 10);
-        PaginatedTransactions paginatedTransactions =  getAccountTransactions.procSend(accessToken1);
-        if(paginatedTransactions == null){
-            return false;
-        }
+        PaginatedTransactions paginatedTransactions = getAccountTransactions.send(accessToken1);
         // アカウントidからBalancesの確認 //
-        GetBalances getBalances = new GetBalances(account.id, null, null, 10);
-        PaginatedAccountBalances paginatedAccountBalances =  getBalances.procSend(accessToken1);
-        if(paginatedAccountBalances == null){
-            return false;
-        }
-        return true;
+        GetAccountBalances getBalances = new GetAccountBalances(account.id, null, null, 10);
+        PaginatedAccountBalances paginatedAccountBalances = getBalances.send(accessToken1);
+        return "OK";
     }
 
-    public boolean BillTest(){
+    public String BillTest() throws BankRequestError, ProcessingError {
         // Billの作成 //
         CreateBill createBill = new CreateBill(1, "bill test", null);
-        Bill bill = createBill.procSend(accessToken1);
-        if(bill == null){
-            return false;
-        }
+        Bill bill = createBill.send(accessToken1);
         // Billの確認 //
         GetBill getBill = new GetBill(bill.id);
-        bill = getBill.procSend(accessToken1);
-        if(bill == null){
-            return false;
-        }
+        bill = getBill.send(accessToken1);
         // Billの支払いを2円に変更 //
         UpdateBill updateBill = new UpdateBill(bill.id, 2, "bill update");
-        bill = updateBill.procSend(accessToken1);
-        if(bill == null){
-            return false;
-        }
+        bill = updateBill.send(accessToken1);
         // Billの消去 //
         DeleteBill deleteBill = new DeleteBill(bill.id);
-        String str = deleteBill.procSend(accessToken1);
-        if(str == null){
-            return false;
-        }
+        NoContent nc = deleteBill.send(accessToken1);
         // 消去できているかの確認 //
         getBill = new GetBill(bill.id);
-        bill = getBill.procSend(accessToken1);
-        if(bill == null){
-            return true;
-        }
-        return false;
+        bill = getBill.send(accessToken1);
+        return "OK";
     }
 
-    public boolean CashtrayTest(){
+    public String CashtrayTest() throws BankRequestError, ProcessingError {
         // Cashtrayの作成 //
         CreateCashtray createCashtray = new CreateCashtray(1, "cashtray test", -1);
-        Cashtray cashtray = createCashtray.procSend(accessToken2);
-        if(cashtray == null){
-            return false;
-        }
+        Cashtray cashtray = createCashtray.send(accessToken2);
+        System.out.println("cashtray created " + cashtray.id);
         // Cashtrayの確認 //
         GetCashtray getCashtray = new GetCashtray(cashtray.id);
-        cashtray = getCashtray.procSend(accessToken2);
-        if(cashtray == null){
-            return false;
-        }
+        cashtray = getCashtray.send(accessToken2);
+        System.out.println("cashtray got " + cashtray.id);
         // Cashtrayの支払いを2円に変更 //
         UpdateCashtray updateCashtray = new UpdateCashtray(cashtray.id, 2, "cashtray update", -1);
-        cashtray = updateCashtray.procSend(accessToken2);
-        if(cashtray == null){
-            return false;
-        }
+        cashtray = updateCashtray.send(accessToken2);
+        System.out.println("cashtray updated " + cashtray.id);
         // Cashtrayの消去 //
         DeleteCashtray deleteCashtray = new DeleteCashtray(cashtray.id);
-        String str = deleteCashtray.procSend(accessToken2);
-        if(str == null){
-            return false;
-        }
-
+        NoContent nc = deleteCashtray.send(accessToken2);
+        System.out.println("cashtray deleted " + cashtray.id);
         // 消去できているかの確認 //
         getCashtray = new GetCashtray(cashtray.id);
-        cashtray = getCashtray.procSend(accessToken2);
-        if(cashtray == null){
-            return true;
+        try {
+            cashtray = getCashtray.send(accessToken2);
+            // If it success its wrong.
+            throw new ProcessingError("cashtray delete failed " + cashtray.toString());
+        } catch (BankRequestError e) {
+            if (e.statusCode == 404) {
+                System.out.println("cashtray NotFound " + cashtray.id);
+                return "OK";
+            }
+            throw e;
         }
-        return false;
+
     }
 
-    public boolean CheckTest(){
+    public String CheckTest() throws BankRequestError, ProcessingError {
         // Checkの作成 //
         CreateCheck createCheck = new CreateCheck(1, "check test", null);
-        Check check = createCheck.procSend(accessToken1);
-        if(check == null){
-            return false;
-        }
+        Check check = createCheck.send(accessToken1);
+        System.out.println("check created " + check.id);
         // Checkの確認 //
         GetCheck getCheck = new GetCheck(check.id);
-        check = getCheck.procSend(accessToken1);
-        if(check == null){
-            return false;
+        check = getCheck.send(accessToken1);
+        if (check.is_disabled == true) {
+            throw new ProcessingError("Disabled check");
         }
+        System.out.println("check got " + check.id);
         // Checkの支払いを2円に変更 //
         UpdateCheck updateCheck = new UpdateCheck(check.id, 2, "check update");
-        check = updateCheck.procSend(accessToken1);
-        if(check == null){
-            return false;
+        check = updateCheck.send(accessToken1);
+        if (check.amount != 2.0) {
+            throw new ProcessingError("Update failed");
         }
+        System.out.println("check updated " + check.id);
         // Checkの消去 //
         DeleteCheck deleteCheck = new DeleteCheck(check.id);
-        String ret = deleteCheck.procSend(accessToken1);
-        if(ret == null) {
-            return false;
-        }
-
+        NoContent nc = deleteCheck.send(accessToken1);
+        System.out.println("check deleted" + check.id);
         // 消去できているかの確認 //
         getCheck = new GetCheck(check.id);
-        check = getCheck.procSend(accessToken1);
-        if(check == null){
-            return true;
+        check = getCheck.send(accessToken1);
+        if (check.is_disabled == false) {
+            throw new ProcessingError("Disabling failed");
         }
-        return false;
+        return "OK";
     }
 
-    public boolean PrivateMoneyTest(){
+    public String PrivateMoneyTest() throws BankRequestError, ProcessingError {
         // フィルタ無しで全て確認 //
-        SearchPrivateMoney searchPrivateMoney = new SearchPrivateMoney(null, true, null, null, 30);
-        PaginatedPrivateMoney paginatedPrivateMoney = searchPrivateMoney.procSend(accessToken2);
-        if(paginatedPrivateMoney == null){
-            return false;
-        }
+        SearchPrivateMoneys searchPrivateMoneys = new SearchPrivateMoneys(null, true, null, null, 30);
+        PaginatedPrivateMoneys paginatedPrivateMoney = searchPrivateMoneys.send(accessToken2);
         // フィルタあり（部分一致）で確認 //
-        searchPrivateMoney = new SearchPrivateMoney("竈コイ", true, null, null, 30);
-        paginatedPrivateMoney = searchPrivateMoney.procSend(accessToken2);
-        if(paginatedPrivateMoney == null){
-            return false;
-        }
-        return true;
+        searchPrivateMoneys = new SearchPrivateMoneys("コイン", true, null, null, 30);
+        paginatedPrivateMoney = searchPrivateMoneys.send(accessToken2);
+        System.out.println("PrivateMoney:\n" + paginatedPrivateMoney.toString());
+        return "OK";
     }
 
-
-    public boolean TerminalTest(String pubkey){
+    public String TerminalTest(String pubkey) throws BankRequestError, ProcessingError {
         // TerminalInfoの取得 //
         GetTerminal getTerminal = new GetTerminal();
-        Terminal terminal =  getTerminal.procSend(accessToken1);
-        if(terminal == null){
-            return false;
-        }
+        Terminal terminal =  getTerminal.send(accessToken1);
         // Terminalの名前とトークンを変更 //
         UpdateTerminal updateTerminal = new UpdateTerminal(terminal.account.id , "term00", "hoge");
-        terminal = updateTerminal.procSend(accessToken1);
-        if(terminal == null){
-            return false;
-        }
+        terminal = updateTerminal.send(accessToken1);
         // pubkeyの追加　　　注意：pubkeyは毎回違うものを入れる必要あり //
         AddTerminalPublicKey addTerminalPublicKey = new AddTerminalPublicKey(pubkey);
-        ServerKey key = addTerminalPublicKey.procSend(accessToken1);
-        if(key == null){
-            return false;
-        }
-
-        return true;
+        ServerKey key = addTerminalPublicKey.send(accessToken1);
+        return "OK";
     }
 
-    public boolean TransactionTest(){
+    public String TransactionTest() throws BankRequestError, ProcessingError {
+        // FIXME!
         UserTransaction userTransaction = null;
-        CancelTransaction cancelTransaction = null;
         String ret = null;
-
         // TerminalInfoの取得 //
         GetTerminal getTerminal = new GetTerminal();
-        Terminal terminal =  getTerminal.procSend(accessToken2);
-        if(terminal == null){
-            return false;
-        }
-
+        Terminal terminal = getTerminal.send(accessToken2);
+        System.out.println("terminal info got " + terminal.toString());
         // Billの作成 //
         CreateBill createBill = new CreateBill(1, "transaction test", null);
-        Bill bill = createBill.procSend(accessToken1);
-        if(bill == null){
-            return false;
-        }
+        Bill bill = createBill.send(accessToken1);
+        System.out.println("bill created " + createBill.toString());
         // 上記のBillで取引を作成 //
         CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(bill.id, null, 1);
-        userTransaction = createTransactionWithBill.procSend(accessToken2);
-        if(userTransaction == null) {
-            return false;
-        }
+        userTransaction = createTransactionWithBill.send(accessToken2);
+        System.out.println("transaction created " + userTransaction.toString());
         // 取引の確認 //
         GetTransaction getTransaction = new GetTransaction(userTransaction.id);
-        userTransaction = getTransaction.procSend(accessToken2);
-        if(userTransaction == null){
-            return false;
-        }
-        // 取引のキャンセル //
-        cancelTransaction = new CancelTransaction(userTransaction.id);
-        ret = cancelTransaction.procSend(accessToken2);
-        if(!ret.equals("204")){
-            return false;
-        }
+        userTransaction = getTransaction.send(accessToken2);
+        System.out.println("transaction got " + userTransaction.toString());
+        // 取引のキャンセル
+        final CancelTransaction cancelTransaction = new CancelTransaction(userTransaction.id);
+        NoContent nc = cancelTransaction.send(accessToken1);
+        System.out.println("transaction canceled " + userTransaction.toString());
         // キャンセルできたか確認 //
         getTransaction = new GetTransaction(userTransaction.id);
-        userTransaction = getTransaction.procSend(accessToken2);
-        if(userTransaction != null){
-            return false;
-        }
-        return true;
+        userTransaction = getTransaction.send(accessToken2);
+        System.out.println("transaction canceled checked" + userTransaction.toString());
+        return "OK";
     }
 
-    public boolean UserTest(String email){
+    public String UserTest(String email) throws BankRequestError, ProcessingError {
+        // FIXME!
         String str;
         // Terminalの取得 //
         GetTerminal getTerminal = new GetTerminal();
-        Terminal terminal = getTerminal.procSend(accessToken2);
-        if(terminal == null){
-            return false;
-        }
+        Terminal terminal = getTerminal.send(accessToken2);
+        System.out.println("terminal info got " + terminal.toString());
         // TerminalからuserIdを取得してUserの確認 //
         GetUserAccounts getUserAccounts = new GetUserAccounts(terminal.user.id,null,null,1);
-        PaginatedAccounts paginatedAccounts = getUserAccounts.procSend(accessToken2);
-        if(paginatedAccounts == null){
-            return false;
-        }
+        PaginatedAccounts paginatedAccounts = getUserAccounts.send(accessToken2);
+        System.out.println("account info got " + paginatedAccounts.toString());
         // TerminalからUserIdを取得してTransactionsの確認 //
         GetUserTransactions getUserTransactions = new GetUserTransactions(terminal.user.id,null,null,1);
-        PaginatedTransactions paginatedTransactions = getUserTransactions.procSend(accessToken2);
-        if(paginatedTransactions == null){
-            return false;
-        }
-        // アドレスの登録
-        RegisterUserEmail registerUserEmail = new RegisterUserEmail(email);
-        str = registerUserEmail.procSend(accessToken2);
-        if(!str.equals("500")){
-            return false;
-        }
-        // 確認メールの送信 //
-        SendConfirmationEmail sendConfirmationEmail = new SendConfirmationEmail(terminal.user.id, email);
-        str = sendConfirmationEmail.procSend(accessToken2);
-        if(!str.equals("204")){
-            return false;
-        }
-
+        PaginatedTransactions paginatedTransactions = getUserTransactions.send(accessToken2);
+        System.out.println("transactions got " + paginatedTransactions.toString());
         // 登録アドレスの削除 //
         DeleteUserEmail deleteUserEmail = new DeleteUserEmail(terminal.user.id, email);
-        str = deleteUserEmail.procSend(accessToken2);
-        if(!str.equals("204")) {
-            return false;
-        }
+        NoContent nc = deleteUserEmail.send(accessToken2);
+        System.out.println("mail delete");
+        // アドレスの登録
+        RegisterUserEmail registerUserEmail = new RegisterUserEmail(email);
+        nc = registerUserEmail.send(accessToken2);
+        System.out.println("added Email Address");
+        // 確認メールの送信 //
+        SendConfirmationEmail sendConfirmationEmail = new SendConfirmationEmail(terminal.user.id, email);
+        nc = sendConfirmationEmail.send(accessToken2);
+        System.out.println("Check mail sent");
+        // 登録アドレスの削除 //
+        deleteUserEmail = new DeleteUserEmail(terminal.user.id, email);
+        nc = deleteUserEmail.send(accessToken2);
+        System.out.println("mail delete");
         // この後にメール承認必要 //
-        return true;
+        return "OK";
     }
 
 }

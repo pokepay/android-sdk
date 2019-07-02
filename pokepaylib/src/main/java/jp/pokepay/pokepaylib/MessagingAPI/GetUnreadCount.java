@@ -1,28 +1,25 @@
 package jp.pokepay.pokepaylib.MessagingAPI;
 
-import jp.pokepay.pokepaylib.Constants;
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.MessageUnreadCount;
-import jp.pokepay.pokepaylib.SendRequest;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 
-public class GetUnreadCount {
-    private Constants constants = new Constants();
+public class GetUnreadCount extends BankRequest {
 
-    public GetUnreadCount(){
+    public GetUnreadCount() {}
+
+    protected final String path() {
+        return "/messages/unread-count";
     }
 
-    public MessageUnreadCount procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        MessageUnreadCount messageUnreadCount = (MessageUnreadCount) sendRequest.proc(new MessageUnreadCount(), "GET", null, "Authorization", str);
-        return messageUnreadCount;
+    protected final Request.Method method() {
+        return Request.Method.GET;
     }
 
-
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/messages/unread-count";
-
-        return url;
+    public final MessageUnreadCount send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(MessageUnreadCount.class, accessToken);
     }
 }
 

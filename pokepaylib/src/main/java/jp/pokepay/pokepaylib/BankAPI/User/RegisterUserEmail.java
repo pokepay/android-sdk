@@ -1,34 +1,37 @@
 package jp.pokepay.pokepaylib.BankAPI.User;
 
-import jp.pokepay.pokepaylib.Constants;
-import jp.pokepay.pokepaylib.SendRequest;
+import java.util.HashMap;
+import java.util.Map;
 
-public class RegisterUserEmail {
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.NoContent;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+
+public class RegisterUserEmail extends BankRequest {
     public String token;
 
-    private Constants constants = new Constants();
-
-    public RegisterUserEmail(String token){
+    public RegisterUserEmail(String token) {
         this.token = token;
     }
 
-    public String procSend(String accessToken){
-        String url = makeURL();
-        SendRequest sendRequest = new SendRequest(url);
-        String str = constants.AUTHORIZATION + accessToken;
-        String ret = (String)sendRequest.proc(new String(), "POST", makeJson(), "Authorization", str);
-        return ret;
+    protected final String path() {
+        return "/emails";
     }
 
-    private String makeURL(){
-        String url = constants.API_BASE_URL + "/emails";
-
-        return url;
+    protected final Request.Method method() {
+        return Request.Method.POST;
     }
 
-    private String makeJson() {
-        String str = "{\"token\":\"" + token;
-        str += "\"}";
-        return str;
+    @Override
+    protected final Map<String, Object> parameters() {
+        return new HashMap<String, Object>() {{
+            put("token", token);
+        }};
+    }
+
+    public final NoContent send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(NoContent.class, accessToken);
     }
 }
