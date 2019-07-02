@@ -31,7 +31,7 @@ public class CreateCashtray extends BankRequest {
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
-            put("amount", amount >= 0 ? amount : null);
+            put("amount", amount > 0 ? amount : null);
             put("description", description);
             put("expires_in", expiresIn >= 0 ? expiresIn : null);
         }};

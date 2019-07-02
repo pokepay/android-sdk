@@ -31,7 +31,7 @@ public class CreateBill extends BankRequest {
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
-            put("amount", amount >= 0 ? amount : null);
+            put("amount", amount > 0 ? amount : null);
             put("description", description);
             put("account_id", accountId);
         }};
