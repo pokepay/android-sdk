@@ -302,7 +302,7 @@ public class LowLevelAPITests {
         System.out.println("客のアクセストークンでCpmをget、前のCpmがinvalidなことを確認");
         try {
             cpmToken = getCpmToken.send(customerAccessToken);
-            // throw new ProcessingError("this call should be fail " + getCpmToken.cpmToken);
+            throw new ProcessingError("this call should be fail " + getCpmToken.cpmToken);
         } catch (BankRequestError e) {
             if (e.statusCode != 404) {
                 throw e;
