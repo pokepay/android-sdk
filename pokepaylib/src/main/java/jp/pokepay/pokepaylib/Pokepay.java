@@ -81,33 +81,30 @@ public class Pokepay {
         }
 
         public UserTransaction scanToken(String token) throws ProcessingError, BankRequestError {
-            return scanToken(token, -1, null);
+            return scanToken(token, -1);
         }
         public UserTransaction scanToken(String token, double amount) throws ProcessingError, BankRequestError {
-            return scanToken(token, amount, null);
-        }
-        public UserTransaction scanToken(String token, double amount, String accountId) throws ProcessingError, BankRequestError {
             final Env env = Env.current();
             if (token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
-                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId);
+                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, null);
                 return createTransactionWithCashtray.send(accessToken);
             }
             else if (token.startsWith(env.WWW_BASE_URL() + "/bills/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/bills/").length());
-                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount);
+                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, null, amount);
                 return createTransactionWithBill.send(accessToken);
             }
             else if (token.startsWith(env.WWW_BASE_URL() + "/checks/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/checks/").length());
-                final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
+                final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, null);
                 return createTransactionWithCheck.send(accessToken);
             }
             else if (token.matches("^[A-Z0-9]{25}$")) {
                 // FIXME!!
             }
             else if (token.matches("^[0-9]{12}$")) {
-                final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, accountId, amount);
+                final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, null, amount);
                 return createTransactionWithCpm.send(accessToken);
             }
             throw new ProcessingError("Unknown token format");
