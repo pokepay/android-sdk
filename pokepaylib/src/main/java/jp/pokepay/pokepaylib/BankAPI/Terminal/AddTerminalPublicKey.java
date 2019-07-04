@@ -3,11 +3,11 @@ package jp.pokepay.pokepaylib.BankAPI.Terminal;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
-import jp.pokepay.pokepaylib.Responses.ServerKey;
 import jp.pokepay.pokepaylib.Request;
-import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+import jp.pokepay.pokepaylib.Responses.ServerKey;
 
 public class AddTerminalPublicKey extends BankRequest {
     public String key;

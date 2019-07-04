@@ -6,7 +6,6 @@ import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.Env;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
-import jp.pokepay.pokepaylib.Responses.OAuthError;
 
 public abstract class OAuthRequest {
 

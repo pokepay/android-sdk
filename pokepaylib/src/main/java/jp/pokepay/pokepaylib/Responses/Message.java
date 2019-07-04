@@ -1,9 +1,8 @@
 package jp.pokepay.pokepaylib.Responses;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Date;
 import jp.pokepay.pokepaylib.Response;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
 public class Message extends Response {
     public String id;
     public String subject;
@@ -12,14 +11,7 @@ public class Message extends Response {
     public User to_user;
     public User send_by;
     public User send_to;
+    public Date sent_at;
     public boolean is_unread;
     public MessageAttachment attachment;
-
-    public Message(){
-        from_user = new User();
-        to_user   = new User();
-        send_by   = new User();
-        send_to   = new User();
-        attachment = new MessageAttachment();
-    }
 }

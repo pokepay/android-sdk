@@ -3,11 +3,11 @@ package jp.pokepay.pokepaylib.BankAPI.Cashtray;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
-import jp.pokepay.pokepaylib.Responses.Cashtray;
 import jp.pokepay.pokepaylib.Request;
-import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+import jp.pokepay.pokepaylib.Responses.Cashtray;
 
 public class CreateCashtray extends BankRequest {
     public double amount;

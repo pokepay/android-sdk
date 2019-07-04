@@ -9,23 +9,19 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
-public class SendToUser extends BankRequest {
-    public String userId;
+public class CreateTransactionWithCpm extends BankRequest {
+    public String cpmToken;
+    public String accountId;
     public double amount;
-    public String receiverTerminalId;
-    public String senderAccountId;
-    public String description;
 
-    public SendToUser(String userId, double amount, String receiverTerminalId, String senderAccountId, String description) {
-        this.userId = userId;
-        this.amount = amount;
-        this.receiverTerminalId = receiverTerminalId;
-        this.senderAccountId = senderAccountId;
-        this.description = description;
+    public CreateTransactionWithCpm(String cpmToken, String accountId, double amount) {
+        this.cpmToken  = cpmToken;
+        this.accountId = accountId;
+        this.amount    = amount;
     }
 
     protected final String path() {
-        return "/users/" + userId + "/transactions";
+        return "/transactions";
     }
 
     protected final Request.Method method() {
@@ -35,10 +31,9 @@ public class SendToUser extends BankRequest {
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
+            put("cpm_token", cpmToken);
+            put("account_id", accountId);
             put("amount", amount);
-            put("receiver_terminal_id", receiverTerminalId);
-            put("sender_account_id", senderAccountId);
-            put("description", description);
         }};
     }
 

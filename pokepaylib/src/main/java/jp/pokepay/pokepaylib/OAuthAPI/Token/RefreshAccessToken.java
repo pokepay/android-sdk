@@ -3,11 +3,11 @@ package jp.pokepay.pokepaylib.OAuthAPI.Token;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequest;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
-import jp.pokepay.pokepaylib.Responses.AccessToken;
-import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequest;
 import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.Responses.AccessToken;
 
 public class RefreshAccessToken extends OAuthRequest {
     public String grantType = "refresh_token";

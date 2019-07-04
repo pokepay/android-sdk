@@ -5,6 +5,7 @@ public class TokenInfo {
         CASHTRAY,
         BILL,
         CHECK,
+        CPM,
         POKEREGI,
     };
     public Type type;

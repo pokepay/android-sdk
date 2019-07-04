@@ -3,11 +3,11 @@ package jp.pokepay.pokepaylib.BankAPI.Account;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
-import jp.pokepay.pokepaylib.Responses.PaginatedTransactions;
 import jp.pokepay.pokepaylib.Request;
-import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+import jp.pokepay.pokepaylib.Responses.PaginatedTransactions;
 
 public class GetAccountTransactions extends BankRequest {
     public String id;

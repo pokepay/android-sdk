@@ -1,9 +1,7 @@
 package jp.pokepay.pokepaylib.Responses;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jp.pokepay.pokepaylib.Response;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
 public class PrivateMoney extends Response {
     public String       id;
     public String       name;
@@ -22,10 +20,5 @@ public class PrivateMoney extends Response {
     public String       privacy_policy_url;
     public String       payment_act_url;
     public String       commercial_act_url;
-
-    public PrivateMoney(){
-        images       = new Image();
-        organization = new Organization();
-    }
 }
 
