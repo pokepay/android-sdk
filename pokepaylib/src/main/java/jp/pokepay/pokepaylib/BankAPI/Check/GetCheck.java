@@ -1,10 +1,10 @@
 package jp.pokepay.pokepaylib.BankAPI.Check;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
-import jp.pokepay.pokepaylib.Responses.Check;
 import jp.pokepay.pokepaylib.Request;
-import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+import jp.pokepay.pokepaylib.Responses.Check;
 
 public class GetCheck extends BankRequest {
     public String id;

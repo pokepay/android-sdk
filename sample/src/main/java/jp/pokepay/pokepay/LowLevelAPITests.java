@@ -3,9 +3,6 @@ package jp.pokepay.pokepay;
 
 import android.os.SystemClock;
 
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-
 import jp.pokepay.pokepaylib.BankAPI.Account.CreateAccount;
 import jp.pokepay.pokepaylib.BankAPI.Account.CreateAccountCpmToken;
 import jp.pokepay.pokepaylib.BankAPI.Account.GetAccount;

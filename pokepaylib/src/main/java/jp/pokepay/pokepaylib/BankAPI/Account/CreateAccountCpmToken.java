@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
-import jp.pokepay.pokepaylib.Responses.AccountCpmToken;
 import jp.pokepay.pokepaylib.Request;
-import jp.pokepay.pokepaylib.BankAPI.BankRequest;
+import jp.pokepay.pokepaylib.Responses.AccountCpmToken;
 
 public class CreateAccountCpmToken extends BankRequest {
 
