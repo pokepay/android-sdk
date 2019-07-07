@@ -1,5 +1,9 @@
 package jp.pokepay.pokepaylib;
 
+import android.content.Context;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.BankAPI.Bill.CreateBill;
 import jp.pokepay.pokepaylib.BankAPI.Bill.GetBill;
@@ -13,12 +17,16 @@ import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithBill;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCashtray;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCheck;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCpm;
+import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithJwt;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.Token.ExchangeAuthCode;
+import jp.pokepay.pokepaylib.Pokeregi.BLEController;
 import jp.pokepay.pokepaylib.Responses.AccessToken;
+import jp.pokepay.pokepaylib.Responses.BankError;
 import jp.pokepay.pokepaylib.Responses.Bill;
 import jp.pokepay.pokepaylib.Responses.Cashtray;
 import jp.pokepay.pokepaylib.Responses.Check;
+import jp.pokepay.pokepaylib.Responses.JwtResult;
 import jp.pokepay.pokepaylib.Responses.Terminal;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
@@ -31,14 +39,17 @@ public class Pokepay {
     public static class Client {
         private String accessToken;
         private boolean isMerchant;
+        private Context context;
 
-        public Client(String accessToken) {
+        public Client(String accessToken, Context context) {
             this.accessToken = accessToken;
+            this.context = context;
             this.isMerchant = false;
         }
 
-        public Client(String accessToken, boolean isMerchant) {
+        public Client(String accessToken, Context context, boolean isMerchant) {
             this.accessToken = accessToken;
+            this.context = context;
             this.isMerchant  = isMerchant;
         }
 
@@ -83,6 +94,43 @@ public class Pokepay {
         public UserTransaction scanToken(String token) throws ProcessingError, BankRequestError {
             return scanToken(token, -1);
         }
+
+        private UserTransaction scanTokenBLE(String token) throws ProcessingError, BankRequestError {
+            if (context == null) {
+                throw new ProcessingError("Scanning to pokeregi requires Context (for BLE)");
+            }
+            BLEController bleController = null;
+            try {
+                bleController = new BLEController(token, context);
+                bleController.connect(1000 * 10);
+                final String jwt = bleController.read(1000 * 10);
+                final CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null);
+                final JwtResult jwtResult = createTransactionWithJwt.send(accessToken);
+                bleController.write(jwtResult.data, 1000 * 10);
+                if (jwtResult.data != null) {
+                    return jwtResult.parseAsUserTransaction();
+                } else if (jwtResult.error != null) {
+                    final BankError err = jwtResult.parseAsAPIError();
+                    throw new BankRequestError(0, err);
+                } else {
+                    final ObjectMapper mapper = new ObjectMapper();
+                    final String defaultError = "{\"type\":\"Invalid JSON structure\",\"message\":\"jwt response doesn't have neither data nor error.\"}";
+                    final BankError err = mapper.readValue(defaultError, BankError.class);
+                    throw new BankRequestError(0, err);
+                }
+            } catch (ProcessingError e) {
+                throw e;
+            } catch (BankRequestError e) {
+                throw e;
+            } catch (Exception e) {
+                throw new ProcessingError(e.getMessage());
+            } finally {
+                if (bleController != null) {
+                    bleController.disconnect();
+                }
+            }
+        }
+
         public UserTransaction scanToken(String token, double amount) throws ProcessingError, BankRequestError {
             final Env env = Env.current();
             if (token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")) {
@@ -101,7 +149,7 @@ public class Pokepay {
                 return createTransactionWithCheck.send(accessToken);
             }
             else if (token.matches("^[A-Z0-9]{25}$")) {
-                // FIXME!!
+                return scanTokenBLE(token);
             }
             else if (token.matches("^[0-9]{12}$")) {
                 final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, null, amount);
@@ -113,9 +161,11 @@ public class Pokepay {
         public String createToken(double amount, String description) throws ProcessingError, BankRequestError {
             return createToken(amount, description,-1, null);
         }
+
         public String createToken(double amount, String description, int expiresIn) throws ProcessingError, BankRequestError {
             return createToken(amount, description, expiresIn, null);
         }
+
         public String createToken(double amount, String description, int expiresIn, String accountId) throws ProcessingError, BankRequestError {
             final Env env = Env.current();
             if (isMerchant) {

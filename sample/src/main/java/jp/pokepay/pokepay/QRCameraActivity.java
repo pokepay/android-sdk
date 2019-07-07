@@ -1,17 +1,32 @@
 package jp.pokepay.pokepay;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.Pokepay;
+import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Responses.UserTransaction;
+import jp.pokepay.pokepaylib.TokenInfo;
+
 public class QRCameraActivity extends AppCompatActivity {
     private String url;
+    private ProgressDialog progressDialog;
 
+    private String customerAccessToken = "oNTvWHFqv512JJQhUVgAwCx7LphHVpHFAp_jDMQ62THIN9iOwNfUXA9nMkI66xoA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,27 +34,80 @@ public class QRCameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_qrcamera);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        new IntentIntegrator(this).initiateScan();
+        IntentIntegrator ii = new IntentIntegrator(QRCameraActivity.this);
+        ii.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        ii.setPrompt("Scan a QRCode");
+        ii.setOrientationLocked(true);
+        ii.setCameraId(0);  // Use a specific camera of the device
+        ii.setBeepEnabled(false);
+        ii.setBarcodeImageEnabled(false);
+        ii.initiateScan();
+
+        progressDialog = new ProgressDialog(QRCameraActivity.this);
+        progressDialog.setTitle("通信中");
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        // null の場合
-        if (intentResult == null) {
-            Log.d("TAG", "Weird");
-            super.onActivityResult(requestCode, resultCode, data);
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(this, "BLE not supported", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        if (intentResult.getContents() == null) {
-            Log.d("TAG", "Cancelled Scan");
-
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            final String code = result.getContents();
+            if(code == null) {
+                Log.d("PokepayBLE", "cancelled");
+            } else {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        handler.sendEmptyMessage(1);
+                        final Message msg = Message.obtain();
+                        Log.d("PokepayBLE", "found: " + code);
+                        Pokepay.Client c = new Pokepay.Client(customerAccessToken, QRCameraActivity.this, false);
+                        try {
+                            TokenInfo token = c.getTokenInfo(code);
+                            Log.d("PokepayBLE", "tokenInfo: " + token.type);
+                            UserTransaction tr = c.scanToken(code);
+                            if (tr != null) {
+                                msg.obj = "Success transaction: " + tr.toString();
+                            } else {
+                                msg.obj = "done";
+                            }
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
+                        }
+                        handler.sendMessage(msg);
+                    }
+                }).start();
+            }
         } else {
-            Log.d("TAG", "Scanned! " + intentResult.getContents());
-            Intent intent = new Intent(this, ScannerActivity.class);
-            intent.putExtra("serviceUUID", intentResult.getContents());
-            startActivity(intent);
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 1) {
+                progressDialog.show();
+            } else {
+                progressDialog.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(QRCameraActivity.this);
+                builder.setMessage(msg.obj.toString())
+                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+                builder.show();
+            }
+            return true;
+        }
+    });
 }

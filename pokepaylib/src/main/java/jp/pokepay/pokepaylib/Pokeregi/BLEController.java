@@ -1,6 +1,5 @@
 package jp.pokepay.pokepaylib.Pokeregi;
 
-import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -14,311 +13,366 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.os.Build;
 import android.os.ParcelUuid;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import jp.pokepay.pokepaylib.AES128;
+import jp.pokepay.pokepaylib.ProcessingError;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
-import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithJwt;
-import jp.pokepay.pokepaylib.Responses.JwtResult;
-
-import static android.content.ContentValues.TAG;
-import static java.lang.Thread.sleep;
+import static android.os.SystemClock.sleep;
 
 public class BLEController {
-    private String serviceUUID = "3c46a55f-5890-0689-9025-e75f";
-    private String accessToken;
-    private String bleResult = "wait";
-    private Context context;
-    private BluetoothLeScanner mBleScanner;
-    private BluetoothManager mBleManager;
-    private BluetoothAdapter mBleAdapter;
-    private BluetoothGatt mBleGatt;
-    private Boolean isScanned = false;
-    private ArrayList<BluetoothGattCharacteristic> arrayList;
-    private int arrayIdx = 0;
-    private byte[] readJwt;
-    private byte[] writeJwt;
-    private int writeIdx = 0;
 
-    private String aesSecretKey;
-    final private String aesInitVector = "F0EE1BC8016A6335";
+    public enum ResultCode {
+        NOT_STARTED_YET,
+        PROCESSING,
+        DONE,
+        ERROR,
+        TIMEOUT,
+    };
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public BLEController(String uuid, String accessToken, Context context){
-        this.context = context;
-        this.accessToken = accessToken;
-        readJwt = new byte[0];
-        String code = uuid;
-        aesSecretKey = code.substring(code.length()-16, code.length());
-        char[] codeArray = code.substring(0, 8).toCharArray();
-        for(int i=0;i<codeArray.length-1;i++){
-            int c = (int)codeArray[i];
-            c %= 0x0f;
-            String hex = Integer.toHexString(c);
-            serviceUUID += hex;
-        }
-        serviceUUID += "0";
-        mBleManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
-        mBleAdapter = mBleManager.getAdapter();
-        mBleScanner = mBleAdapter.getBluetoothLeScanner();
-        ScanFilter scanFilter = new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(serviceUUID)).build();
-        ArrayList scanFilterList = new ArrayList();
-        scanFilterList.add(scanFilter);
-        ScanSettings scanSettings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_BALANCED).build();
-
-        mBleScanner.startScan( scanFilterList, scanSettings, scanCallback);
-    }
-
-    public String getResult(){
-        while(bleResult.equals("wait")){
-            try {
-                sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        return bleResult;
-    }
-
-
-    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-        @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState)
-        {
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                if (gatt.requestMtu(512)) {
-                    Log.d(TAG, "Requested MTU successfully");
-                } else {
-                    Log.d(TAG, "Failed to request MTU");
-                }
-                //gatt.discoverServices();
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                if (mBleGatt != null)
-                {
-                    mBleGatt.close();
-                    mBleGatt = null;
-                }
-            }
-        }
-
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-        @Override
-        public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
-            // Exchange MTU Requestが完了してからサービスの検出を開始する
-            if (gatt != null) {
-                if (gatt.discoverServices()) {
-                    Log.d(TAG, "Started discovering services");
-                } else {
-                    Log.d(TAG, "Failed to start discovering services");
-                }
-            }
-        }
-
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-        @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status){
-            if(isScanned){
-                return;
-            }
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                isScanned = true;
-
-                BluetoothGattService service = gatt.getService(UUID.fromString(serviceUUID));
-                if (service != null) {
-                    arrayList = (ArrayList<BluetoothGattCharacteristic>) service.getCharacteristics();
-                    for(int i=0;i<arrayList.size();i++){
-                        System.out.println(i + ":" + arrayList.get(i).getUuid());
-                    }
-                    gatt.readCharacteristic(arrayList.get(arrayIdx));
-                }
-            }
-        }
-
-
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            super.onCharacteristicRead(gatt, characteristic, status);
-            if( BluetoothGatt.GATT_SUCCESS != status ){
-                return;
-            }
-            System.out.println(characteristic.getUuid().toString());
-            final byte[] tmpBytes = characteristic.getValue();
-            System.out.println(Arrays.toString(tmpBytes) + ", " + tmpBytes.length + ", " + Arrays.toString(readJwt) + ", " + readJwt.length);
-            byte[] tmp = readJwt.clone();
-            readJwt = new byte[tmp.length + tmpBytes.length];
-            for (int i=0;i<tmp.length;i++) {
-                readJwt[i] = tmp[i];
-            }
-            for (int i=0;i<tmpBytes.length;i++) {
-                readJwt[tmp.length+i] = tmpBytes[i];
-            }
-            if (tmpBytes.length < 500) {
-                arrayIdx++;
-                String jwt = new String(decodeAES128(readJwt), StandardCharsets.UTF_8);
-                CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null);
-                try {
-                    JwtResult jwtResult = createTransactionWithJwt.send(accessToken);
-                    String data = jwtResult.data;
-                    // System.out.println(data);
-                    writeJwt = encodeAES128(data.getBytes());
-                    int len = writeJwt.length - writeIdx*500;
-                    if(len >= 500){
-                        len = 500;
-                    }
-                    byte[] value = new byte[len];
-                    for(int i=0;i<len;i++){
-                        value[i] = writeJwt[i];
-                    }
-                    writeIdx++;
-                    arrayList.get(arrayIdx).setValue(value);
-                } catch (Exception e) {
-                    arrayList.get(arrayIdx).setValue(encodeAES128("NG".getBytes()));
-                    System.out.println("NG");
-                }
-                System.out.println(writeJwt.length);
-                System.out.println(arrayList.get(arrayIdx).getUuid());
-                gatt.writeCharacteristic(arrayList.get(arrayIdx));
-            } else {
-                gatt.readCharacteristic(arrayList.get(arrayIdx));
-            }
-        }
-
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-        @Override
-        public void  onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            String TAG = "ScannerActivity";
-            switch(status) {
-                case BluetoothGatt.GATT_SUCCESS:
-                    Log.e(TAG, "onCharacteristicWrite: GATT_SUCCESS");
-                    int len = writeJwt.length - writeIdx*500;
-                    System.out.println(writeJwt.length + ", " + len + ", " + writeIdx);
-                    if(len < 0){
-                        if(bleResult == "SUCCESS"){
-                            break;
-                        }
-                        byte[] z = new byte[0];
-                        arrayList.get(arrayIdx).setValue(z);
-                        gatt.writeCharacteristic(arrayList.get(arrayIdx));
-                        bleResult = "SUCCESS";
-                        break;
-                    }
-                    if(len >= 500){
-                        len = 500;
-                    }
-                    byte[] value = new byte[len];
-                    for(int i=0;i<len;i++){
-                        value[i] = writeJwt[i+writeIdx*500];
-                    }
-                    arrayList.get(arrayIdx).setValue(value);
-                    writeIdx++;
-                    gatt.writeCharacteristic(arrayList.get(arrayIdx));
-
-                    break;
-                case BluetoothGatt.GATT_WRITE_NOT_PERMITTED:
-                    Log.e(TAG, "onCharacteristicWrite: GATT_WRITE_NOT_PERMITTED");
-                    bleResult = "NOT PERMITTED";
-                    break;
-
-                case BluetoothGatt.GATT_REQUEST_NOT_SUPPORTED:
-                    Log.e(TAG, "onCharacteristicWrite: GATT_REQUEST_NOT_SUPPORTED");
-                    bleResult = "NOT SUPPORTED";
-                    break;
-
-                case BluetoothGatt.GATT_FAILURE:
-                    Log.e(TAG, "onCharacteristicWrite: GATT_FAILURE");
-                    bleResult = "NOT FAILURE";
-                    break;
-
-                case BluetoothGatt.GATT_INSUFFICIENT_AUTHENTICATION:
-                    break;
-
-                case BluetoothGatt.GATT_INSUFFICIENT_ENCRYPTION:
-                    break;
-
-                case BluetoothGatt.GATT_INVALID_OFFSET:
-                    break;
-            }
+    public class Result {
+        public ResultCode code;
+        public String data;
+        public ProcessingError err;
+        Result(ResultCode c, String d, ProcessingError e) {
+            code = c;
+            data = d;
+            err = e;
         }
     };
 
-    final ScanCallback scanCallback = new ScanCallback() {
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    final static private String TAG = "Pokeregi.BLE";
+
+    private static final String serviceUUIDPrefix = "3c46a55f-5890-0689-9025-e75f";
+    private static final String aesInitVector = "F0EE1BC8016A6335";
+    private static final String rxCharId = "0020";
+    private static final String txCharId = "0040";
+
+    private Context context;
+    private String serviceUUID;
+    private AES128 aes;
+    private BluetoothManager mBleManager;
+    private BluetoothLeScanner mBleScanner;
+    private BluetoothAdapter mBleAdapter;
+    private BluetoothGatt mBleGatt;
+    private BluetoothGattCharacteristic rxChar;
+    private BluetoothGattCharacteristic txChar;
+
+    private ArrayList<byte[]> jwtChunks = new ArrayList<byte[]>();
+
+    private Result result = new Result(ResultCode.NOT_STARTED_YET, null, null);
+
+    private void setResult(Result r) {
+        synchronized(result) {
+            result.code = r.code;
+            result.data = r.data;
+            result.err = r.err;
+        }
+    }
+
+    private Result getResult() {
+        synchronized(result) {
+            return new Result(result.code, result.data, result.err);
+        }
+    }
+
+    private Result waitResult(long timeoutMs) {
+        final int tickMs = 10;
+        long passedMs = 0;
+        while (true) {
+            final Result r = getResult();
+            if (r.code != ResultCode.PROCESSING) {
+                return r;
+            }
+            sleep(tickMs);
+            passedMs += tickMs;
+            if (passedMs > timeoutMs) {
+                return new Result(ResultCode.TIMEOUT, null, new ProcessingError("BLE timeout operation"));
+            }
+        }
+    }
+
+    private String getUUID(String token) {
+        String uuid = serviceUUIDPrefix;
+        char[] tokenArray = token.substring(0, 8).toCharArray();
+        for(int i=0; i < tokenArray.length-1; i++){
+            int c = ((int)tokenArray[i]) % 0x0F;
+            String hex = Integer.toHexString(c);
+            uuid += hex;
+        }
+        uuid += "0";
+        return uuid;
+    }
+
+    public BLEController(String token, Context context) {
+        this.context = context;
+        aes = new AES128(token.substring(token.length()-16), aesInitVector);
+        serviceUUID = getUUID(token);
+        setResult(new Result(ResultCode.NOT_STARTED_YET, null, null));
+    }
+
+    public void connect(long timeoutMs) throws ProcessingError {
+        if (getResult().code == ResultCode.PROCESSING) {
+            throw new ProcessingError("BLE running other operation");
+        }
+        if (mBleManager == null && mBleAdapter == null && mBleScanner == null) {
+            mBleManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+            mBleAdapter = mBleManager.getAdapter();
+            mBleScanner = mBleAdapter.getBluetoothLeScanner();
+        }
+        if (mBleAdapter == null || !mBleAdapter.isEnabled()) {
+            throw new ProcessingError("BLE is not enabled");
+        }
+        final ScanFilter scanFilter = new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(serviceUUID)).build();
+        final ArrayList scanFilters = new ArrayList(){{ add(scanFilter); }};
+        final ScanSettings scanSettings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
+        setResult(new Result(ResultCode.PROCESSING, null, null));
+        mBleScanner.startScan(scanFilters, scanSettings, scanCallback);
+        Result result = waitResult(timeoutMs);
+        if (result.code == ResultCode.ERROR || result.code == ResultCode.TIMEOUT) {
+            disconnect();
+            throw result.err;
+        }
+    }
+
+    public void disconnect() {
+        if (mBleGatt != null) {
+            mBleGatt.close();
+            mBleGatt = null;
+        }
+        if (mBleScanner != null) {
+            mBleScanner.stopScan(scanCallback);
+        }
+        jwtChunks.clear();
+        setResult(new Result(ResultCode.NOT_STARTED_YET, null, null));
+    }
+
+    public String read(long timeoutMs) throws ProcessingError {
+        if (getResult().code == ResultCode.PROCESSING) {
+            throw new ProcessingError("BLE running other operation");
+        }
+        if (mBleGatt == null || rxChar == null) {
+            throw new ProcessingError("BLE is not connected yet");
+        }
+        setResult(new Result(ResultCode.PROCESSING, null, null));
+        jwtChunks.clear();
+        mBleGatt.readCharacteristic(rxChar);
+        final Result result = waitResult(timeoutMs);
+        if (result.code == ResultCode.ERROR || result.code == ResultCode.TIMEOUT) {
+            disconnect();
+            throw result.err;
+        }
+        return result.data;
+    }
+
+    public void write(String jwt, long timeoutMs) throws ProcessingError {
+        if (getResult().code == ResultCode.PROCESSING) {
+            throw new ProcessingError("BLE running other operation");
+        }
+        if (mBleGatt == null || txChar == null) {
+            throw new ProcessingError("BLE is not connected yet");
+        }
+        setResult(new Result(ResultCode.PROCESSING, null, null));
+        jwtChunks.clear();
+        final byte[] jwtRaw = aes.encode(jwt);
+        int i = 0;
+        do {
+            final byte[] chunk = Arrays.copyOfRange(jwtRaw, i, Math.min(i+500, jwtRaw.length));
+            jwtChunks.add(chunk);
+            i += 500;
+        } while (i <= jwtRaw.length);
+        final byte[] chunk = jwtChunks.remove(0);
+        txChar.setValue(chunk);
+        mBleGatt.writeCharacteristic(txChar);
+        final Result result = waitResult(timeoutMs);
+        if (result.code == ResultCode.ERROR || result.code == ResultCode.TIMEOUT) {
+            disconnect();
+            throw result.err;
+        }
+    }
+
+    private final ScanCallback scanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
             result.getDevice().connectGatt(context.getApplicationContext(), false, mGattCallback);
+            mBleScanner.stopScan(scanCallback);
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
+            setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE scan failed")));
         }
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private byte[] encodeAES128(byte[] code){
-        byte[] encodeBytes = null;
-        try {
-            SecretKeySpec keySpec = new SecretKeySpec(aesSecretKey.getBytes(StandardCharsets.UTF_8), "AES");
-            IvParameterSpec ivSpec = new IvParameterSpec(aesInitVector.getBytes(StandardCharsets.UTF_8));
-            String algorithm = "AES/CBC/PKCS7Padding";
-            Cipher cipher = Cipher.getInstance(algorithm);
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
-            encodeBytes = cipher.doFinal(code);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        }
-        return encodeBytes;
-    }
+    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private byte[] decodeAES128(byte[] code){
-        byte[] decodeBytes = null;
-        try {
-            SecretKeySpec keySpec = new SecretKeySpec(aesSecretKey.getBytes(StandardCharsets.UTF_8), "AES");
-            IvParameterSpec ivSpec = new IvParameterSpec(aesInitVector.getBytes(StandardCharsets.UTF_8));
-            String algorithm = "AES/CBC/PKCS7Padding";
-            Cipher cipher = Cipher.getInstance(algorithm);
-            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-            decodeBytes = cipher.doFinal(code);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
+        private void refreshGatt(BluetoothGatt gatt) {
+            try {
+                final Method refresh = gatt.getClass().getMethod("refresh");
+                if (refresh == null) {
+                    Log.e(TAG,"Could not find function BluetoothGatt.refresh()");
+                }
+                final Boolean success = (Boolean) refresh.invoke(gatt);
+                if (!success) Log.e(TAG, "BluetoothGatt.refresh() returned false");
+            } catch (Exception e) {
+                Log.e(TAG, "Could not call function BluetoothGatt.refresh()");
+            }
         }
-        return decodeBytes;
-    }
+
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+            super.onConnectionStateChange(gatt, status, newState);
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
+                mBleGatt = gatt;
+                if (gatt.requestMtu(512)) {
+                    // Log.d(TAG, "Requested MTU successfully");
+                } else {
+                    setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE failed to request MTU")));
+                }
+            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                if (mBleGatt != null) {
+                    mBleGatt.close();
+                    mBleGatt = null;
+                    setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE unexpected disconnection")));
+                }
+            }
+        }
+
+        @Override
+        public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+            super.onMtuChanged(gatt, mtu, status);
+            if (gatt != null && status == BluetoothGatt.GATT_SUCCESS) {
+                refreshGatt(gatt);
+                if (gatt.discoverServices()) {
+                    // Log.d(TAG, "Started discovering services");
+                } else {
+                    setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE failed to request discover service")));
+                }
+            } else {
+                setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE failed to change MTU")));
+            }
+        }
+
+        @Override
+        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+            super.onServicesDiscovered(gatt, status);
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                BluetoothGattService service = gatt.getService(UUID.fromString(serviceUUID));
+                if (service != null) {
+                    final ArrayList<BluetoothGattCharacteristic> chars = (ArrayList<BluetoothGattCharacteristic>) service.getCharacteristics();
+                    rxChar = null;
+                    txChar = null;
+                    for (int i = 0; i < chars.size(); i++) {
+                        final BluetoothGattCharacteristic ch = chars.get(i);
+                        final String uuidShort = ch.getUuid().toString().substring(4, 8);
+                        if (uuidShort.equals(rxCharId)) {
+                            rxChar = ch;
+                        } else if (uuidShort.equals(txCharId)) {
+                            txChar = ch;
+                        }
+                    }
+                    if (rxChar == null) {
+                        setResult(new Result(ResultCode.ERROR, null, new ProcessingError("Characteristic for rx '0020' is not found")));
+                        return;
+                    }
+                    if (txChar == null) {
+                        setResult(new Result(ResultCode.ERROR, null, new ProcessingError("Characteristic for tx '0040' is not found")));
+                        return;
+                    }
+                    // DONE of connect();
+                    setResult(new Result(ResultCode.DONE, null, null));
+                } else {
+                    setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE failed serviceUUID not matched")));
+                }
+            } else {
+                setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE failed to discover service")));
+            }
+        }
+
+        @Override
+        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            super.onCharacteristicRead(gatt, characteristic, status);
+            if (BluetoothGatt.GATT_SUCCESS != status) {
+                setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE characteristic read failed")));
+                return;
+            }
+            final byte[] chunk = characteristic.getValue();
+            jwtChunks.add(chunk);
+            if (chunk.length < 500) {
+                int size = 0;
+                for (byte[] ch : jwtChunks) {
+                    size += ch.length;
+                }
+                byte[] jwtRaw = new byte[size];
+                int filled = 0;
+                for (byte[] ch : jwtChunks) {
+                    for (int i = 0; i < ch.length; i++, filled++) {
+                        jwtRaw[filled] = ch[i];
+                    }
+                }
+                jwtChunks.clear();
+                String jwt;
+                try {
+                    jwt = aes.decode(jwtRaw);
+                } catch (ProcessingError err) {
+                    setResult(new Result(ResultCode.ERROR, null, err));
+                    return;
+                }
+                // DONE of read()
+                setResult(new Result(ResultCode.DONE, jwt, null));
+            } else {
+                gatt.readCharacteristic(rxChar);
+            }
+        }
+
+        @Override
+        public void  onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            super.onCharacteristicWrite(gatt, characteristic, status);
+            switch(status) {
+                case BluetoothGatt.GATT_SUCCESS:
+                    if (jwtChunks.size() > 0) {
+                        final byte[] chunk = jwtChunks.remove(0);
+                        txChar.setValue(chunk);
+                        gatt.writeCharacteristic(txChar);
+                    } else {
+                        // DONE of write()
+                        setResult(new Result(ResultCode.DONE, null, null));
+                    }
+                    break;
+                case BluetoothGatt.GATT_WRITE_NOT_PERMITTED:
+                    setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE characteristic write not permitted")));
+                    break;
+                case BluetoothGatt.GATT_REQUEST_NOT_SUPPORTED:
+                    setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE characteristic write not supported")));
+                    break;
+                case BluetoothGatt.GATT_FAILURE:
+                    setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE characteristic write failure")));
+                    break;
+                case BluetoothGatt.GATT_INSUFFICIENT_AUTHENTICATION:
+                    setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE characteristic write insufficient authenrication")));
+                    break;
+                case BluetoothGatt.GATT_INSUFFICIENT_ENCRYPTION:
+                    setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE characteristic write insufficient encryption")));
+                    break;
+                case BluetoothGatt.GATT_INVALID_OFFSET:
+                    setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE characteristic write invalid offset")));
+                    break;
+                default:
+                    setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE characteristic write unknown error")));
+            }
+        }
+    };
 }
