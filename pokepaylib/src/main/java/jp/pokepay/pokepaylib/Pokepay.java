@@ -1,6 +1,7 @@
 package jp.pokepay.pokepaylib;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

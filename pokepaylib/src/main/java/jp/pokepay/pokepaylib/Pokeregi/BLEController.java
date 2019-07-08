@@ -66,6 +66,15 @@ public class BLEController {
 
     private ArrayList<byte[]> jwtChunks = new ArrayList<byte[]>();
 
+    private Boolean scanned = false;
+
+    public Boolean resetScanned() {
+        synchronized (scanned) {
+            scanned = false;
+            return new Boolean(scanned);
+        }
+    }
+
     private Result result = new Result(ResultCode.NOT_STARTED_YET, null, null);
 
     private void setResult(Result r) {
@@ -118,6 +127,7 @@ public class BLEController {
     }
 
     public void connect(long timeoutMs) throws ProcessingError {
+        // Log.d(TAG, "connect");
         if (getResult().code == ResultCode.PROCESSING) {
             throw new ProcessingError("BLE running other operation");
         }
@@ -148,6 +158,7 @@ public class BLEController {
         }
         if (mBleScanner != null) {
             mBleScanner.stopScan(scanCallback);
+            resetScanned();
         }
         jwtChunks.clear();
         setResult(new Result(ResultCode.NOT_STARTED_YET, null, null));
@@ -164,6 +175,7 @@ public class BLEController {
         jwtChunks.clear();
         mBleGatt.readCharacteristic(rxChar);
         final Result result = waitResult(timeoutMs);
+        // Log.d(TAG, "read result = " + result.code);
         if (result.code == ResultCode.ERROR || result.code == ResultCode.TIMEOUT) {
             disconnect();
             throw result.err;
@@ -198,11 +210,16 @@ public class BLEController {
     }
 
     private final ScanCallback scanCallback = new ScanCallback() {
+
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
-            result.getDevice().connectGatt(context.getApplicationContext(), false, mGattCallback);
             mBleScanner.stopScan(scanCallback);
+            synchronized (scanned) {
+                if (scanned) return;
+                scanned = true;
+                result.getDevice().connectGatt(context.getApplicationContext(), false, mGattCallback);
+            }
         }
 
         @Override
@@ -213,7 +230,7 @@ public class BLEController {
         @Override
         public void onScanFailed(int errorCode) {
             super.onScanFailed(errorCode);
-            setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE scan failed")));
+            setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE scan failed code(" + errorCode + ")")));
         }
     };
 
@@ -293,6 +310,7 @@ public class BLEController {
                         return;
                     }
                     // DONE of connect();
+                    // Log.d(TAG, "DONE of connect()");
                     setResult(new Result(ResultCode.DONE, null, null));
                 } else {
                     setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE failed serviceUUID not matched")));
@@ -304,6 +322,7 @@ public class BLEController {
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            // Log.d(TAG, "onRead");
             super.onCharacteristicRead(gatt, characteristic, status);
             if (BluetoothGatt.GATT_SUCCESS != status) {
                 setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE characteristic read failed")));
@@ -332,6 +351,7 @@ public class BLEController {
                     return;
                 }
                 // DONE of read()
+                // Log.d(TAG, "DONE of read()");
                 setResult(new Result(ResultCode.DONE, jwt, null));
             } else {
                 gatt.readCharacteristic(rxChar);
@@ -340,6 +360,7 @@ public class BLEController {
 
         @Override
         public void  onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            // Log.d(TAG, "onWrite");
             super.onCharacteristicWrite(gatt, characteristic, status);
             switch(status) {
                 case BluetoothGatt.GATT_SUCCESS:
@@ -349,6 +370,7 @@ public class BLEController {
                         gatt.writeCharacteristic(txChar);
                     } else {
                         // DONE of write()
+                        // Log.d(TAG, "DONE of write()");
                         setResult(new Result(ResultCode.DONE, null, null));
                     }
                     break;
