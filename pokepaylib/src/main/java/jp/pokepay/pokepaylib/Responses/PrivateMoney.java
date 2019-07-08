@@ -20,7 +20,7 @@ public class PrivateMoney extends Response {
     @NonNull
     public String       account_image;
     @NonNull
-    public Image        images;
+    public Images       images;
     @NonNull
     public Organization organization;
     public double       max_balance;
