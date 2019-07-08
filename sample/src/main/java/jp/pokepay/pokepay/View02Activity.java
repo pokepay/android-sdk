@@ -1,7 +1,9 @@
 package jp.pokepay.pokepay;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -80,7 +82,7 @@ public class View02Activity extends AppCompatActivity {
                         handler.sendEmptyMessage(1);
                         final Message msg = Message.obtain();
                         try {
-                            final Pokepay.Client client = new Pokepay.Client(accessToken1);
+                            final Pokepay.Client client = new Pokepay.Client(accessToken1, View02Activity.this);
                             final Terminal terminal = client.getTerminalInfo();
                             msg.obj = "Success! terminal: " + terminal.toString();
                         } catch (ProcessingError e) {
@@ -99,14 +101,15 @@ public class View02Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new Thread(new Runnable() {
+                    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
                         final Message msg = Message.obtain();
                         try {
-                            Pokepay.Client client = new Pokepay.Client(accessToken1);
+                            Pokepay.Client client = new Pokepay.Client(accessToken1, View02Activity.this);
                             final String token = client.createToken(1, "AndroidTest bill");
-                            client = new Pokepay.Client(accessToken2, true);
+                            client = new Pokepay.Client(accessToken2, View02Activity.this,true);
                             final UserTransaction userTransaction = client.scanToken(token);
                             msg.obj = "Success transaction: " + userTransaction.toString();
                         } catch (ProcessingError e) {
@@ -130,9 +133,9 @@ public class View02Activity extends AppCompatActivity {
                         handler.sendEmptyMessage(1);
                         final Message msg = Message.obtain();
                         try {
-                            Pokepay.Client client = new Pokepay.Client(accessToken2, true);
+                            Pokepay.Client client = new Pokepay.Client(accessToken2, View02Activity.this, true);
                             final String token = client.createToken(1, "AndroidTest cashtray");
-                            client = new Pokepay.Client(accessToken1);
+                            client = new Pokepay.Client(accessToken1, View02Activity.this);
                             final UserTransaction userTransaction = client.scanToken(token);
                             msg.obj = "Success transaction: " + userTransaction.toString();
                         } catch (ProcessingError e) {
@@ -156,9 +159,9 @@ public class View02Activity extends AppCompatActivity {
                         handler.sendEmptyMessage(1);
                         final Message msg = Message.obtain();
                         try {
-                            Pokepay.Client client = new Pokepay.Client(accessToken2);
+                            Pokepay.Client client = new Pokepay.Client(accessToken2,View02Activity.this);
                             final String token = client.createToken(1, "AndroidTest check");
-                            client = new Pokepay.Client(accessToken1);
+                            client = new Pokepay.Client(accessToken1,View02Activity.this);
                             UserTransaction userTransaction = client.scanToken(token);
                             msg.obj = "Success transaction: " + userTransaction.toString();
                         } catch (ProcessingError e) {
@@ -182,9 +185,9 @@ public class View02Activity extends AppCompatActivity {
                         handler.sendEmptyMessage(1);
                         final Message msg = Message.obtain();
                         try {
-                            Pokepay.Client client = new Pokepay.Client(accessToken2);
+                            Pokepay.Client client = new Pokepay.Client(accessToken2,View02Activity.this);
                             final String token = client.createToken(1, "AndroidTest check");
-                            client = new Pokepay.Client(accessToken1);
+                            client = new Pokepay.Client(accessToken1,View02Activity.this);
                             final TokenInfo info = client.getTokenInfo(token);
                             if (info.type == TokenInfo.Type.CHECK) {
                                 Check check1 = (Check) info.info;

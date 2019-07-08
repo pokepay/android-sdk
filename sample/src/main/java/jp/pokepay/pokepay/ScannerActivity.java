@@ -29,7 +29,7 @@ public class ScannerActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String code = intent.getStringExtra("serviceUUID");
-        bleController = new BLEController(code, accessToken, this);
+        bleController = new BLEController(code,this);
 
         progressDialog = new ProgressDialog(ScannerActivity.this);
         progressDialog.setTitle("結果待ち");
@@ -46,10 +46,10 @@ public class ScannerActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
-                        String str = bleController.getResult();
-                        System.out.println("BLEController getResult: " + str);
+                        // String str = bleController.getResult();
+                        //System.out.println("BLEController getResult: " + str);
                         Message msg = Message.obtain();
-                        msg.obj = str;
+                        //msg.obj = str;
                         handler.sendMessage(msg);
                     }
                 }).start();
