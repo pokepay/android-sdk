@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.Terminal;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +12,9 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.Terminal;
 
 public class UpdateTerminal extends BankRequest {
+    @NonNull
     public String accountId;
+    @NonNull
     public String name;
     public String pushToken;
 

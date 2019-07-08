@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.Transaction;
 
+import android.support.annotation.NonNull;
+
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
@@ -7,6 +9,7 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class GetTransaction extends BankRequest {
+    @NonNull
     public String id;
 
     public GetTransaction(String id) {

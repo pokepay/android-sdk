@@ -12,9 +12,9 @@ import jp.pokepay.pokepaylib.Responses.Cashtray;
 public class CreateCashtray extends BankRequest {
     public double amount;
     public String description;
-    public int expiresIn;
+    public Integer expiresIn;
 
-    public CreateCashtray(double amount, String description, int expiresIn) {
+    public CreateCashtray(double amount, String description, Integer expiresIn) {
         this.amount = amount;
         this.description = description;
         this.expiresIn = expiresIn;
@@ -31,9 +31,9 @@ public class CreateCashtray extends BankRequest {
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
-            put("amount", amount > 0 ? amount : null);
+            put("amount", amount);
             put("description", description);
-            put("expires_in", expiresIn >= 0 ? expiresIn : null);
+            put("expires_in", expiresIn);
         }};
     }
 

@@ -10,11 +10,11 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.Check;
 
 public class CreateCheck extends BankRequest {
-    public double amount;
+    public Double amount;
     public String description;
     public String accountId;
 
-    public CreateCheck(double amount, String description, String accountId) {
+    public CreateCheck(Double amount, String description, String accountId) {
         this.amount = amount;
         this.description = description;
         this.accountId = accountId;
@@ -31,7 +31,7 @@ public class CreateCheck extends BankRequest {
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
-            put("amount", amount > 0 ? amount : null);
+            put("amount", amount);
             put("description", description);
             put("account_id", accountId);
         }};

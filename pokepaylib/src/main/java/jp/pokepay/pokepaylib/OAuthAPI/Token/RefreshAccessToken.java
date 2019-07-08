@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.OAuthAPI.Token;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,9 +12,13 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.AccessToken;
 
 public class RefreshAccessToken extends OAuthRequest {
+    @NonNull
     public String grantType = "refresh_token";
+    @NonNull
     public String refreshToken;
+    @NonNull
     public String clientId;
+    @NonNull
     public String clientSecret;
 
     public RefreshAccessToken(String refreshToken, String clientId, String clientSecret) {

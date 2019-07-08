@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.User;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,12 +12,13 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.PaginatedTransactions;
 
 public class GetUserTransactions extends BankRequest {
+    @NonNull
     public String id;
     public String before;
     public String after;
-    public int perPage;
+    public Integer perPage;
 
-    public GetUserTransactions(String id, String before, String after, int perPage) {
+    public GetUserTransactions(String id, String before, String after, Integer perPage) {
         this.id = id;
         this.before = before;
         this.after = after;
@@ -35,7 +38,7 @@ public class GetUserTransactions extends BankRequest {
         return new HashMap<String, Object>() {{
             put("before", before);
             put("after", after);
-            put("per_page", perPage > 0 ? perPage : null);
+            put("per_page", perPage);
         }};
     }
 

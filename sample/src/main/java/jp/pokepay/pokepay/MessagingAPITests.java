@@ -31,7 +31,7 @@ public class MessagingAPITests {
             final Terminal terminal = getTerminal.send(accessToken1);
             res += "Terminal: " + terminal.toString() + "\n";
             // メッセージを送る fromユーザ２ toユーザ１
-            final SendMessage sendMessage = new SendMessage(terminal.user.id, -2, "messageing tests", "body", null, null);
+            final SendMessage sendMessage = new SendMessage(terminal.user.id, 2.0, "messageing tests", "body", null);
             final Message message = sendMessage.send(accessToken2);
             res += "Message: " + message.toString() + "\n";
             // 未読数を取得

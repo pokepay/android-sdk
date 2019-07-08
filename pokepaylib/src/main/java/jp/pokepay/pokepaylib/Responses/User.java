@@ -1,9 +1,13 @@
 package jp.pokepay.pokepaylib.Responses;
 
+import android.support.annotation.NonNull;
+
 import jp.pokepay.pokepaylib.Response;
 
 public class User extends Response {
+    @NonNull
     public String id;
+    @NonNull
     public String name;
-    public String is_merchant;
+    public boolean is_merchant;
 }

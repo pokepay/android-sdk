@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.Account;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,12 +18,13 @@ public class CreateAccountCpmToken extends BankRequest {
     public static final int SCOPE_TOPUP = 2;
     public static final int SCOPE_BOTH = 3;
 
+    @NonNull
     public String accountId;
     public int scopes;
-    public int expiresIn;
+    public Integer expiresIn;
     public String additionalInfo;
 
-    public CreateAccountCpmToken(String accountId, int scopes, int expiresIn, String additionalInfo) {
+    public CreateAccountCpmToken(String accountId, int scopes, Integer expiresIn, String additionalInfo) {
         this.accountId = accountId;
         this.scopes = scopes;
         this.expiresIn = expiresIn;

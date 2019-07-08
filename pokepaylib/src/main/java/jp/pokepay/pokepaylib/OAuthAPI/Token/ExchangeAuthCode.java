@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.OAuthAPI.Token;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,9 +12,13 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.AccessToken;
 
 public class ExchangeAuthCode extends OAuthRequest {
+    @NonNull
     public String code;
+    @NonNull
     public String grantType = "authorization_code";
+    @NonNull
     public String clientId;
+    @NonNull
     public String clientSecret;
 
     public ExchangeAuthCode(String code, String clientId, String clientSecret) {
