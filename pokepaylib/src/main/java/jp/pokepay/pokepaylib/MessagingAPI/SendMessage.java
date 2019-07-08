@@ -32,11 +32,7 @@ public class SendMessage extends BankRequest {
         this.subject = subject;
         this.body = body;
         this.fromAccountId = fromAccountId;
-        if (requestId == null) {
-            this.requestId = UUID.randomUUID().toString();
-        } else {
-            this.requestId = requestId;
-        }
+        this.requestId = UUID.randomUUID().toString();
     }
 
     protected final String path() {
