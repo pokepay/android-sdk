@@ -107,10 +107,11 @@ public class Pokepay {
                 final String jwt = bleController.read(1000 * 10);
                 final CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null);
                 final JwtResult jwtResult = createTransactionWithJwt.send(accessToken);
-                bleController.write(jwtResult.data, 1000 * 10);
                 if (jwtResult.data != null) {
+                    bleController.write(jwtResult.data, 1000 * 10);
                     return jwtResult.parseAsUserTransaction();
                 } else if (jwtResult.error != null) {
+                    bleController.write(jwtResult.error, 1000 * 10);
                     final BankError err = jwtResult.parseAsAPIError();
                     throw new BankRequestError(0, err);
                 } else {
