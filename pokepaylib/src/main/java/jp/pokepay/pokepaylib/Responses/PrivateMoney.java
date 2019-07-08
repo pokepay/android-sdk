@@ -17,7 +17,6 @@ public class PrivateMoney extends Response {
     public String       description;
     @NonNull
     public String       oneline_message;
-    @NonNull
     public String       account_image;
     @NonNull
     public Images       images;
