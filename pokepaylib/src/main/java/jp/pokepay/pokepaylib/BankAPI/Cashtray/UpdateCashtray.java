@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.Cashtray;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,12 +12,13 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.Cashtray;
 
 public class UpdateCashtray extends BankRequest {
+    @NonNull
     public String id;
-    public double amount;
+    public Double amount;
     public String description;
-    public int    expiresIn;
+    public Integer expiresIn;
 
-    public UpdateCashtray(String id, double amount, String description, int expiresIn) {
+    public UpdateCashtray(String id, Double amount, String description, Integer expiresIn) {
         this.id = id;
         this.amount = amount;
         this.description = description;
@@ -33,9 +36,9 @@ public class UpdateCashtray extends BankRequest {
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
-            put("amount", amount >= 0 ? amount : null);
+            put("amount", amount);
             put("description", description);
-            put("expires_in", expiresIn >= 0 ? expiresIn : null);
+            put("expires_in", expiresIn);
         }};
     }
 

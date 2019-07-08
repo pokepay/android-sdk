@@ -1,7 +1,10 @@
 package jp.pokepay.pokepaylib.MessagingAPI;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
@@ -10,20 +13,24 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.Message;
 
 public class SendMessage extends BankRequest {
+    @NonNull
     public String toUserId;
-    public double amount;
+    public Double amount;
+    @NonNull
     public String subject;
+    @NonNull
     public String body;
     public String fromAccountId;
+    @NonNull
     public String requestId;
 
-    public SendMessage(String toUserId, double amount, String subject, String body, String fromAccountId, String requestId) {
+    public SendMessage(String toUserId, Double amount, String subject, String body, String fromAccountId) {
         this.toUserId = toUserId;
         this.amount = amount;
         this.subject = subject;
         this.body = body;
         this.fromAccountId = fromAccountId;
-        this.requestId = requestId;
+        this.requestId = UUID.randomUUID().toString();
     }
 
     protected final String path() {
@@ -38,11 +45,11 @@ public class SendMessage extends BankRequest {
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
             put("to_user_id", toUserId);
-            put("amount", amount > 0 ? amount : null);
+            put("amount", amount);
             put("subject", subject);
             put("body", body);
             put("from_account_id", fromAccountId);
-            put("request_id", requestId);
+            put("_request_id", requestId);
         }};
     }
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jp.pokepay.pokepaylib.Response;
 
-public class Image extends Response {
+public class Images extends Response {
     public String card;
 
     @JsonProperty("300x300")

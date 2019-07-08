@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.User;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +12,7 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.NoContent;
 
 public class RegisterUserEmail extends BankRequest {
+    @NonNull
     public String token;
 
     public RegisterUserEmail(String token) {

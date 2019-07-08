@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.Transaction;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,10 +12,11 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class CreateTransactionWithCheck extends BankRequest {
+    @NonNull
     public String checkId;
     public String accountId;
 
-    public CreateTransactionWithCheck(String checkId, String accountId){
+    public CreateTransactionWithCheck(String checkId, String accountId) {
         this.checkId   = checkId;
         this.accountId = accountId;
     }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
 import jp.pokepay.pokepaylib.AES128;
 import jp.pokepay.pokepaylib.ProcessingError;
 

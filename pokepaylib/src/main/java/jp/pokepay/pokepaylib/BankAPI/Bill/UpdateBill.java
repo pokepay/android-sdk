@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.Bill;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,11 +12,12 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.Bill;
 
 public class UpdateBill extends BankRequest {
+    @NonNull
     public String id;
-    public double amount;
+    public Double amount;
     public String description;
 
-    public UpdateBill(String id, double amount, String description) {
+    public UpdateBill(String id, Double amount, String description) {
         this.id = id;
         this.amount = amount;
         this.description = description;
@@ -31,7 +34,7 @@ public class UpdateBill extends BankRequest {
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
-            put("amount", amount >= 0 ? amount : null);
+            put("amount", amount);
             put("description", description);
         }};
     }

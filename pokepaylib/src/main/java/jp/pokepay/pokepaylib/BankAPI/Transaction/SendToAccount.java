@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.Transaction;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +12,7 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class SendToAccount extends BankRequest {
+    @NonNull
     public String accountId;
     public double amount;
     public String receiverTerminalId;

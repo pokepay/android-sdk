@@ -108,7 +108,7 @@ public class View02Activity extends AppCompatActivity {
                         final Message msg = Message.obtain();
                         try {
                             Pokepay.Client client = new Pokepay.Client(accessToken1, View02Activity.this);
-                            final String token = client.createToken(1, "AndroidTest bill");
+                            final String token = client.createToken(1.0, "AndroidTest bill");
                             client = new Pokepay.Client(accessToken2, View02Activity.this,true);
                             final UserTransaction userTransaction = client.scanToken(token);
                             msg.obj = "Success transaction: " + userTransaction.toString();
@@ -134,7 +134,7 @@ public class View02Activity extends AppCompatActivity {
                         final Message msg = Message.obtain();
                         try {
                             Pokepay.Client client = new Pokepay.Client(accessToken2, View02Activity.this, true);
-                            final String token = client.createToken(1, "AndroidTest cashtray");
+                            final String token = client.createToken(1.0, "AndroidTest cashtray");
                             client = new Pokepay.Client(accessToken1, View02Activity.this);
                             final UserTransaction userTransaction = client.scanToken(token);
                             msg.obj = "Success transaction: " + userTransaction.toString();
@@ -160,7 +160,7 @@ public class View02Activity extends AppCompatActivity {
                         final Message msg = Message.obtain();
                         try {
                             Pokepay.Client client = new Pokepay.Client(accessToken2,View02Activity.this);
-                            final String token = client.createToken(1, "AndroidTest check");
+                            final String token = client.createToken(1.0, "AndroidTest check");
                             client = new Pokepay.Client(accessToken1,View02Activity.this);
                             UserTransaction userTransaction = client.scanToken(token);
                             msg.obj = "Success transaction: " + userTransaction.toString();
@@ -186,7 +186,7 @@ public class View02Activity extends AppCompatActivity {
                         final Message msg = Message.obtain();
                         try {
                             Pokepay.Client client = new Pokepay.Client(accessToken2,View02Activity.this);
-                            final String token = client.createToken(1, "AndroidTest check");
+                            final String token = client.createToken(1.0, "AndroidTest check");
                             client = new Pokepay.Client(accessToken1,View02Activity.this);
                             final TokenInfo info = client.getTokenInfo(token);
                             if (info.type == TokenInfo.Type.CHECK) {

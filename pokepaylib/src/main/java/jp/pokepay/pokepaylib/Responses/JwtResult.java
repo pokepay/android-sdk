@@ -1,10 +1,13 @@
 package jp.pokepay.pokepaylib.Responses;
 
+import android.util.Base64;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.nio.charset.StandardCharsets;
+
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Response;
-import android.util.Base64;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.nio.charset.StandardCharsets;
 
 public class JwtResult extends Response {
     public String data;

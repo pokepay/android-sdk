@@ -12,9 +12,9 @@ import jp.pokepay.pokepaylib.Responses.PaginatedMessages;
 public class ListMessages extends BankRequest {
     public String before;
     public String after;
-    public int perPage;
+    public Integer perPage;
 
-    public ListMessages(String before, String after, int perPage) {
+    public ListMessages(String before, String after, Integer perPage) {
         this.before = before;
         this.after = after;
         this.perPage = perPage;
@@ -33,7 +33,7 @@ public class ListMessages extends BankRequest {
         return new HashMap<String, Object>() {{
             put("before", before);
             put("after", after);
-            put("per_page", perPage > 0 ? perPage : null);
+            put("per_page", perPage);
         }};
     }
 

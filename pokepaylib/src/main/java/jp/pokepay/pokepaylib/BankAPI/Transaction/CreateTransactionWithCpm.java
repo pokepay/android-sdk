@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.Transaction;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,11 +12,12 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class CreateTransactionWithCpm extends BankRequest {
+    @NonNull
     public String cpmToken;
     public String accountId;
-    public double amount;
+    public Double amount;
 
-    public CreateTransactionWithCpm(String cpmToken, String accountId, double amount) {
+    public CreateTransactionWithCpm(String cpmToken, String accountId, Double amount) {
         this.cpmToken  = cpmToken;
         this.accountId = accountId;
         this.amount    = amount;

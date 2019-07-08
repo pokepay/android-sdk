@@ -100,13 +100,13 @@ public class LowLevelAPITests {
 
     public String BillTest() throws BankRequestError, ProcessingError {
         // Billの作成 //
-        CreateBill createBill = new CreateBill(1, "bill test", null);
+        CreateBill createBill = new CreateBill(1.0, "bill test", null);
         Bill bill = createBill.send(merchantAccessToken);
         // Billの確認 //
         GetBill getBill = new GetBill(bill.id);
         bill = getBill.send(merchantAccessToken);
         // Billの支払いを2円に変更 //
-        UpdateBill updateBill = new UpdateBill(bill.id, 2, "bill update");
+        UpdateBill updateBill = new UpdateBill(bill.id, 2.0, "bill update");
         bill = updateBill.send(merchantAccessToken);
         // Billの消去 //
         DeleteBill deleteBill = new DeleteBill(bill.id);
@@ -119,7 +119,7 @@ public class LowLevelAPITests {
 
     public String CashtrayTest() throws BankRequestError, ProcessingError {
         // Cashtrayの作成 //
-        CreateCashtray createCashtray = new CreateCashtray(1, "cashtray test", -1);
+        CreateCashtray createCashtray = new CreateCashtray(1.0, "cashtray test", null);
         Cashtray cashtray = createCashtray.send(customerAccessToken);
         System.out.println("cashtray created " + cashtray.id);
         // Cashtrayの確認 //
@@ -127,7 +127,7 @@ public class LowLevelAPITests {
         cashtray = getCashtray.send(customerAccessToken);
         System.out.println("cashtray got " + cashtray.id);
         // Cashtrayの支払いを2円に変更 //
-        UpdateCashtray updateCashtray = new UpdateCashtray(cashtray.id, 2, "cashtray update", -1);
+        UpdateCashtray updateCashtray = new UpdateCashtray(cashtray.id, 2.0, "cashtray update", null);
         cashtray = updateCashtray.send(customerAccessToken);
         System.out.println("cashtray updated " + cashtray.id);
         // Cashtrayの消去 //
@@ -152,7 +152,7 @@ public class LowLevelAPITests {
 
     public String CheckTest() throws BankRequestError, ProcessingError {
         // Checkの作成 //
-        CreateCheck createCheck = new CreateCheck(1, "check test", null);
+        CreateCheck createCheck = new CreateCheck(1.0, "check test", null);
         Check check = createCheck.send(merchantAccessToken);
         System.out.println("check created " + check.id);
         // Checkの確認 //
@@ -163,7 +163,7 @@ public class LowLevelAPITests {
         }
         System.out.println("check got " + check.id);
         // Checkの支払いを2円に変更 //
-        UpdateCheck updateCheck = new UpdateCheck(check.id, 2, "check update");
+        UpdateCheck updateCheck = new UpdateCheck(check.id, 2.0, "check update");
         check = updateCheck.send(merchantAccessToken);
         if (check.amount != 2.0) {
             throw new ProcessingError("Update failed");
@@ -215,11 +215,11 @@ public class LowLevelAPITests {
         Terminal terminal = getTerminal.send(customerAccessToken);
         System.out.println("terminal info got " + terminal.toString());
         // Billの作成 //
-        CreateBill createBill = new CreateBill(1, "transaction test", null);
+        CreateBill createBill = new CreateBill(1.0, "transaction test", null);
         Bill bill = createBill.send(merchantAccessToken);
         System.out.println("bill created " + bill.toString());
         // 上記のBillで取引を作成 //
-        CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(bill.id, null, 1);
+        CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(bill.id, null, 1.0);
         userTransaction = createTransactionWithBill.send(customerAccessToken);
         System.out.println("transaction created " + userTransaction.toString());
         // 取引の確認 //
@@ -227,9 +227,9 @@ public class LowLevelAPITests {
         userTransaction = getTransaction.send(customerAccessToken);
         System.out.println("transaction got " + userTransaction.toString());
         // 取引のキャンセル
-        final CancelTransaction cancelTransaction = new CancelTransaction(userTransaction.id);
-        NoContent nc = cancelTransaction.send(merchantAccessToken);
-        System.out.println("transaction canceled " + userTransaction.toString());
+        //final CancelTransaction cancelTransaction = new CancelTransaction(userTransaction.id);
+        //NoContent nc = cancelTransaction.send(merchantAccessToken);
+        //System.out.println("transaction canceled " + userTransaction.toString());
         // キャンセルできたか確認 //
         getTransaction = new GetTransaction(userTransaction.id);
         userTransaction = getTransaction.send(customerAccessToken);
@@ -318,7 +318,7 @@ public class LowLevelAPITests {
 
         System.out.println("店のアクセストークンでCpmにtopup");
         SystemClock.sleep(50);
-        CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(cpmToken2.cpm_token, null, 100);
+        CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(cpmToken2.cpm_token, null, 100.0);
         createTransactionWithCpm.send(merchantAccessToken);
 
         System.out.println("客のアクセストークンでCpmをget、transaction確認");
@@ -339,7 +339,7 @@ public class LowLevelAPITests {
 
         System.out.println("店のアクセストークンでCpmにpayment");
         SystemClock.sleep(50);
-        CreateTransactionWithCpm createTransactionWithCpm2 = new CreateTransactionWithCpm(cpmToken3.cpm_token, null, -100);
+        CreateTransactionWithCpm createTransactionWithCpm2 = new CreateTransactionWithCpm(cpmToken3.cpm_token, null, -100.0);
         createTransactionWithCpm2.send(merchantAccessToken);
 
         System.out.println("客のアクセストークンでCpmをget、transaction確認");

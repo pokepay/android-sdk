@@ -14,7 +14,7 @@ public class SearchPrivateMoneys extends BankRequest {
     public boolean includeExclusive;
     public String before;
     public String after;
-    public int perPage;
+    public Integer perPage;
 
     public SearchPrivateMoneys(String name, boolean includeExclusive, String before, String after, int perPage) {
         this.name = name;
@@ -39,7 +39,7 @@ public class SearchPrivateMoneys extends BankRequest {
             put("include_exclusive", includeExclusive);
             put("before", before);
             put("after", after);
-            put("per_page", perPage > 0 ? perPage : null);
+            put("per_page", perPage);
         }};
     }
 
