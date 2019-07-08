@@ -3,6 +3,7 @@ package jp.pokepay.pokepaylib.Responses;
 import android.support.annotation.NonNull;
 
 import java.util.Date;
+
 import jp.pokepay.pokepaylib.Response;
 
 public class Message extends Response {

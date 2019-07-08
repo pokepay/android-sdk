@@ -2,8 +2,6 @@ package jp.pokepay.pokepaylib.MessagingAPI;
 
 import android.support.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
