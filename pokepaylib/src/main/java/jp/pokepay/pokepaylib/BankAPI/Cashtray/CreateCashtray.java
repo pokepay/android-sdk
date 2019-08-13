@@ -5,6 +5,7 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.Parameters.Product;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.Cashtray;
@@ -13,11 +14,13 @@ public class CreateCashtray extends BankRequest {
     public double amount;
     public String description;
     public Integer expiresIn;
+    public Product[] products;
 
-    public CreateCashtray(double amount, String description, Integer expiresIn) {
+    public CreateCashtray(double amount, String description, Integer expiresIn, Product[] products) {
         this.amount = amount;
         this.description = description;
         this.expiresIn = expiresIn;
+        this.products = products;
     }
 
     protected final String path() {
@@ -34,6 +37,7 @@ public class CreateCashtray extends BankRequest {
             put("amount", amount);
             put("description", description);
             put("expires_in", expiresIn);
+            put("products", products);
         }};
     }
 
