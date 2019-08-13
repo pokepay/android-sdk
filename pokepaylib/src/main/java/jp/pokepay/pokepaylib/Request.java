@@ -148,7 +148,6 @@ public class Request {
                         con.setRequestProperty("Accept-Language", "jp");
                         con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
                         con.setRequestProperty("Content-Length", String.valueOf(body.length));
-                        // Log.d("Pokepay", "body: " + new String(body));
                         OutputStream out = con.getOutputStream();
                         out.write(body);
                         out.flush();

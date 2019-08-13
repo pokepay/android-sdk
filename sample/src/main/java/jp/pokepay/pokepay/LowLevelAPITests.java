@@ -28,7 +28,6 @@ import jp.pokepay.pokepaylib.BankAPI.PrivateMoney.SearchPrivateMoneys;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.AddTerminalPublicKey;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.GetTerminal;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.UpdateTerminal;
-import jp.pokepay.pokepaylib.BankAPI.Transaction.CancelTransaction;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithBill;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCpm;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.GetTransaction;
@@ -67,9 +66,9 @@ public class LowLevelAPITests {
         Product[] products = null;
         try {
             products = new Product[3];
-            products[0] = Product.create("4569951116179", null, "ハウスこくまろカレー140g", 150, 300, false, 2.0, "個");
-            products[1] = Product.create("4569951116179", null, "SBカレーの王子様80g", 160, 160, false, 1.0, "個");
-            products[2] = Product.create("4569951116179", "4569951116179", "牛肩ロースしゃぶしゃぶ用", 200, 600, false, 300.0, "グラム");
+            products[0] = Product.create("4569951116179", null, "ハムスこくとろカレー140g", 150, 300, false, 2.0, "個");
+            products[1] = Product.create("4569951116179", null, "SCカレーの王様80g", 160, 160, false, 1.0, "個");
+            products[2] = Product.create("4569951116179", "4569951116179", "牛肩ロースしゃぶしゃぶ用", 200, 600, false, 3.0, "100グラム");
         } catch (JSONException e) {
             System.out.println("Error: LowLevelAPITests.getProducts(): " + e.toString());
         }
