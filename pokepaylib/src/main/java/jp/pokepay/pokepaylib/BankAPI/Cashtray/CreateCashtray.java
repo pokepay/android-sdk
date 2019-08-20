@@ -37,7 +37,13 @@ public class CreateCashtray extends BankRequest {
             put("amount", amount);
             put("description", description);
             put("expires_in", expiresIn);
-            put("products", products);
+            if (products != null) {
+                Map<String, Object>[] productsMap = new Map[products.length];
+                for (int i = 0; i < products.length; i++) {
+                    productsMap[i] = products[i].toMap();
+                }
+                put("products", productsMap);
+            }
         }};
     }
 

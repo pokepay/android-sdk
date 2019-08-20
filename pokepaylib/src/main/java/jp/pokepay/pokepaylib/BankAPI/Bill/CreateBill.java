@@ -37,7 +37,13 @@ public class CreateBill extends BankRequest {
             put("amount", amount);
             put("description", description);
             put("account_id", accountId);
-            put("products", products);
+            if (products != null) {
+                Map<String, Object>[] productsMap = new Map[products.length];
+                for (int i = 0; i < products.length; i++) {
+                    productsMap[i] = products[i].toMap();
+                }
+                put("products", productsMap);
+            }
         }};
     }
 

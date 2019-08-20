@@ -40,7 +40,13 @@ public class CreateTransactionWithCpm extends BankRequest {
             put("cpm_token", cpmToken);
             put("account_id", accountId);
             put("amount", amount);
-            put("products", products);
+            if (products != null) {
+                Map<String, Object>[] productsMap = new Map[products.length];
+                for (int i = 0; i < products.length; i++) {
+                    productsMap[i] = products[i].toMap();
+                }
+                put("products", productsMap);
+            }
         }};
     }
 

@@ -67,14 +67,10 @@ public class LowLevelAPITests {
 
     public Product[] getProducts() {
         Product[] products = null;
-        try {
-            products = new Product[3];
-            products[0] = Product.create("4569951116179", null, "ハムスこくとろカレー140g", 150, 300, false, 2.0, "個");
-            products[1] = Product.create("4569951116179", null, "SCカレーの王様80g", 160, 160, false, 1.0, "個");
-            products[2] = Product.create("4569951116179", "4569951116179", "牛肩ロースしゃぶしゃぶ用", 200, 600, false, 3.0, "100グラム");
-        } catch (JSONException e) {
-            System.out.println("Error: LowLevelAPITests.getProducts(): " + e.toString());
-        }
+        products = new Product[3];
+        products[0] = Product.create("4569951116179", null, "ハムスこくとろカレー140g", 150, 300, false, 2.0, "個");
+        products[1] = Product.create("4569951116179", null, "SCカレーの王様80g", 160, 160, false, 1.0, "個");
+        products[2] = Product.create("4569951116179", "4569951116179", "牛肩ロースしゃぶしゃぶ用", 200, 600, false, 3.0, "100グラム");
         return products;
     }
 
