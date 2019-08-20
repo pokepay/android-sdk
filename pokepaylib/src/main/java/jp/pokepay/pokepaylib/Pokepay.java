@@ -168,22 +168,28 @@ public class Pokepay {
             return createToken(amount, description, expiresIn, null, null);
         }
 
+        public String createToken(Double amount, String description, Integer expiresIn, String accountId) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, expiresIn, accountId, null);
+        }
+
         public String createToken(Double amount, String description, Integer expiresIn, String accountId, Product[] products) throws ProcessingError, BankRequestError {
             final Env env = Env.current();
             if (isMerchant) {
                 CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn, products);
                 Cashtray cashtray = createCashtray.send(accessToken);
                 return env.WWW_BASE_URL() + "/cashtrays/" + cashtray.id;
-            } else if (amount < 0) {
-                CreateBill createBill = new CreateBill(-amount, description, accountId, products);
-                Bill bill = createBill.send(accessToken);
-                return env.WWW_BASE_URL() + "/bills/" + bill.id;
-            } else if (amount > 0) {
-                CreateCheck createCheck = new CreateCheck(amount, description, accountId);
-                Check check = createCheck.send(accessToken);
-                return env.WWW_BASE_URL() + "/checks/" + check.id;
-            } else { // amount == 0
-                CreateBill createBill = new CreateBill(amount, description, accountId, products);
+            } else if (amount != null) {
+                if (amount < 0) {
+                    CreateBill createBill = new CreateBill(-amount, accountId, description, products);
+                    Bill bill = createBill.send(accessToken);
+                    return env.WWW_BASE_URL() + "/bills/" + bill.id;
+                } else {
+                    CreateCheck createCheck = new CreateCheck(amount, accountId, description);
+                    Check check = createCheck.send(accessToken);
+                    return env.WWW_BASE_URL() + "/checks/" + check.id;
+                }
+            } else { // amount == null
+                CreateBill createBill = new CreateBill(amount, accountId, description, products);
                 Bill bill = createBill.send(accessToken);
                 return env.WWW_BASE_URL() + "/bills/" + bill.id;
             }
