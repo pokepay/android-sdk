@@ -1,5 +1,9 @@
 # Pokepay Android SDK
 
+## Document
+
+* https://docs.pokepay.jp/sdk/android.html
+
 ## Installation　（jcenter上のライブラリを使用）
 
 ライブラリを使用するModule(appなど）の build.gradle に追記
