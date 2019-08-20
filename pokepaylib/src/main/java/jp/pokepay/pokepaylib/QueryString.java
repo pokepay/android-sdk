@@ -3,7 +3,7 @@ package jp.pokepay.pokepaylib;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class QueryString {
+class QueryString {
 
     public static String build(String pairs[][]) {
         String query = "";

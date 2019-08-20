@@ -7,6 +7,7 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.Parameters.Product;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
@@ -16,11 +17,13 @@ public class CreateTransactionWithCpm extends BankRequest {
     public String cpmToken;
     public String accountId;
     public Double amount;
+    public Product[] products;
 
-    public CreateTransactionWithCpm(String cpmToken, String accountId, Double amount) {
+    public CreateTransactionWithCpm(String cpmToken, String accountId, Double amount, Product[] products) {
         this.cpmToken  = cpmToken;
         this.accountId = accountId;
         this.amount    = amount;
+        this.products  = products;
     }
 
     protected final String path() {
@@ -37,6 +40,13 @@ public class CreateTransactionWithCpm extends BankRequest {
             put("cpm_token", cpmToken);
             put("account_id", accountId);
             put("amount", amount);
+            if (products != null) {
+                Map<String, Object>[] productsMap = new Map[products.length];
+                for (int i = 0; i < products.length; i++) {
+                    productsMap[i] = products[i].toMap();
+                }
+                put("products", productsMap);
+            }
         }};
     }
 

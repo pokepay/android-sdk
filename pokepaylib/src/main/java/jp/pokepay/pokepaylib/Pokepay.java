@@ -20,6 +20,7 @@ import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCpm;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithJwt;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.Token.ExchangeAuthCode;
+import jp.pokepay.pokepaylib.Parameters.Product;
 import jp.pokepay.pokepaylib.Pokeregi.BLEController;
 import jp.pokepay.pokepaylib.Responses.AccessToken;
 import jp.pokepay.pokepaylib.Responses.BankError;
@@ -92,31 +93,31 @@ public class Pokepay {
         }
 
         public UserTransaction scanToken(String token) throws ProcessingError, BankRequestError {
-            return scanToken(token, null);
+            return scanToken(token, null, null, null);
         }
 
-        public UserTransaction scanToken(String token, Double amount) throws ProcessingError, BankRequestError {
+        public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products) throws ProcessingError, BankRequestError {
             final Env env = Env.current();
             if (token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
-                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, null);
+                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId);
                 return createTransactionWithCashtray.send(accessToken);
             }
             else if (token.startsWith(env.WWW_BASE_URL() + "/bills/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/bills/").length());
-                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, null, amount);
+                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount);
                 return createTransactionWithBill.send(accessToken);
             }
             else if (token.startsWith(env.WWW_BASE_URL() + "/checks/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/checks/").length());
-                final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, null);
+                final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
                 return createTransactionWithCheck.send(accessToken);
             }
             else if (token.matches("^[A-Z0-9]{25}$")) {
                 return scanTokenBLE(token);
             }
             else if (token.matches("^[0-9]{12}$")) {
-                final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, null, amount);
+                final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, accountId, amount, products);
                 return createTransactionWithCpm.send(accessToken);
             }
             throw new ProcessingError("Unknown token format");
@@ -160,29 +161,35 @@ public class Pokepay {
         }
 
         public String createToken(Double amount, String description) throws ProcessingError, BankRequestError {
-            return createToken(amount, description, null, null);
+            return createToken(amount, description, null, null, null);
         }
 
         public String createToken(Double amount, String description, Integer expiresIn) throws ProcessingError, BankRequestError {
-            return createToken(amount, description, expiresIn, null);
+            return createToken(amount, description, expiresIn, null, null);
         }
 
         public String createToken(Double amount, String description, Integer expiresIn, String accountId) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, expiresIn, accountId, null);
+        }
+
+        public String createToken(Double amount, String description, Integer expiresIn, String accountId, Product[] products) throws ProcessingError, BankRequestError {
             final Env env = Env.current();
             if (isMerchant) {
-                CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn);
+                CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn, products);
                 Cashtray cashtray = createCashtray.send(accessToken);
                 return env.WWW_BASE_URL() + "/cashtrays/" + cashtray.id;
-            } else if (amount < 0) {
-                CreateBill createBill = new CreateBill(-amount, description, accountId);
-                Bill bill = createBill.send(accessToken);
-                return env.WWW_BASE_URL() + "/bills/" + bill.id;
-            } else if (amount > 0) {
-                CreateCheck createCheck = new CreateCheck(amount, description, accountId);
-                Check check = createCheck.send(accessToken);
-                return env.WWW_BASE_URL() + "/checks/" + check.id;
-            } else { // amount == 0
-                CreateBill createBill = new CreateBill(amount, description, accountId);
+            } else if (amount != null) {
+                if (amount < 0) {
+                    CreateBill createBill = new CreateBill(-amount, accountId, description, products);
+                    Bill bill = createBill.send(accessToken);
+                    return env.WWW_BASE_URL() + "/bills/" + bill.id;
+                } else {
+                    CreateCheck createCheck = new CreateCheck(amount, accountId, description);
+                    Check check = createCheck.send(accessToken);
+                    return env.WWW_BASE_URL() + "/checks/" + check.id;
+                }
+            } else { // amount == null
+                CreateBill createBill = new CreateBill(amount, accountId, description, products);
                 Bill bill = createBill.send(accessToken);
                 return env.WWW_BASE_URL() + "/bills/" + bill.id;
             }

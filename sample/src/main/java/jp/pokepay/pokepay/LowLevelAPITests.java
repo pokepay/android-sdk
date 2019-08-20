@@ -3,6 +3,8 @@ package jp.pokepay.pokepay;
 
 import android.os.SystemClock;
 
+import org.json.JSONException;
+
 import jp.pokepay.pokepaylib.BankAPI.Account.CreateAccount;
 import jp.pokepay.pokepaylib.BankAPI.Account.CreateAccountCpmToken;
 import jp.pokepay.pokepaylib.BankAPI.Account.GetAccount;
@@ -16,6 +18,7 @@ import jp.pokepay.pokepaylib.BankAPI.Bill.UpdateBill;
 import jp.pokepay.pokepaylib.BankAPI.Cashtray.CreateCashtray;
 import jp.pokepay.pokepaylib.BankAPI.Cashtray.DeleteCashtray;
 import jp.pokepay.pokepaylib.BankAPI.Cashtray.GetCashtray;
+import jp.pokepay.pokepaylib.BankAPI.Cashtray.GetCashtrayAttempts;
 import jp.pokepay.pokepaylib.BankAPI.Cashtray.UpdateCashtray;
 import jp.pokepay.pokepaylib.BankAPI.Check.CreateCheck;
 import jp.pokepay.pokepaylib.BankAPI.Check.DeleteCheck;
@@ -26,8 +29,8 @@ import jp.pokepay.pokepaylib.BankAPI.PrivateMoney.SearchPrivateMoneys;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.AddTerminalPublicKey;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.GetTerminal;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.UpdateTerminal;
-import jp.pokepay.pokepaylib.BankAPI.Transaction.CancelTransaction;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithBill;
+import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCashtray;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCpm;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.GetTransaction;
 import jp.pokepay.pokepaylib.BankAPI.User.DeleteUserEmail;
@@ -36,12 +39,14 @@ import jp.pokepay.pokepaylib.BankAPI.User.GetUserTransactions;
 import jp.pokepay.pokepaylib.BankAPI.User.RegisterUserEmail;
 import jp.pokepay.pokepaylib.BankAPI.User.SendConfirmationEmail;
 import jp.pokepay.pokepaylib.Env;
+import jp.pokepay.pokepaylib.Parameters.Product;
 import jp.pokepay.pokepaylib.Pokepay;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.Account;
 import jp.pokepay.pokepaylib.Responses.AccountCpmToken;
 import jp.pokepay.pokepaylib.Responses.Bill;
 import jp.pokepay.pokepaylib.Responses.Cashtray;
+import jp.pokepay.pokepaylib.Responses.CashtrayAttempts;
 import jp.pokepay.pokepaylib.Responses.Check;
 import jp.pokepay.pokepaylib.Responses.NoContent;
 import jp.pokepay.pokepaylib.Responses.PaginatedAccountBalances;
@@ -54,10 +59,19 @@ import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class LowLevelAPITests {
     private String merchantAccessToken = "7mL_asUSVHUZhW11nDJzlm-Xa7-01VjgVBPi8Hd43UAqYpMCEfEuzLPGWfKr0VU9";// 購入店を想定
-    private String customerAccessToken = "oNTvWHFqv512JJQhUVgAwCx7LphHVpHFAp_jDMQ62THIN9iOwNfUXA9nMkI66xoA";// 購入客を想定(残高あり)
+    private String customerAccessToken = "fWhzN-3FpIHdNcak5304hJHS7RTSTIpEWfdt0DUwZGAjU947OAV-fWBmPoKjSG6w";// 購入客を想定(残高あり)
 
     public LowLevelAPITests() {
         Pokepay.setEnv(Env.DEVELOPMENT);
+    }
+
+    public Product[] getProducts() {
+        Product[] products = null;
+        products = new Product[3];
+        products[0] = Product.create("4569951116179", null, "ハムスこくとろカレー140g", 150, 300, false, 2.0, "個");
+        products[1] = Product.create("4569951116179", null, "SCカレーの王様80g", 160, 160, false, 1.0, "個");
+        products[2] = Product.create("4569951116179", "4569951116179", "牛肩ロースしゃぶしゃぶ用", 200, 600, false, 3.0, "100グラム");
+        return products;
     }
 
     // 全てのテストを一括で行う //
@@ -100,7 +114,7 @@ public class LowLevelAPITests {
 
     public String BillTest() throws BankRequestError, ProcessingError {
         // Billの作成 //
-        CreateBill createBill = new CreateBill(1.0, "bill test", null);
+        CreateBill createBill = new CreateBill(1.0, null, "bill test", null);
         Bill bill = createBill.send(merchantAccessToken);
         // Billの確認 //
         GetBill getBill = new GetBill(bill.id);
@@ -114,45 +128,106 @@ public class LowLevelAPITests {
         // 消去できているかの確認 //
         getBill = new GetBill(bill.id);
         bill = getBill.send(merchantAccessToken);
+        // with products
+        // Billの作成 //
+        createBill = new CreateBill(1.0, null, "bill test", getProducts());
+        bill = createBill.send(merchantAccessToken);
+        // Billの確認 //
+        getBill = new GetBill(bill.id);
+        bill = getBill.send(merchantAccessToken);
+        // Billの支払いを2円に変更 //
+        updateBill = new UpdateBill(bill.id, 2.0, "bill update");
+        bill = updateBill.send(merchantAccessToken);
+        // Billの消去 //
+        deleteBill = new DeleteBill(bill.id);
+        nc = deleteBill.send(merchantAccessToken);
         return "OK";
     }
 
     public String CashtrayTest() throws BankRequestError, ProcessingError {
-        // Cashtrayの作成 //
-        CreateCashtray createCashtray = new CreateCashtray(1.0, "cashtray test", null);
-        Cashtray cashtray = createCashtray.send(customerAccessToken);
+        System.out.println("Cashtrayの作成");
+        CreateCashtray createCashtray = new CreateCashtray(1.0, "cashtray test", null, null);
+        Cashtray cashtray = createCashtray.send(merchantAccessToken);
         System.out.println("cashtray created " + cashtray.id);
-        // Cashtrayの確認 //
+        System.out.println("Cashtrayの作成 // with-products");
+        createCashtray = new CreateCashtray(1.0, "cashtray test", null, getProducts());
+        cashtray = createCashtray.send(merchantAccessToken);
+        System.out.println("cashtray created " + cashtray.id);
+        System.out.println("Cashtrayの確認");
         GetCashtray getCashtray = new GetCashtray(cashtray.id);
-        cashtray = getCashtray.send(customerAccessToken);
+        cashtray = getCashtray.send(merchantAccessToken);
         System.out.println("cashtray got " + cashtray.id);
-        // Cashtrayの支払いを2円に変更 //
+        System.out.println("Cashtrayのチャージを2円に変更");
         UpdateCashtray updateCashtray = new UpdateCashtray(cashtray.id, 2.0, "cashtray update", null);
-        cashtray = updateCashtray.send(customerAccessToken);
+        cashtray = updateCashtray.send(merchantAccessToken);
         System.out.println("cashtray updated " + cashtray.id);
-        // Cashtrayの消去 //
+        System.out.println("Cashtrayの消去");
         DeleteCashtray deleteCashtray = new DeleteCashtray(cashtray.id);
-        NoContent nc = deleteCashtray.send(customerAccessToken);
+        NoContent nc = deleteCashtray.send(merchantAccessToken);
         System.out.println("cashtray deleted " + cashtray.id);
-        // 消去できているかの確認 //
+        System.out.println("消去できているかの確認");
         getCashtray = new GetCashtray(cashtray.id);
         try {
-            cashtray = getCashtray.send(customerAccessToken);
+            cashtray = getCashtray.send(merchantAccessToken);
             // If it success its wrong.
             throw new ProcessingError("cashtray delete failed " + cashtray.toString());
         } catch (BankRequestError e) {
             if (e.statusCode == 404) {
                 System.out.println("cashtray NotFound " + cashtray.id);
-                return "OK";
+            } else {
+                throw e;
             }
-            throw e;
         }
-
+        System.out.println("Cashtrayの作成 // (1万円支払い)");
+        createCashtray = new CreateCashtray(-10000, "cashtray test", null, getProducts());
+        cashtray = createCashtray.send(merchantAccessToken);
+        System.out.println("cashtray created " + cashtray.id);
+        System.out.println("CashtrayAttempts取得 => null");
+        GetCashtrayAttempts getCashtrayAttempts = new GetCashtrayAttempts(cashtray.id);
+        CashtrayAttempts attempts = getCashtrayAttempts.send(merchantAccessToken);
+        if (attempts.rows.length != 0) {
+            throw new Error("attempts should be 0");
+        }
+        System.out.println("決済しようとする => 失敗");
+        CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(cashtray.id, null);
+        try {
+            UserTransaction transaction = createTransactionWithCashtray.send(customerAccessToken);
+        } catch (BankRequestError e) {
+            if (e.statusCode != 422) {
+                throw e;
+            }
+        }
+        System.out.println("CashtrayAttempts取得 => 1個取得");
+        getCashtrayAttempts = new GetCashtrayAttempts(cashtray.id);
+        attempts = getCashtrayAttempts.send(merchantAccessToken);
+        if (attempts.rows.length != 1) {
+            throw new Error("attempts should be 1");
+        }
+        if (attempts.rows[0].status_code != 422) {
+            throw new Error("status code not matched");
+        }
+        System.out.println("Cashtrayをチャージ1円に変更");
+        updateCashtray = new UpdateCashtray(cashtray.id, 1.0, "cashtray update", null);
+        cashtray = updateCashtray.send(merchantAccessToken);
+        System.out.println("cashtray updated " + cashtray.id);
+        System.out.println("決済しようとする => 成功");
+        createTransactionWithCashtray = new CreateTransactionWithCashtray(cashtray.id, null);
+        UserTransaction transaction = createTransactionWithCashtray.send(customerAccessToken);
+        System.out.println("CashtrayAttempts取得 => 2個取得");
+        getCashtrayAttempts = new GetCashtrayAttempts(cashtray.id);
+        attempts = getCashtrayAttempts.send(merchantAccessToken);
+        if (attempts.rows.length != 2) {
+            throw new Error("attempts should be 1");
+        }
+        if (attempts.rows[0].status_code != 200) {
+            throw new Error("status code not matched");
+        }
+        return "OK";
     }
 
     public String CheckTest() throws BankRequestError, ProcessingError {
         // Checkの作成 //
-        CreateCheck createCheck = new CreateCheck(1.0, "check test", null);
+        CreateCheck createCheck = new CreateCheck(1.0, null, "check test");
         Check check = createCheck.send(merchantAccessToken);
         System.out.println("check created " + check.id);
         // Checkの確認 //
@@ -215,7 +290,7 @@ public class LowLevelAPITests {
         Terminal terminal = getTerminal.send(customerAccessToken);
         System.out.println("terminal info got " + terminal.toString());
         // Billの作成 //
-        CreateBill createBill = new CreateBill(1.0, "transaction test", null);
+        CreateBill createBill = new CreateBill(1.0, "transaction test", null, null);
         Bill bill = createBill.send(merchantAccessToken);
         System.out.println("bill created " + bill.toString());
         // 上記のBillで取引を作成 //
@@ -318,7 +393,7 @@ public class LowLevelAPITests {
 
         System.out.println("店のアクセストークンでCpmにtopup");
         SystemClock.sleep(50);
-        CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(cpmToken2.cpm_token, null, 100.0);
+        CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(cpmToken2.cpm_token, null, 100.0, null);
         createTransactionWithCpm.send(merchantAccessToken);
 
         System.out.println("客のアクセストークンでCpmをget、transaction確認");
@@ -337,9 +412,9 @@ public class LowLevelAPITests {
         CreateAccountCpmToken createAccountCpmToken3 = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, "data");
         AccountCpmToken cpmToken3 = createAccountCpmToken3.send(customerAccessToken);
 
-        System.out.println("店のアクセストークンでCpmにpayment");
+        System.out.println("店のアクセストークンでCpmにpayment with products");
         SystemClock.sleep(50);
-        CreateTransactionWithCpm createTransactionWithCpm2 = new CreateTransactionWithCpm(cpmToken3.cpm_token, null, -100.0);
+        CreateTransactionWithCpm createTransactionWithCpm2 = new CreateTransactionWithCpm(cpmToken3.cpm_token, null, -100.0, getProducts());
         createTransactionWithCpm2.send(merchantAccessToken);
 
         System.out.println("客のアクセストークンでCpmをget、transaction確認");

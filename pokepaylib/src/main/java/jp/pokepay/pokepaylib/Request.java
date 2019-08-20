@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
@@ -142,12 +142,12 @@ public class Request {
                     con.setRequestProperty("accept", "*/*");
                     addHeaders(con, headers);
                     if (parameters != null) {
-                        final String body = JsonConverter.toString(parameters);
+                        final byte[] body = JsonConverter.toString(parameters).getBytes("UTF-8");
                         con.setDoOutput(true);
                         con.setRequestProperty("Accept-Language", "jp");
                         con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                        con.setRequestProperty("Content-Length", String.valueOf(body.length()));
-                        OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+                        con.setRequestProperty("Content-Length", String.valueOf(body.length));
+                        OutputStream out = con.getOutputStream();
                         out.write(body);
                         out.flush();
                         out.close();
@@ -175,12 +175,12 @@ public class Request {
                     con.setRequestProperty("accept", "*/*");
                     addHeaders(con, headers);
                     if (parameters != null) {
-                        final String body = JsonConverter.toString(parameters);
+                        final byte[] body = JsonConverter.toString(parameters).getBytes("UTF-8");
                         con.setDoOutput(true);
                         con.setRequestProperty("Accept-Language", "jp");
                         con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                        con.setRequestProperty("Content-Length", String.valueOf(body.length()));
-                        OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+                        con.setRequestProperty("Content-Length", String.valueOf(body.length));
+                        OutputStream out = con.getOutputStream();
                         out.write(body);
                         out.flush();
                         out.close();
@@ -197,12 +197,12 @@ public class Request {
                     con.setRequestProperty("accept", "*/*");
                     addHeaders(con, headers);
                     if (parameters != null) {
-                        final String body = JsonConverter.toString(parameters);
+                        final byte[] body = JsonConverter.toString(parameters).getBytes("UTF-8");
                         con.setDoOutput(true);
                         con.setRequestProperty("Accept-Language", "jp");
                         con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                        con.setRequestProperty("Content-Length", String.valueOf(body.length()));
-                        OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+                        con.setRequestProperty("Content-Length", String.valueOf(body.length));
+                        OutputStream out = con.getOutputStream();
                         out.write(body);
                         out.flush();
                         out.close();
