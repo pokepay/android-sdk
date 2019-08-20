@@ -14,10 +14,10 @@ public class CreateCheck extends BankRequest {
     public String description;
     public String accountId;
 
-    public CreateCheck(Double amount, String description, String accountId) {
+    public CreateCheck(Double amount, String accountId,  String description) {
         this.amount = amount;
-        this.description = description;
         this.accountId = accountId;
+        this.description = description;
     }
 
     protected final String path() {

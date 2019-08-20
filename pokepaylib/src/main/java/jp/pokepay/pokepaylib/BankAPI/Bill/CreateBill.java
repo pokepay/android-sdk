@@ -16,10 +16,10 @@ public class CreateBill extends BankRequest {
     public String accountId;
     public Product[] products;
 
-    public CreateBill(Double amount, String description, String accountId, Product[] products) {
+    public CreateBill(Double amount, String accountId, String description, Product[] products) {
         this.amount = amount;
-        this.description = description;
         this.accountId = accountId;
+        this.description = description;
         this.products = products;
     }
 
