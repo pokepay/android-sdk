@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.BankAPI.Bill.CreateBill;
 import jp.pokepay.pokepaylib.BankAPI.Bill.GetBill;
@@ -207,6 +210,14 @@ public class Pokepay {
 
         public String getAuthorizationUrl() {
             return Env.current().WWW_BASE_URL() + "/oauth/authorize?client_id=" + clientId + "&response_type=code";
+        }
+
+        public String getAuthorizationUrl(String contact) throws ProcessingError {
+            try {
+                return getAuthorizationUrl() + "&contact=" + URLEncoder.encode(contact, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new ProcessingError(e.getMessage());
+            }
         }
 
         public AccessToken getAccessToken(String code) throws ProcessingError, OAuthRequestError {
