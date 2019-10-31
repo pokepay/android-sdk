@@ -58,16 +58,17 @@ import jp.pokepay.pokepaylib.Responses.Terminal;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class LowLevelAPITests {
-    private String merchantAccessToken = "7mL_asUSVHUZhW11nDJzlm-Xa7-01VjgVBPi8Hd43UAqYpMCEfEuzLPGWfKr0VU9";// 購入店を想定
-    private String customerAccessToken = "fWhzN-3FpIHdNcak5304hJHS7RTSTIpEWfdt0DUwZGAjU947OAV-fWBmPoKjSG6w";// 購入客を想定(残高あり)
+    private final String merchantAccessToken = "eYNDMo_cAqPgxMW3qlMv9968awTwFpiwi_rR8XrRhaO6zMOgMfem2q1wfnlluo-v";// 購入店を想定
+    private final String merchantAccountId = "55694dbd-582a-442f-80e1-a23e0f49b3cd";
+    private final String customerAccessToken = "S-WAIYRN6rVdb77rYGgMeRQgMLuQ2ZAM0Fo8HfocrrTWxH7tsehCkD6JJSjGhs-0";// 購入客を想定(残高あり)
+    private final String pokepayMoneyId = "87c012b9-e8ea-4e2f-97ed-764e5ac0167f";
 
     public LowLevelAPITests() {
         Pokepay.setEnv(Env.DEVELOPMENT);
     }
 
     public Product[] getProducts() {
-        Product[] products = null;
-        products = new Product[3];
+        Product[] products = new Product[3];
         products[0] = Product.create("4569951116179", null, "ハムスこくとろカレー140g", 150, 300, false, 2.0, "個");
         products[1] = Product.create("4569951116179", null, "SCカレーの王様80g", 160, 160, false, 1.0, "個");
         products[2] = Product.create("4569951116179", "4569951116179", "牛肩ロースしゃぶしゃぶ用", 200, 600, false, 3.0, "100グラム");
@@ -98,7 +99,7 @@ public class LowLevelAPITests {
 
     public String AccountTest() throws BankRequestError, ProcessingError {
         // privateMoneyIdでアカウントの作成 //
-        CreateAccount createAccount = new CreateAccount("accountTest", "216d1e39-3acb-454e-9fbf-74c33c5bfd5d");
+        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId);
         Account account = createAccount.send(merchantAccessToken);
         // アカウントの確認 //
         GetAccount getAccount = new GetAccount(account.id);
@@ -290,7 +291,7 @@ public class LowLevelAPITests {
         Terminal terminal = getTerminal.send(customerAccessToken);
         System.out.println("terminal info got " + terminal.toString());
         // Billの作成 //
-        CreateBill createBill = new CreateBill(1.0, "transaction test", null, null);
+        CreateBill createBill = new CreateBill(1.0, null, null, null);
         Bill bill = createBill.send(merchantAccessToken);
         System.out.println("bill created " + bill.toString());
         // 上記のBillで取引を作成 //
@@ -356,7 +357,7 @@ public class LowLevelAPITests {
         }
 
         System.out.println("客のアクセストークンでCpmをcreate");
-        CreateAccount createAccount = new CreateAccount("accountTest", "216d1e39-3acb-454e-9fbf-74c33c5bfd5d");
+        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId);
         Account account = createAccount.send(customerAccessToken);
         CreateAccountCpmToken createAccountCpmToken = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, "data");
         AccountCpmToken cpmToken = createAccountCpmToken.send(customerAccessToken);

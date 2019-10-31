@@ -18,7 +18,7 @@ import jp.pokepay.pokepaylib.Responses.Terminal;
 
 public class ScannerActivity extends AppCompatActivity {
     private BLEController bleController;
-    private String accessToken = "oNTvWHFqv512JJQhUVgAwCx7LphHVpHFAp_jDMQ62THIN9iOwNfUXA9nMkI66xoA";
+    private String accessToken = "S-WAIYRN6rVdb77rYGgMeRQgMLuQ2ZAM0Fo8HfocrrTWxH7tsehCkD6JJSjGhs-0";
     private ProgressDialog progressDialog;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

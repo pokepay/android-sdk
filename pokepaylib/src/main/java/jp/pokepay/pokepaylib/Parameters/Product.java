@@ -2,21 +2,24 @@ package jp.pokepay.pokepaylib.Parameters;
 
 import android.support.annotation.NonNull;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import jp.pokepay.pokepaylib.Parameter;
 
+@JsonSerialize
 public class Product extends Parameter {
 
     @NonNull
-    String jan_code;
+    public String jan_code;
     @NonNull
-    String name;
-    double unit_price;
-    double price;
-    boolean is_discounted;
-    String other;
+    public String name;
+    public double unit_price;
+    public double price;
+    public boolean is_discounted;
+    public String other;
 
     public static Product create(
             String jan_code_primary, String jan_code_secondary, String name,

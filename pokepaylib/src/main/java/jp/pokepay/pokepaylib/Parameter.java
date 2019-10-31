@@ -2,13 +2,14 @@ package jp.pokepay.pokepaylib;
 
 import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class Parameter {
 
     public Map<String, Object> toMap() {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> rt = mapper.convertValue(this, Map.class);
-        return rt;
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        return mapper.convertValue(this, Map.class);
     }
 
 }

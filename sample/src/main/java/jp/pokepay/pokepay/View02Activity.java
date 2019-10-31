@@ -28,8 +28,8 @@ import jp.pokepay.pokepaylib.TokenInfo;
 public class View02Activity extends AppCompatActivity {
     private String clientId = "LlMbGiWr7ouItgi5-7mRSQ";
     private String clientSecret = "2CZtBW6hzTCYRZhLLsPxdoeG7ktpDGrJ4GsfxTjLOjXFHQeizsSBUNR0";
-    private String accessToken1 = "7mL_asUSVHUZhW11nDJzlm-Xa7-01VjgVBPi8Hd43UAqYpMCEfEuzLPGWfKr0VU9";
-    private String accessToken2 = "oNTvWHFqv512JJQhUVgAwCx7LphHVpHFAp_jDMQ62THIN9iOwNfUXA9nMkI66xoA"; // 購入客を想定(残高あり)
+    private String accessToken1 = "eYNDMo_cAqPgxMW3qlMv9968awTwFpiwi_rR8XrRhaO6zMOgMfem2q1wfnlluo-v";
+    private String accessToken2 = "S-WAIYRN6rVdb77rYGgMeRQgMLuQ2ZAM0Fo8HfocrrTWxH7tsehCkD6JJSjGhs-0"; // 購入客を想定(残高あり)
     EditText editTextOauth;
     private ProgressDialog progressDialog;
 

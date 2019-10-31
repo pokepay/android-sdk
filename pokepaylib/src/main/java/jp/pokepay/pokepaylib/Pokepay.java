@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.BankAPI.Bill.CreateBill;
@@ -61,6 +63,24 @@ public class Pokepay {
             return new GetTerminal().send(accessToken);
         }
 
+        private String parseAsPokeregiToken(String token) {
+            // * {25 ALNUM} - (Pokeregi_V1 OfflineMode QR)
+            final Pattern V1_QR_REG = Pattern.compile("^([0-9A-Z]{25})$");
+            // * https://www.pokepay.jp/pd?={25 ALNUM} - (Pokeregi_V1 OfflineMode NFC)
+            // * https://www.pokepay.jp/pd/{25 ALNUM}  - (Pokeregi_V2 OfflineMode QR & NFC)
+            final Pattern V1_NFC_V2_QR_NFC_REG = Pattern.compile("^https://www(?:-dev|-sandbox|-qa|)\\.pokepay\\.jp/pd(?:/|\\?d=)([0-9A-Z]{25})$");
+            // matching
+            final Matcher v1 = V1_QR_REG.matcher(token);
+            if (v1.find()) {
+                return v1.group(0);
+            }
+            final Matcher v2 = V1_NFC_V2_QR_NFC_REG.matcher(token);
+            if (v2.find()) {
+                return v2.group(0);
+            }
+            return "";
+        }
+
         public TokenInfo getTokenInfo(String token) throws ProcessingError, BankRequestError {
             final Env env = Env.current();
             if (token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")) {
@@ -81,16 +101,19 @@ public class Pokepay {
                     TokenInfo.Type.CHECK,
                     new GetCheck(uuid).send(accessToken)
                 );
-            } else if (token.matches("^[A-Z0-9]{25}$")) {
-                return new TokenInfo(
-                    TokenInfo.Type.POKEREGI,
-                    null
-                );
             } else if (token.matches("^[0-9]{12}$")) {
                 return new TokenInfo(
                     TokenInfo.Type.CPM,
                     new GetCpmToken(token).send(accessToken)
                 );
+            } else {
+                String key = parseAsPokeregiToken(token);
+                if (key.length() > 0) {
+                    return new TokenInfo(
+                        TokenInfo.Type.POKEREGI,
+                        null
+                    );
+                }
             }
             throw new ProcessingError("Unknown token format");
         }
@@ -116,12 +139,15 @@ public class Pokepay {
                 final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
                 return createTransactionWithCheck.send(accessToken);
             }
-            else if (token.matches("^[A-Z0-9]{25}$")) {
-                return scanTokenBLE(token);
-            }
             else if (token.matches("^[0-9]{12}$")) {
                 final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, accountId, amount, products);
                 return createTransactionWithCpm.send(accessToken);
+            }
+            else {
+                String key = parseAsPokeregiToken(token);
+                if (key.length() > 0) {
+                    return scanTokenBLE(token);
+                }
             }
             throw new ProcessingError("Unknown token format");
         }
