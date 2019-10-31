@@ -63,7 +63,7 @@ public class Pokepay {
             return new GetTerminal().send(accessToken);
         }
 
-        private String parseAsPokeregiToken(String token) {
+        public String parseAsPokeregiToken(String token) {
             // * {25 ALNUM} - (Pokeregi_V1 OfflineMode QR)
             final Pattern V1_QR_REG = Pattern.compile("^([0-9A-Z]{25})$");
             // * https://www.pokepay.jp/pd?={25 ALNUM} - (Pokeregi_V1 OfflineMode NFC)
@@ -72,11 +72,11 @@ public class Pokepay {
             // matching
             final Matcher v1 = V1_QR_REG.matcher(token);
             if (v1.find()) {
-                return v1.group(0);
+                return v1.group(1);
             }
             final Matcher v2 = V1_NFC_V2_QR_NFC_REG.matcher(token);
             if (v2.find()) {
-                return v2.group(0);
+                return v2.group(1);
             }
             return "";
         }

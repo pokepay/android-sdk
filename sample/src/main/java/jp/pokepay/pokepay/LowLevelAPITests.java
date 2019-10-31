@@ -59,7 +59,6 @@ import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class LowLevelAPITests {
     private final String merchantAccessToken = "eYNDMo_cAqPgxMW3qlMv9968awTwFpiwi_rR8XrRhaO6zMOgMfem2q1wfnlluo-v";// 購入店を想定
-    private final String merchantAccountId = "55694dbd-582a-442f-80e1-a23e0f49b3cd";
     private final String customerAccessToken = "S-WAIYRN6rVdb77rYGgMeRQgMLuQ2ZAM0Fo8HfocrrTWxH7tsehCkD6JJSjGhs-0";// 購入客を想定(残高あり)
     private final String pokepayMoneyId = "87c012b9-e8ea-4e2f-97ed-764e5ac0167f";
 
@@ -87,6 +86,7 @@ public class LowLevelAPITests {
             System.out.println("TransactionTest:" + TransactionTest());
             System.out.println("UserTest:" + UserTest("xxxxxxxxx@xxxx.xxx"));
             System.out.println("CpmToken:" + CpmTest());
+            System.out.println("parseAsPokeregiTokenTest:" + ParseAsPokeregiTokenTest());
         } catch (BankRequestError e) {
             System.out.println("Oh no BankRequstError occurred");
             System.out.println(e.toString());
@@ -283,7 +283,6 @@ public class LowLevelAPITests {
     }
 
     public String TransactionTest() throws BankRequestError, ProcessingError {
-        // FIXME!
         UserTransaction userTransaction = null;
         String ret = null;
         // TerminalInfoの取得 //
@@ -302,11 +301,6 @@ public class LowLevelAPITests {
         GetTransaction getTransaction = new GetTransaction(userTransaction.id);
         userTransaction = getTransaction.send(customerAccessToken);
         System.out.println("transaction got " + userTransaction.toString());
-        // 取引のキャンセル
-        //final CancelTransaction cancelTransaction = new CancelTransaction(userTransaction.id);
-        //NoContent nc = cancelTransaction.send(merchantAccessToken);
-        //System.out.println("transaction canceled " + userTransaction.toString());
-        // キャンセルできたか確認 //
         getTransaction = new GetTransaction(userTransaction.id);
         userTransaction = getTransaction.send(customerAccessToken);
         System.out.println("transaction canceled checked" + userTransaction.toString());
@@ -431,6 +425,29 @@ public class LowLevelAPITests {
             throw new ProcessingError("account wasn't matched.");
         }
 
+        return "OK";
+    }
+
+    public String ParseAsPokeregiTokenTest() throws ProcessingError {
+        Pokepay.setEnv(Env.DEVELOPMENT);
+        Pokepay.Client client = new Pokepay.Client(customerAccessToken, null);
+        final String key = "A0B1C2D3E4F5G6H7I8J9K0L1M";
+        String v1QRToken = client.parseAsPokeregiToken(key);
+        if (!v1QRToken.equals(key)) {
+            throw new ProcessingError("V1 QR should be matched");
+        }
+        String v1NFCToken = client.parseAsPokeregiToken("https://www.pokepay.jp/pd?d=" + key);
+        if (!v1NFCToken.equals(key)) {
+            throw new ProcessingError("V1 NFC should be matched");
+        }
+        String v2QRNFCToken = client.parseAsPokeregiToken("https://www.pokepay.jp/pd/" + key);
+        if (!v2QRNFCToken.equals(key)) {
+            throw new ProcessingError("V2 QR/NFC should be matched");
+        }
+        String invalidToken = client.parseAsPokeregiToken("ABCDEFG10102020202020");
+        if (!invalidToken.equals("")) {
+            throw new ProcessingError("invalid token shouldn't be matched");
+        }
         return "OK";
     }
 
