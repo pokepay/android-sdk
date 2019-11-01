@@ -15,8 +15,8 @@ import jp.pokepay.pokepaylib.Responses.PaginatedMessages;
 import jp.pokepay.pokepaylib.Responses.Terminal;
 
 public class MessagingAPITests {
-    private String accessToken1 = "7mL_asUSVHUZhW11nDJzlm-Xa7-01VjgVBPi8Hd43UAqYpMCEfEuzLPGWfKr0VU9";// ユーザ１　購入店を想定
-    private String accessToken2 = "oNTvWHFqv512JJQhUVgAwCx7LphHVpHFAp_jDMQ62THIN9iOwNfUXA9nMkI66xoA";// ユーザ２　購入客を想定(残高あり)
+    private String accessToken1 = "eYNDMo_cAqPgxMW3qlMv9968awTwFpiwi_rR8XrRhaO6zMOgMfem2q1wfnlluo-v";// ユーザ１　購入店を想定
+    private String accessToken2 = "S-WAIYRN6rVdb77rYGgMeRQgMLuQ2ZAM0Fo8HfocrrTWxH7tsehCkD6JJSjGhs-0";// ユーザ２　購入客を想定(残高あり)
 
     public MessagingAPITests(){
         Pokepay.setEnv(Env.DEVELOPMENT);

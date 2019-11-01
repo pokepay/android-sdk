@@ -26,7 +26,7 @@ public class QRCameraActivity extends AppCompatActivity {
     private String url;
     private ProgressDialog progressDialog;
 
-    private String customerAccessToken = "oNTvWHFqv512JJQhUVgAwCx7LphHVpHFAp_jDMQ62THIN9iOwNfUXA9nMkI66xoA";
+    private String customerAccessToken = "S-WAIYRN6rVdb77rYGgMeRQgMLuQ2ZAM0Fo8HfocrrTWxH7tsehCkD6JJSjGhs-0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

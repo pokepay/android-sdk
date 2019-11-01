@@ -259,6 +259,27 @@ public class View03Activity extends AppCompatActivity {
                 }).start();
             }
         });
+
+        Button button10 = (Button)findViewById(R.id.buttonParseAsPokeregiToken);
+        button10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        handler.sendEmptyMessage(1);
+                        final Message msg = Message.obtain();
+                        try {
+                            final String result = lowLevelAPITests.ParseAsPokeregiTokenTest();
+                            msg.obj = "ParseAsPokeregiToken: \n" + result;
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.getMessage();
+                        }
+                        handler.sendMessage(msg);
+                    }
+                }).start();
+            }
+        });
     }
 
     private Handler handler = new Handler(new Handler.Callback() {
