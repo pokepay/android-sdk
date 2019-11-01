@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 
@@ -273,7 +274,9 @@ public class View03Activity extends AppCompatActivity {
                             final String result = lowLevelAPITests.ParseAsPokeregiTokenTest();
                             msg.obj = "ParseAsPokeregiToken: \n" + result;
                         } catch (ProcessingError e) {
-                            msg.obj = "ProcessingError: " + e.getMessage();
+                            msg.obj = "ProcessingError: " + e.toString();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
                         }
                         handler.sendMessage(msg);
                     }

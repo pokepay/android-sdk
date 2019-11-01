@@ -146,7 +146,7 @@ public class Pokepay {
             else {
                 String key = parseAsPokeregiToken(token);
                 if (key.length() > 0) {
-                    return scanTokenBLE(token);
+                    return scanTokenBLE(key);
                 }
             }
             throw new ProcessingError("Unknown token format");

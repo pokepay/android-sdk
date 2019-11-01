@@ -56,6 +56,7 @@ import jp.pokepay.pokepaylib.Responses.PaginatedTransactions;
 import jp.pokepay.pokepaylib.Responses.ServerKey;
 import jp.pokepay.pokepaylib.Responses.Terminal;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
+import jp.pokepay.pokepaylib.TokenInfo;
 
 public class LowLevelAPITests {
     private final String merchantAccessToken = "eYNDMo_cAqPgxMW3qlMv9968awTwFpiwi_rR8XrRhaO6zMOgMfem2q1wfnlluo-v";// 購入店を想定
@@ -428,7 +429,7 @@ public class LowLevelAPITests {
         return "OK";
     }
 
-    public String ParseAsPokeregiTokenTest() throws ProcessingError {
+    public String ParseAsPokeregiTokenTest() throws ProcessingError, BankRequestError {
         Pokepay.setEnv(Env.DEVELOPMENT);
         Pokepay.Client client = new Pokepay.Client(customerAccessToken, null);
         final String key = "A0B1C2D3E4F5G6H7I8J9K0L1M";
@@ -446,6 +447,23 @@ public class LowLevelAPITests {
         }
         String invalidToken = client.parseAsPokeregiToken("ABCDEFG10102020202020");
         if (!invalidToken.equals("")) {
+            throw new ProcessingError("invalid token shouldn't be matched");
+        }
+        TokenInfo info1 = client.getTokenInfo("https://www.pokepay.jp/pd?d=" + key);
+        if (info1.type != TokenInfo.Type.POKEREGI) {
+            throw new ProcessingError("V1 NFC should be matched");
+        }
+        TokenInfo info2 = client.getTokenInfo("https://www.pokepay.jp/pd/" + key);
+        if (info2.type != TokenInfo.Type.POKEREGI) {
+            throw new ProcessingError("V2 QR/NFC should be matched");
+        }
+        String errorMessage = "";
+        try {
+            TokenInfo info3 = client.getTokenInfo("ABCDEFG10102020202020");
+        } catch (ProcessingError e) {
+            errorMessage = e.getMessage();
+        }
+        if (errorMessage != "Unknown token format") {
             throw new ProcessingError("invalid token shouldn't be matched");
         }
         return "OK";
