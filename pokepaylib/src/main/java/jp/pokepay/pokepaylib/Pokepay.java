@@ -101,7 +101,7 @@ public class Pokepay {
                     TokenInfo.Type.CHECK,
                     new GetCheck(uuid).send(accessToken)
                 );
-            } else if (token.matches("^[0-9]{12}$")) {
+            } else if (token.matches("^[0-9]{20}$")) {
                 return new TokenInfo(
                     TokenInfo.Type.CPM,
                     new GetCpmToken(token).send(accessToken)
@@ -139,7 +139,7 @@ public class Pokepay {
                 final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
                 return createTransactionWithCheck.send(accessToken);
             }
-            else if (token.matches("^[0-9]{12}$")) {
+            else if (token.matches("^[0-9]{20}$")) {
                 final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, accountId, amount, products);
                 return createTransactionWithCpm.send(accessToken);
             }

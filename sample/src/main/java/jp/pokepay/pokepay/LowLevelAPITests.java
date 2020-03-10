@@ -342,7 +342,7 @@ public class LowLevelAPITests {
 
         System.out.println("Cpmをデタラメにgetして404");
         try {
-            GetCpmToken getCpmToken = new GetCpmToken("000011112222");
+            GetCpmToken getCpmToken = new GetCpmToken("90000022000011112222");
             getCpmToken.send(customerAccessToken);
             throw new ProcessingError("this call should be fail");
         } catch (BankRequestError e) {

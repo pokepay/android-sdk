@@ -22,4 +22,6 @@ public class Cashtray extends Response {
     public Date canceled_at;
     @NonNull
     public String token;
+    public CashtrayAttempt attempt;
+    public UserTransaction transaction;
 }
