@@ -87,7 +87,7 @@ public class Pokepay {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
                 return new TokenInfo(
                     TokenInfo.Type.CASHTRAY,
-                    new GetCashtray(uuid).send(accessToken)
+                    null
                 );
             } else if (token.startsWith(env.WWW_BASE_URL() + "/bills/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/bills/").length());
