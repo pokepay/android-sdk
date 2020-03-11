@@ -19,7 +19,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 0
-        versionName "1.4.3"
+        versionName "1.4.4"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -53,7 +53,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository url: "file://${repo.absolutePath}"
-            pom.version = '1.4.3'	      // version
+            pom.version = '1.4.4'	      // version
             pom.groupId = 'jp.pocket-change.pokepay.android-sdk'    // グループ名
             pom.artifactId = 'pokepaylib'     // ライブラリ名
         }
