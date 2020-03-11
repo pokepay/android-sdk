@@ -180,23 +180,52 @@ public class View02Activity extends AppCompatActivity {
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                handler.sendEmptyMessage(1);
+                final Message msg = Message.obtain();
+                try {
+                    Pokepay.Client client = new Pokepay.Client(accessToken2,View02Activity.this);
+                    final String token = client.createToken(1.0, "AndroidTest check");
+                    client = new Pokepay.Client(accessToken1,View02Activity.this);
+                    final TokenInfo info = client.getTokenInfo(token);
+                    if (info.type == TokenInfo.Type.CHECK) {
+                        Check check1 = (Check) info.info;
+                        if (check1 != null) {
+                            msg.obj = "Success! getTokenInfo: " + check1.toString();
+                        } else {
+                            msg.obj = "Error! data was null";
+                        }
+                    } else {
+                        msg.obj = "Error! unmatched info.type";
+                    }
+                } catch (ProcessingError e) {
+                    msg.obj = "ProcessingError: " + e.getMessage();
+                } catch (BankRequestError e) {
+                    msg.obj = "BankRequestError: " + e.toString();
+                }
+                handler.sendMessage(msg);
+                }
+            }).start();
+            }
+        });
+
+        Button button6 = (Button)findViewById(R.id.button_info2);
+        button6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         handler.sendEmptyMessage(1);
                         final Message msg = Message.obtain();
                         try {
-                            Pokepay.Client client = new Pokepay.Client(accessToken2,View02Activity.this);
-                            final String token = client.createToken(1.0, "AndroidTest check");
-                            client = new Pokepay.Client(accessToken1,View02Activity.this);
+                            final String token = Env.DEVELOPMENT.WWW_BASE_URL() + "/cashtrays/e612671e-26a8-4c30-954a-c561a3d5ae2b";
+                            Pokepay.Client client = new Pokepay.Client(accessToken1,View02Activity.this);
                             final TokenInfo info = client.getTokenInfo(token);
-                            if (info.type == TokenInfo.Type.CHECK) {
-                                Check check1 = (Check) info.info;
-                                if (check1 != null) {
-                                    msg.obj = "Success! getTokenInfo: " + check1.toString();
-                                } else {
-                                    msg.obj = "Error! data was null";
-                                }
+                            if (info.type == TokenInfo.Type.CASHTRAY && info.info == null) {
+                                msg.obj = "Success!";
                             } else {
                                 msg.obj = "Error! unmatched info.type";
                             }

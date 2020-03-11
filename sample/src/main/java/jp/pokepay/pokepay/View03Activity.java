@@ -283,6 +283,7 @@ public class View03Activity extends AppCompatActivity {
                 }).start();
             }
         });
+
     }
 
     private Handler handler = new Handler(new Handler.Callback() {
