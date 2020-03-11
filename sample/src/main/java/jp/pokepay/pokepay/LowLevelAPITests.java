@@ -238,6 +238,8 @@ public class LowLevelAPITests {
         if (check.is_disabled == true) {
             throw new ProcessingError("Disabled check");
         }
+        System.out.println(check.point_expires_at);
+        System.out.println(check.point_expires_in_days);
         System.out.println("check got " + check.id);
         // Checkの支払いを2円に変更 //
         UpdateCheck updateCheck = new UpdateCheck(check.id, 2.0, "check update");
