@@ -10,7 +10,7 @@
 ```
 dependencies{
   .....
-  implementation 'jp.pocket-change.pokepay.android-sdk:pokepaylib:1.1.0'
+  implementation 'jp.pocket-change.pokepay.android-sdk:pokepaylib:1.4.4'
 }
 ```
 
