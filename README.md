@@ -10,9 +10,11 @@
 ```
 dependencies{
   .....
-  implementation 'jp.pocket-change.pokepay.android-sdk:pokepaylib:+'
+  implementation 'jp.pocket-change.pokepay.android-sdk:pokepaylib:{Version}' // (※)
 }
 ```
+
+(※) `{Version}` はその時点での最新バージョンを指定する
 
 ## Installation　（コンパイルして使用）
 
