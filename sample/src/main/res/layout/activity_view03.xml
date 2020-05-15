@@ -8,109 +8,130 @@
     android:orientation="vertical"
     tools:context=".View03Activity">
 
-    <Button
-        android:id="@+id/buttonAccount"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:text="Account Test" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
-    <Button
-        android:id="@+id/buttonBill"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/buttonAccount"
-        android:text="Bill Test" />
+        <RelativeLayout
+            android:id="@+id/form_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
 
-    <Button
-        android:id="@+id/buttonCashtray"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/buttonBill"
-        android:text="Cashtray Test" />
+            <Button
+                android:id="@+id/buttonAccount"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:text="Account Test" />
 
-    <Button
-        android:id="@+id/buttonCheck"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/buttonCashtray"
-        android:text="Check Test" />
+            <Button
+                android:id="@+id/buttonBill"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonAccount"
+                android:text="Bill Test" />
 
-    <Button
-        android:id="@+id/buttonPrivateMoney"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/buttonCheck"
-        android:text="PrivateMoney Test" />
+            <Button
+                android:id="@+id/buttonCashtray"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonBill"
+                android:text="Cashtray Test" />
 
-    <Button
-        android:id="@+id/buttonTerminal"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/buttonPrivateMoney"
-        android:text="Terminal Test" />
+            <Button
+                android:id="@+id/buttonCheck"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonCashtray"
+                android:text="Check Test" />
 
-    <EditText
-        android:id="@+id/textTerminal"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/buttonTerminal"
-        android:layout_alignStart="@+id/textUser"
-        android:layout_toRightOf="@id/buttonTerminal"
-        android:text="public key" />
+            <Button
+                android:id="@+id/buttonPrivateMoney"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonCheck"
+                android:text="PrivateMoney Test" />
 
-    <Button
-        android:id="@+id/buttonTransaction"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/buttonTerminal"
-        android:text="Transaction Test" />
+            <Button
+                android:id="@+id/buttonTerminal"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonPrivateMoney"
+                android:text="Terminal Test" />
 
-    <Button
-        android:id="@+id/buttonUser"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/buttonTransaction"
-        android:text="User Test" />
+            <EditText
+                android:id="@+id/textTerminal"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/buttonTerminal"
+                android:layout_alignStart="@+id/textUser"
+                android:layout_toRightOf="@id/buttonTerminal"
+                android:text="public key" />
 
-    <EditText
-        android:id="@+id/textUser"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/buttonUser"
-        android:layout_alignParentEnd="true"
-        android:layout_toRightOf="@id/buttonUser"
-        android:layout_marginEnd="13dp"
-        android:text="email" />
+            <Button
+                android:id="@+id/buttonTransaction"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonTerminal"
+                android:text="Transaction Test" />
 
-    <Button
-        android:id="@+id/buttonMessage"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/buttonUser"
-        android:text="MessagingAPI Test" />
+            <Button
+                android:id="@+id/buttonUser"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonTransaction"
+                android:text="User Test" />
 
-    <Button
-        android:id="@+id/buttonCpm"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/buttonMessage"
-        android:text="CpmAPI Test" />
+            <EditText
+                android:id="@+id/textUser"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/buttonUser"
+                android:layout_alignParentEnd="true"
+                android:layout_toRightOf="@id/buttonUser"
+                android:layout_marginEnd="13dp"
+                android:text="email" />
 
-    <Button
-        android:id="@+id/buttonParseAsPokeregiToken"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/buttonCpm"
-        android:text="pokeregiToken Test" />
+            <Button
+                android:id="@+id/buttonMessage"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonUser"
+                android:text="MessagingAPI Test" />
+
+            <Button
+                android:id="@+id/buttonCpm"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonMessage"
+                android:text="CpmAPI Test" />
+
+            <Button
+                android:id="@+id/buttonParseAsPokeregiToken"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonCpm"
+                android:text="pokeregiToken Test" />
+
+            <Button
+                android:id="@+id/buttonConfirmNewParametersShouldBeIgnored"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonParseAsPokeregiToken"
+                android:text="unknown parameters" />
+
+        </RelativeLayout>
+
+    </ScrollView>
 
 </RelativeLayout>
