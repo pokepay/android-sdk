@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.nio.charset.StandardCharsets;
 
+import jp.pokepay.pokepaylib.JsonConverter;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Response;
 
@@ -28,7 +29,7 @@ public class JwtResult extends Response {
         if (data != null) {
             String body = decodeJWTBody(data);
             try {
-                final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                final ObjectMapper mapper = JsonConverter.createObjectMapper();
                 return mapper.readValue(body, UserTransaction.class);
             } catch (Exception e) {
                 throw new ProcessingError("Failed data map " + e.getMessage());
@@ -41,7 +42,7 @@ public class JwtResult extends Response {
         if (error != null) {
             String body = decodeJWTBody(error);
             try {
-                final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                final ObjectMapper mapper = JsonConverter.createObjectMapper();
                 return mapper.readValue(body, BankError.class);
             } catch (Exception e) {
                 throw new ProcessingError("Failed data map " + e.getMessage());

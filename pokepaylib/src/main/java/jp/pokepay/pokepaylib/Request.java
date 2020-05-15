@@ -216,7 +216,7 @@ public class Request {
                 encoding = "UTF-8";
             }
             final int status = con.getResponseCode();
-            final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            final ObjectMapper mapper = JsonConverter.createObjectMapper();
             if (HttpURLConnection.HTTP_OK <= status && status < HttpURLConnection.HTTP_MULT_CHOICE) {
                 final String responseBody = getResponseBody(con.getInputStream(), encoding);
                 if (cls == NoContent.class && responseBody == "") {

@@ -172,7 +172,7 @@ public class Pokepay {
                     final BankError err = jwtResult.parseAsAPIError();
                     throw new BankRequestError(999, err);
                 } else {
-                    final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    final ObjectMapper mapper = JsonConverter.createObjectMapper();
                     final String defaultError = "{\"type\":\"Invalid JSON structure\",\"message\":\"jwt response doesn't have neither data nor error.\"}";
                     final BankError err = mapper.readValue(defaultError, BankError.class);
                     throw new BankRequestError(999, err);

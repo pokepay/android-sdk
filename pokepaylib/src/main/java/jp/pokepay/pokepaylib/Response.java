@@ -11,7 +11,7 @@ public class Response {
 
     public String toString() {
         try {
-            final ObjectMapper m = new ObjectMapper();
+            final ObjectMapper m = JsonConverter.createObjectMapper();
             m.setDateFormat(formatter);
             return m.writerWithDefaultPrettyPrinter().writeValueAsString(this);
         } catch (JsonProcessingException e) {
