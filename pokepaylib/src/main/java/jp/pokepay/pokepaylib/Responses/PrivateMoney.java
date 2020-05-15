@@ -31,5 +31,7 @@ public class PrivateMoney extends Response {
     public String       privacy_policy_url;
     public String       payment_act_url;
     public String       commercial_act_url;
+    @NonNull
+    public boolean      can_use_credit_card;
 }
 

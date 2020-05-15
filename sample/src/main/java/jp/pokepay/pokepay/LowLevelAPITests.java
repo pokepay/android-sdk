@@ -2,6 +2,7 @@ package jp.pokepay.pokepay;
 
 
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 
 import org.json.JSONException;
 
@@ -10,6 +11,7 @@ import jp.pokepay.pokepaylib.BankAPI.Account.CreateAccountCpmToken;
 import jp.pokepay.pokepaylib.BankAPI.Account.GetAccount;
 import jp.pokepay.pokepaylib.BankAPI.Account.GetAccountTransactions;
 import jp.pokepay.pokepaylib.BankAPI.Account.GetAccountBalances;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.BankAPI.Bill.CreateBill;
 import jp.pokepay.pokepaylib.BankAPI.Bill.DeleteBill;
@@ -42,6 +44,8 @@ import jp.pokepay.pokepaylib.Env;
 import jp.pokepay.pokepaylib.Parameters.Product;
 import jp.pokepay.pokepaylib.Pokepay;
 import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Request;
+import jp.pokepay.pokepaylib.Response;
 import jp.pokepay.pokepaylib.Responses.Account;
 import jp.pokepay.pokepaylib.Responses.AccountCpmToken;
 import jp.pokepay.pokepaylib.Responses.Bill;
@@ -468,6 +472,33 @@ public class LowLevelAPITests {
         if (errorMessage != "Unknown token format") {
             throw new ProcessingError("invalid token shouldn't be matched");
         }
+        return "OK";
+    }
+
+    public String ConfirmNewParametersShouldBeIgnoredTest() throws ProcessingError, BankRequestError {
+        // APIに知らないパラメータがあっても無視してくれることをテスト
+        class GetAccount extends BankRequest {
+            @NonNull
+            public String id;
+            public GetAccount(String id){
+                this.id = id;
+            }
+            protected final String path() {
+                return "/accounts/" + id;
+            }
+            protected final Request.Method method() {
+                return Request.Method.GET;
+            }
+            public final SubsetOfAccount send(String accessToken) throws ProcessingError, BankRequestError {
+                return super.send(SubsetOfAccount.class, accessToken);
+            }
+        };
+        Pokepay.setEnv(Env.DEVELOPMENT);
+        Pokepay.Client client = new Pokepay.Client(customerAccessToken, null);
+        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId);
+        GetAccount getAccount = new GetAccount(createAccount.send(customerAccessToken).id);
+        SubsetOfAccount account = getAccount.send(customerAccessToken);
+        System.out.println(account.id);
         return "OK";
     }
 
