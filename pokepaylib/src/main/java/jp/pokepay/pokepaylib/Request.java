@@ -1,7 +1,7 @@
 package jp.pokepay.pokepaylib;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -216,7 +216,7 @@ public class Request {
                 encoding = "UTF-8";
             }
             final int status = con.getResponseCode();
-            final ObjectMapper mapper = new ObjectMapper();
+            final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             if (HttpURLConnection.HTTP_OK <= status && status < HttpURLConnection.HTTP_MULT_CHOICE) {
                 final String responseBody = getResponseBody(con.getInputStream(), encoding);
                 if (cls == NoContent.class && responseBody == "") {

@@ -3,6 +3,7 @@ package jp.pokepay.pokepaylib.Responses;
 import android.util.Base64;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.nio.charset.StandardCharsets;
 
@@ -27,7 +28,7 @@ public class JwtResult extends Response {
         if (data != null) {
             String body = decodeJWTBody(data);
             try {
-                final ObjectMapper mapper = new ObjectMapper();
+                final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 return mapper.readValue(body, UserTransaction.class);
             } catch (Exception e) {
                 throw new ProcessingError("Failed data map " + e.getMessage());
@@ -40,7 +41,7 @@ public class JwtResult extends Response {
         if (error != null) {
             String body = decodeJWTBody(error);
             try {
-                final ObjectMapper mapper = new ObjectMapper();
+                final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 return mapper.readValue(body, BankError.class);
             } catch (Exception e) {
                 throw new ProcessingError("Failed data map " + e.getMessage());

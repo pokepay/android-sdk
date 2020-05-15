@@ -3,6 +3,7 @@ package jp.pokepay.pokepaylib;
 import android.content.Context;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -171,7 +172,7 @@ public class Pokepay {
                     final BankError err = jwtResult.parseAsAPIError();
                     throw new BankRequestError(999, err);
                 } else {
-                    final ObjectMapper mapper = new ObjectMapper();
+                    final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                     final String defaultError = "{\"type\":\"Invalid JSON structure\",\"message\":\"jwt response doesn't have neither data nor error.\"}";
                     final BankError err = mapper.readValue(defaultError, BankError.class);
                     throw new BankRequestError(999, err);
