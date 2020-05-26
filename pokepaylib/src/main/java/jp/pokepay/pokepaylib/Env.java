@@ -3,6 +3,7 @@ package jp.pokepay.pokepaylib;
 public enum Env {
     DEVELOPMENT("-dev"),
     SANDBOX("-sandbox"),
+    QA("-qa"),
     PRODUCTION("");
 
     private final String key;
