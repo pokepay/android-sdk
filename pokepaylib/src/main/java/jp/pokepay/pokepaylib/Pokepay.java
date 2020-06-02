@@ -210,7 +210,7 @@ public class Pokepay {
                 return env.WWW_BASE_URL() + "/cashtrays/" + cashtray.id;
             } else if (amount != null) {
                 if (amount < 0) {
-                    CreateBill createBill = new CreateBill(-amount, accountId, description, products);
+                    CreateBill createBill = new CreateBill(-amount, accountId, description, false, products);
                     Bill bill = createBill.send(accessToken);
                     return env.WWW_BASE_URL() + "/bills/" + bill.id;
                 } else {
@@ -219,7 +219,7 @@ public class Pokepay {
                     return env.WWW_BASE_URL() + "/checks/" + check.id;
                 }
             } else { // amount == null
-                CreateBill createBill = new CreateBill(amount, accountId, description, products);
+                CreateBill createBill = new CreateBill(amount, accountId, description, false, products);
                 Bill bill = createBill.send(accessToken);
                 return env.WWW_BASE_URL() + "/bills/" + bill.id;
             }
@@ -248,7 +248,7 @@ public class Pokepay {
         }
 
         public AccessToken getAccessToken(String code) throws ProcessingError, OAuthRequestError {
-            ExchangeAuthCode exchangeAuthCode = new ExchangeAuthCode(code, clientId, clientSecret);
+            ExchangeAuthCode exchangeAuthCode = new ExchangeAuthCode(code, clientId, clientSecret, null);
             AccessToken accessToken = exchangeAuthCode.send();
             return accessToken;
         }
