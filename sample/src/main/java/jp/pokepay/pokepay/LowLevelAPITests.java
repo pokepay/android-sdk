@@ -120,7 +120,7 @@ public class LowLevelAPITests {
 
     public String BillTest() throws BankRequestError, ProcessingError {
         // Billの作成 //
-        CreateBill createBill = new CreateBill(1.0, null, "bill test", null);
+        CreateBill createBill = new CreateBill(1.0, null, "bill test", false, null);
         Bill bill = createBill.send(merchantAccessToken);
         // Billの確認 //
         GetBill getBill = new GetBill(bill.id);
@@ -136,7 +136,7 @@ public class LowLevelAPITests {
         bill = getBill.send(merchantAccessToken);
         // with products
         // Billの作成 //
-        createBill = new CreateBill(1.0, null, "bill test", getProducts());
+        createBill = new CreateBill(1.0, null, "bill test",false, getProducts());
         bill = createBill.send(merchantAccessToken);
         // Billの確認 //
         getBill = new GetBill(bill.id);
@@ -301,7 +301,7 @@ public class LowLevelAPITests {
         Terminal terminal = getTerminal.send(customerAccessToken);
         System.out.println("terminal info got " + terminal.toString());
         // Billの作成 //
-        CreateBill createBill = new CreateBill(1.0, null, null, null);
+        CreateBill createBill = new CreateBill(1.0, null, null, false, null);
         Bill bill = createBill.send(merchantAccessToken);
         System.out.println("bill created " + bill.toString());
         // 上記のBillで取引を作成 //
