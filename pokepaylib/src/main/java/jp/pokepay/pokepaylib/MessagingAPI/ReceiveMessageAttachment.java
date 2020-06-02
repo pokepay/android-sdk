@@ -11,14 +11,15 @@ import jp.pokepay.pokepaylib.Responses.MessageAttachment;
 
 public class ReceiveMessageAttachment extends BankRequest {
     @NonNull
-    public Message message;
+    public String id;
 
-    public ReceiveMessageAttachment(Message message) {
-        this.message = message;
+
+    public ReceiveMessageAttachment(String id) {
+        this.id = id;
     }
 
     protected final String path() {
-        return "/messages/" + message.id + "/attachment/receive";
+        return "/messages/" + this.id + "/attachment/receive";
     }
 
     protected final Request.Method method() {
