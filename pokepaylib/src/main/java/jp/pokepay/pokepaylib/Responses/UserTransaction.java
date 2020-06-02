@@ -2,6 +2,8 @@ package jp.pokepay.pokepaylib.Responses;
 
 import android.support.annotation.NonNull;
 
+import java.util.Date;
+
 import jp.pokepay.pokepaylib.Response;
 
 public class UserTransaction extends Response {
@@ -23,5 +25,5 @@ public class UserTransaction extends Response {
     @NonNull
     public String  description;
     @NonNull
-    public String  done_at;
+    public Date done_at;
 }
