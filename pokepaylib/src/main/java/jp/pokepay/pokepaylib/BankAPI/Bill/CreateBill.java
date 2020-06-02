@@ -14,12 +14,14 @@ public class CreateBill extends BankRequest {
     public Double amount;
     public String description;
     public String accountId;
+    public Boolean isOnetime;
     public Product[] products;
 
-    public CreateBill(Double amount, String accountId, String description, Product[] products) {
+    public CreateBill(Double amount, String accountId, String description, Boolean isOnetime, Product[] products) {
         this.amount = amount;
         this.accountId = accountId;
         this.description = description;
+        this.isOnetime = isOnetime;
         this.products = products;
     }
 
@@ -37,6 +39,9 @@ public class CreateBill extends BankRequest {
             put("amount", amount);
             put("description", description);
             put("account_id", accountId);
+            if (isOnetime != null) {
+                put("is_onetime", isOnetime);
+            }
             if (products != null) {
                 Map<String, Object>[] productsMap = new Map[products.length];
                 for (int i = 0; i < products.length; i++) {
