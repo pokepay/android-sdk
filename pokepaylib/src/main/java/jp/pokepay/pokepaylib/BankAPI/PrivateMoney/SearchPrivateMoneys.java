@@ -16,7 +16,7 @@ public class SearchPrivateMoneys extends BankRequest {
     public String after;
     public Integer perPage;
 
-    public SearchPrivateMoneys(String name, boolean includeExclusive, String before, String after, int perPage) {
+    public SearchPrivateMoneys(String name, boolean includeExclusive, String before, String after, Integer perPage) {
         this.name = name;
         this.includeExclusive = includeExclusive;
         this.before = before;
