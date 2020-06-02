@@ -21,10 +21,13 @@ public class RefreshAccessToken extends OAuthRequest {
     @NonNull
     public String clientSecret;
 
-    public RefreshAccessToken(String refreshToken, String clientId, String clientSecret) {
+    public RefreshAccessToken(String refreshToken, String clientId, String clientSecret, String grantType) {
         this.refreshToken = refreshToken;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        if (grantType != null) {
+            this.grantType = grantType;
+        }
     }
 
     protected final String path() {
@@ -34,7 +37,7 @@ public class RefreshAccessToken extends OAuthRequest {
     protected final Request.Method method() {
         return Request.Method.POST;
     }
-    
+
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{

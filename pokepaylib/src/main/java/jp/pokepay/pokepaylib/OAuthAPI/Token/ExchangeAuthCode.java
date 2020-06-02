@@ -21,10 +21,13 @@ public class ExchangeAuthCode extends OAuthRequest {
     @NonNull
     public String clientSecret;
 
-    public ExchangeAuthCode(String code, String clientId, String clientSecret) {
+    public ExchangeAuthCode(String code, String clientId, String clientSecret, String grantType) {
         this.code = code;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        if (grantType != null) {
+            this.grantType = grantType;
+        }
     }
 
     protected final String path() {
