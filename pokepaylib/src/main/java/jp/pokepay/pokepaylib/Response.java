@@ -4,10 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 public class Response {
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    final static SimpleDateFormat formatter;
+
+    static {
+        formatter =  new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     public String toString() {
         try {
