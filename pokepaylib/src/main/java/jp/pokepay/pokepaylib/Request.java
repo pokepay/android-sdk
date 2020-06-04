@@ -119,6 +119,7 @@ public class Request {
                         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                             queryParameters[counter][0] = entry.getKey();
                             queryParameters[counter][1] = String.valueOf(entry.getValue());
+                            counter++;
                         }
                         queryString = QueryString.build(queryParameters);
                     }
