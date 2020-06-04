@@ -267,12 +267,16 @@ public class LowLevelAPITests {
 
     public String PrivateMoneyTest() throws BankRequestError, ProcessingError {
         // フィルタ無しで全て確認 //
-        SearchPrivateMoneys searchPrivateMoneys = new SearchPrivateMoneys(null, true, null, null, 30);
+        SearchPrivateMoneys searchPrivateMoneys = new SearchPrivateMoneys(null, true, null, null, 100);
         PaginatedPrivateMoneys paginatedPrivateMoney = searchPrivateMoneys.send(customerAccessToken);
+        int noFilteredCount = paginatedPrivateMoney.count;
         // フィルタあり（部分一致）で確認 //
-        searchPrivateMoneys = new SearchPrivateMoneys("コイン", true, null, null, 30);
+        searchPrivateMoneys = new SearchPrivateMoneys("コイルマネー", true, null, null, 100);
         paginatedPrivateMoney = searchPrivateMoneys.send(customerAccessToken);
-        System.out.println("PrivateMoney:\n" + paginatedPrivateMoney.toString());
+        int filteredCount = paginatedPrivateMoney.count;
+        if (filteredCount >= noFilteredCount) {
+            throw new ProcessingError("filteredCount is less than noFilteredCount. its suspicious.");
+        }
         return "OK";
     }
 
