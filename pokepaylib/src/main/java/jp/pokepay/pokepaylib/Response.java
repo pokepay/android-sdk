@@ -8,7 +8,7 @@ import java.util.TimeZone;
 
 public class Response {
 
-    final static SimpleDateFormat formatter;
+    public final static SimpleDateFormat formatter;
 
     static {
         formatter =  new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");

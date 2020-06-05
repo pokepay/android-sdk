@@ -233,7 +233,7 @@ public class LowLevelAPITests {
 
     public String CheckTest() throws BankRequestError, ProcessingError {
         // Checkの作成 //
-        CreateCheck createCheck = new CreateCheck(1.0, null, "check test");
+        CreateCheck createCheck = new CreateCheck(1.0, null, null, null, "check test", false, null, null, null, null);
         Check check = createCheck.send(merchantAccessToken);
         System.out.println("check created " + check.id);
         // Checkの確認 //
@@ -246,7 +246,7 @@ public class LowLevelAPITests {
         System.out.println(check.point_expires_in_days);
         System.out.println("check got " + check.id);
         // Checkの支払いを2円に変更 //
-        UpdateCheck updateCheck = new UpdateCheck(check.id, 2.0, "check update");
+        UpdateCheck updateCheck = new UpdateCheck(check.id, 2.0, "check update", null, null, null);
         check = updateCheck.send(merchantAccessToken);
         if (check.amount != 2.0) {
             throw new ProcessingError("Update failed");

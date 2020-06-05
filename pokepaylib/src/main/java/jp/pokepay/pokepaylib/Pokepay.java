@@ -214,7 +214,7 @@ public class Pokepay {
                     Bill bill = createBill.send(accessToken);
                     return env.WWW_BASE_URL() + "/bills/" + bill.id;
                 } else {
-                    CreateCheck createCheck = new CreateCheck(amount, accountId, description);
+                    CreateCheck createCheck = new CreateCheck(amount, null, null, accountId, description, false, null, null,null, null);
                     Check check = createCheck.send(accessToken);
                     return env.WWW_BASE_URL() + "/checks/" + check.id;
                 }

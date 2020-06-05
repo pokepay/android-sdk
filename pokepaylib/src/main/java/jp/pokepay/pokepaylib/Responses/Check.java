@@ -28,7 +28,7 @@ public class Check extends Response {
     @NonNull
     public Date expires_at;
     public Date point_expires_at;
-    public Date point_expires_in_days;
+    public Integer point_expires_in_days;
     @NonNull
     public String token;
 }
