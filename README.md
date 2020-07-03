@@ -81,6 +81,19 @@ new Thread(new Runnable() {
 }).start();
 ```
 
+2. If you use Payregi please add these lines main/AndroidManifest.xml
+```
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" ...
+
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-feature android:name="android.hardware.bluetooth" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+
+    <application ...
+```
+
 ## Authorization
 1. Open Authorization URL in Web browser (like webview)
 
