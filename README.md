@@ -2,7 +2,7 @@
 
 ## Document
 
-* https://docs.pokepay.jp/sdk/java.html
+* https://docs.pokepay.jp/guidelines/app-sdk/java.html
 
 ## Installation　（jcenter上のライブラリを使用）
 
