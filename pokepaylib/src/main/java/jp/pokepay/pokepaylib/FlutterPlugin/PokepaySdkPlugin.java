@@ -1,4 +1,4 @@
-package android.backend.pokepaylib.src.main.java.jp.pokepay.pokepaylib;
+package android.backend.pokepaylib.src.main.java.jp.pokepay.pokepaylib.FlutterPlugin;
 
 import android.os.AsyncTask;
 import android.util.Log;
