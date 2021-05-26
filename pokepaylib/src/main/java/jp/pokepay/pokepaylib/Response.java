@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 
 public class Response {
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    public static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     public String toString() {
         try {

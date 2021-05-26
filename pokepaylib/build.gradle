@@ -37,6 +37,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation 'androidx.annotation:annotation:1.2.0'
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.7'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.9.7'
