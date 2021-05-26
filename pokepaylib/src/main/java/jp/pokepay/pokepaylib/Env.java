@@ -4,7 +4,7 @@ public enum Env {
     DEVELOPMENT("-dev"),
     SANDBOX("-sandbox"),
     PRODUCTION(""),
-    QA("QA");
+    QA("-qa");
 
     private final String key;
 
