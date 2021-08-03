@@ -120,19 +120,19 @@ public class Pokepay {
         }
 
         public UserTransaction scanToken(String token) throws ProcessingError, BankRequestError {
-            return scanToken(token, null, null, null);
+            return scanToken(token, null, null, null,null);
         }
 
-        public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products) throws ProcessingError, BankRequestError {
+        public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products, String couponId) throws ProcessingError, BankRequestError {
             final Env env = Env.current();
             if (token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
-                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId);
+                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId);
                 return createTransactionWithCashtray.send(accessToken);
             }
             else if (token.startsWith(env.WWW_BASE_URL() + "/bills/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/bills/").length());
-                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount);
+                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount,couponId);
                 return createTransactionWithBill.send(accessToken);
             }
             else if (token.startsWith(env.WWW_BASE_URL() + "/checks/")) {
@@ -162,7 +162,7 @@ public class Pokepay {
                 bleController = new BLEController(token, context);
                 bleController.connect(1000 * 10);
                 final String jwt = bleController.read(1000 * 10);
-                final CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null);
+                final CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null,null);
                 final JwtResult jwtResult = createTransactionWithJwt.send(accessToken);
                 if (jwtResult.data != null) {
                     bleController.write(jwtResult.data, 1000 * 10);
