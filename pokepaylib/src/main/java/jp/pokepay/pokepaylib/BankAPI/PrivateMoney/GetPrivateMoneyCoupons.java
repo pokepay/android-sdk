@@ -18,7 +18,7 @@ public class GetPrivateMoneyCoupons extends BankRequest {
     public String after;
     public int perPage;
 
-    public GetPrivateMoneyCoupons(String privateMoneyId, String before, String after, int perPage) {
+    public GetPrivateMoneyCoupons(@NonNull String privateMoneyId, String before, String after, int perPage) {
         this.privateMoneyId = privateMoneyId;
         this.before = before;
         this.after = after;
@@ -37,11 +37,11 @@ public class GetPrivateMoneyCoupons extends BankRequest {
 
     @Override
     protected final Map<String, Object> parameters() {
-        return new HashMap<String, Object>() {{
-            put("before", before);
-            put("after", after);
-            put("per_page", perPage);
-        }};
+        Map<String, Object> map = new HashMap();
+        if(before != null && !before.isEmpty()) map.put("before", before);
+        if(after != null && !after.isEmpty()) map.put("after", after);
+        System.out.println("parameter: "+map.toString());
+        return map;
     }
 
     public final PaginatedCoupons send(String accessToken) throws ProcessingError, BankRequestError {

@@ -14,7 +14,7 @@ public class GetAccountCouponDetail extends BankRequest {
     @NonNull
     public String couponId;
 
-    public GetAccountCouponDetail(String accountId, String couponId){
+    public GetAccountCouponDetail(@NonNull String accountId, @NonNull String couponId){
         this.accountId = accountId;
         this.couponId = couponId;
     }
