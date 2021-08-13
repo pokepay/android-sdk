@@ -16,11 +16,13 @@ public class CreateTransactionWithBill extends BankRequest {
     public String billId;
     public String accountId;
     public Double amount;
+    public String couponId;
 
-    public CreateTransactionWithBill(String billId, String accountId, Double amount) {
+    public CreateTransactionWithBill(String billId, String accountId, Double amount,String couponId) {
         this.billId    = billId;
         this.accountId = accountId;
         this.amount    = amount;
+        this.couponId = couponId;
     }
 
     protected final String path() {
@@ -37,6 +39,7 @@ public class CreateTransactionWithBill extends BankRequest {
             put("bill_id", billId);
             put("account_id", accountId);
             put("amount", amount);
+            put("coupon_id", couponId);
         }};
     }
 

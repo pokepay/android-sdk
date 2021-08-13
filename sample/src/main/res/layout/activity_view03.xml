@@ -130,6 +130,15 @@
                 android:layout_below="@+id/buttonParseAsPokeregiToken"
                 android:text="unknown parameters" />
 
+            <Button
+                android:id="@+id/buttonCouponTest"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/buttonConfirmNewParametersShouldBeIgnored"
+                android:text="Coupon Test"
+                />
+
         </RelativeLayout>
 
     </ScrollView>

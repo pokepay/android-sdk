@@ -15,10 +15,12 @@ public class CreateTransactionWithJwt extends BankRequest {
     @NonNull
     public String data;
     public String accountId;
+    public String couponId;
 
-    public CreateTransactionWithJwt(String data, String accountId) {
+    public CreateTransactionWithJwt(String data, String accountId, String couponId) {
         this.data = data;
         this.accountId = accountId;
+        this.couponId = couponId;
     }
 
     protected final String path() {
@@ -34,6 +36,7 @@ public class CreateTransactionWithJwt extends BankRequest {
         return new HashMap<String, Object>() {{
             put("data", data);
             put("account_id", accountId);
+            put("coupon_id", couponId);
         }};
     }
 
