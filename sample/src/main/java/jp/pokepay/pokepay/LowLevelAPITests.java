@@ -525,7 +525,7 @@ public class LowLevelAPITests {
         CouponDetail couponDetail = new GetAccountCouponDetail(customerClient.getTerminalInfo().account.id, coupon.id).send(customerAccessToken);
         System.out.println("Coupon detail: "+couponDetail);
 
-        CouponDetail patchCouponDetail = new PatchAccountCouponDetail(customerClient.getTerminalInfo().account.id, coupon.id).send(customerAccessToken);
+        CouponDetail patchCouponDetail = new PatchAccountCouponDetail(customerClient.getTerminalInfo().account.id, coupon.id,true).send(customerAccessToken);
         System.out.println("Patch coupon detail: "+patchCouponDetail);
         Account account = new GetAccount(customerClient.getTerminalInfo().account.id).send(customerAccessToken);
         System.out.println("client account: "+account);
