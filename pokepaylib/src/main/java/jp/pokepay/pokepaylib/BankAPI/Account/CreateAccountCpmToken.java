@@ -23,13 +23,13 @@ public class CreateAccountCpmToken extends BankRequest {
     public String accountId;
     public int scopes;
     public Integer expiresIn;
-    public Metadata key1;
+    public Metadata metadata;
 
-    public CreateAccountCpmToken(String accountId, int scopes, Integer expiresIn, Metadata key1) {
+    public CreateAccountCpmToken(String accountId, int scopes, Integer expiresIn, Metadata metadata) {
         this.accountId = accountId;
         this.scopes = scopes;
         this.expiresIn = expiresIn;
-        this.key1 = key1;
+        this.metadata = metadata;
     }
 
     protected final String path() {
@@ -48,7 +48,7 @@ public class CreateAccountCpmToken extends BankRequest {
             if ((scopes & SCOPE_TOPUP) != 0) scopesArray.add("topup");
             put("scopes", scopesArray);
             put("expires_in", expiresIn);
-            put("metadata", toJsonString(key1.toMap()));
+            put("metadata", toJsonString(metadata.map));
         }};
     }
 
@@ -56,11 +56,11 @@ public class CreateAccountCpmToken extends BankRequest {
         return super.send(AccountCpmToken.class, accessToken);
     }
 
-    private String toJsonString(Map<String, Object> map){
+    private String toJsonString(Map<String, String> map){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{");
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            System.out.println("key:" + entry.getKey() + ",value:" + entry.getValue());
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+
             stringBuilder.append("\"");
             stringBuilder.append(entry.getKey());
             stringBuilder.append("\":\"");
@@ -69,6 +69,7 @@ public class CreateAccountCpmToken extends BankRequest {
         }
 
         stringBuilder.append("}");
+        System.out.println(stringBuilder.toString());
         return stringBuilder.toString();
     }
 }

@@ -4,6 +4,9 @@ package jp.pokepay.pokepay;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.pokepay.pokepaylib.BankAPI.Account.CreateAccount;
 import jp.pokepay.pokepaylib.BankAPI.Account.CreateAccountCpmToken;
 import jp.pokepay.pokepaylib.BankAPI.Account.GetAccount;
@@ -369,7 +372,7 @@ public class LowLevelAPITests {
         System.out.println("客のアクセストークンでCpmをcreate");
         CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId);
         Account account = createAccount.send(customerAccessToken);
-        CreateAccountCpmToken createAccountCpmToken = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, new Metadata("value1"));
+        CreateAccountCpmToken createAccountCpmToken = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, new Metadata(new HashMap<String, String>()));
         AccountCpmToken cpmToken = createAccountCpmToken.send(customerAccessToken);
 
         System.out.println("客のアクセストークンでCpmをget");
@@ -380,7 +383,9 @@ public class LowLevelAPITests {
         }
         SystemClock.sleep(50);
         System.out.println("客のアクセストークンでCpmをcreate");
-        CreateAccountCpmToken createAccountCpmToken2 = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, new Metadata("value1"));
+        Map<String, String> metadataMap = new HashMap<String, String>();
+        metadataMap.put("foo", "bar");
+        CreateAccountCpmToken createAccountCpmToken2 = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, new Metadata(metadataMap));
         AccountCpmToken cpmToken2 = createAccountCpmToken2.send(customerAccessToken);
         System.out.printf(cpmToken2.toString());
 
@@ -420,7 +425,10 @@ public class LowLevelAPITests {
         }
 
         System.out.println("客のアクセストークンでCpmをcreate");
-        CreateAccountCpmToken createAccountCpmToken3 = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, new Metadata("value1"));
+        Map<String, String> metadataMap2 = new HashMap<String, String>();
+        metadataMap2.put("baz","qux");
+        metadataMap2.put("foo", "bar");
+        CreateAccountCpmToken createAccountCpmToken3 = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, new Metadata(metadataMap2));
         AccountCpmToken cpmToken3 = createAccountCpmToken3.send(customerAccessToken);
 
         System.out.println("店のアクセストークンでCpmにpayment with products");
