@@ -11,6 +11,7 @@ import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.AccountCpmToken;
+import jp.pokepay.pokepaylib.Parameters.Metadata;
 
 public class CreateAccountCpmToken extends BankRequest {
 
@@ -22,13 +23,13 @@ public class CreateAccountCpmToken extends BankRequest {
     public String accountId;
     public int scopes;
     public Integer expiresIn;
-    public String additionalInfo;
+    public Metadata key1;
 
-    public CreateAccountCpmToken(String accountId, int scopes, Integer expiresIn, String additionalInfo) {
+    public CreateAccountCpmToken(String accountId, int scopes, Integer expiresIn, Metadata key1) {
         this.accountId = accountId;
         this.scopes = scopes;
         this.expiresIn = expiresIn;
-        this.additionalInfo = additionalInfo;
+        this.key1 = key1;
     }
 
     protected final String path() {
@@ -47,11 +48,27 @@ public class CreateAccountCpmToken extends BankRequest {
             if ((scopes & SCOPE_TOPUP) != 0) scopesArray.add("topup");
             put("scopes", scopesArray);
             put("expires_in", expiresIn);
-            put("additional_info", additionalInfo);
+            put("metadata", toJsonString(key1.toMap()));
         }};
     }
 
     public final AccountCpmToken send(String accessToken) throws ProcessingError, BankRequestError {
         return super.send(AccountCpmToken.class, accessToken);
+    }
+
+    private String toJsonString(Map<String, Object> map){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("{");
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            System.out.println("key:" + entry.getKey() + ",value:" + entry.getValue());
+            stringBuilder.append("\"");
+            stringBuilder.append(entry.getKey());
+            stringBuilder.append("\":\"");
+            stringBuilder.append(entry.getValue());
+            stringBuilder.append("\"");
+        }
+
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 }

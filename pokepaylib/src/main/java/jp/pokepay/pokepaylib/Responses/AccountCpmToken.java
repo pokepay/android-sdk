@@ -16,5 +16,5 @@ public class AccountCpmToken extends Response {
     public String scopes[];
     @NonNull
     public Date expires_at;
-    public String additional_info;
+    public Metadata metadata;
 }
