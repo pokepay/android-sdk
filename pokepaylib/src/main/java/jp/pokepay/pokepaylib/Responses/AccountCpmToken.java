@@ -3,6 +3,7 @@ package jp.pokepay.pokepaylib.Responses;
 import android.support.annotation.NonNull;
 
 import java.util.Date;
+import java.util.Map;
 
 import jp.pokepay.pokepaylib.Response;
 
@@ -16,5 +17,5 @@ public class AccountCpmToken extends Response {
     public String scopes[];
     @NonNull
     public Date expires_at;
-    public String additional_info;
+    public Map<String, String> metadata;
 }

@@ -11,6 +11,7 @@ import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.AccountCpmToken;
+import jp.pokepay.pokepaylib.Parameters.Metadata;
 
 public class CreateAccountCpmToken extends BankRequest {
 
@@ -22,13 +23,13 @@ public class CreateAccountCpmToken extends BankRequest {
     public String accountId;
     public int scopes;
     public Integer expiresIn;
-    public String additionalInfo;
+    public Metadata metadata;
 
-    public CreateAccountCpmToken(String accountId, int scopes, Integer expiresIn, String additionalInfo) {
+    public CreateAccountCpmToken(String accountId, int scopes, Integer expiresIn, Metadata metadata) {
         this.accountId = accountId;
         this.scopes = scopes;
         this.expiresIn = expiresIn;
-        this.additionalInfo = additionalInfo;
+        this.metadata = metadata;
     }
 
     protected final String path() {
@@ -47,11 +48,28 @@ public class CreateAccountCpmToken extends BankRequest {
             if ((scopes & SCOPE_TOPUP) != 0) scopesArray.add("topup");
             put("scopes", scopesArray);
             put("expires_in", expiresIn);
-            put("additional_info", additionalInfo);
+            put("metadata", toJsonString(metadata.map));
         }};
     }
 
     public final AccountCpmToken send(String accessToken) throws ProcessingError, BankRequestError {
         return super.send(AccountCpmToken.class, accessToken);
+    }
+
+    private String toJsonString(Map<String, String> map){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("{");
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+
+            stringBuilder.append("\"");
+            stringBuilder.append(entry.getKey());
+            stringBuilder.append("\":\"");
+            stringBuilder.append(entry.getValue());
+            stringBuilder.append("\"");
+        }
+
+        stringBuilder.append("}");
+        System.out.println(stringBuilder.toString());
+        return stringBuilder.toString();
     }
 }
