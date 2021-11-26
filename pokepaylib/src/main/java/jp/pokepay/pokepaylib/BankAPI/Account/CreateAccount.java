@@ -12,10 +12,12 @@ import jp.pokepay.pokepaylib.Responses.Account;
 public class CreateAccount extends BankRequest {
     public String name;
     public String privateMoneyId;
+    public String externalId;
 
-    public CreateAccount(String name, String privateMoneyId) {
+    public CreateAccount(String name, String privateMoneyId, String externalId) {
         this.name = name;
         this.privateMoneyId = privateMoneyId;
+        this.externalId = externalId;
     }
 
     protected final String path() {
@@ -31,6 +33,7 @@ public class CreateAccount extends BankRequest {
         return new HashMap<String, Object>() {{
             put("name", name);
             put("private_money_id", privateMoneyId);
+            if(externalId != null && !externalId.isEmpty()) put("external_id", externalId);
         }};
     }
 

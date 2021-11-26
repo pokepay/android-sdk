@@ -112,7 +112,7 @@ public class LowLevelAPITests {
 
     public String AccountTest() throws BankRequestError, ProcessingError {
         // privateMoneyIdでアカウントの作成 //
-        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId);
+        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId, null);
         Account account = createAccount.send(merchantAccessToken);
         // アカウントの確認 //
         GetAccount getAccount = new GetAccount(account.id);
@@ -370,7 +370,7 @@ public class LowLevelAPITests {
         }
 
         System.out.println("客のアクセストークンでCpmをcreate");
-        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId);
+        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId, null);
         Account account = createAccount.send(customerAccessToken);
         CreateAccountCpmToken createAccountCpmToken = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, new Metadata(new HashMap<String, String>()));
         AccountCpmToken cpmToken = createAccountCpmToken.send(customerAccessToken);
@@ -512,7 +512,7 @@ public class LowLevelAPITests {
         };
         Pokepay.setEnv(Env.DEVELOPMENT);
         Pokepay.Client client = new Pokepay.Client(customerAccessToken, null);
-        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId);
+        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId, null);
         GetAccount getAccount = new GetAccount(createAccount.send(customerAccessToken).id);
         SubsetOfAccount account = getAccount.send(customerAccessToken);
         System.out.println(account.id);
@@ -531,7 +531,7 @@ public class LowLevelAPITests {
         CouponDetail couponDetail = new GetAccountCouponDetail(customerClient.getTerminalInfo().account.id, coupon.id).send(customerAccessToken);
         System.out.println("Coupon detail: "+couponDetail);
 
-        CouponDetail patchCouponDetail = new PatchAccountCouponDetail(customerClient.getTerminalInfo().account.id, coupon.id,true).send(customerAccessToken);
+        CouponDetail patchCouponDetail = new PatchAccountCouponDetail(customerClient.getTerminalInfo().account.id, coupon.id,true, null).send(customerAccessToken);
         System.out.println("Patch coupon detail: "+patchCouponDetail);
         Account account = new GetAccount(customerClient.getTerminalInfo().account.id).send(customerAccessToken);
         System.out.println("client account: "+account);
