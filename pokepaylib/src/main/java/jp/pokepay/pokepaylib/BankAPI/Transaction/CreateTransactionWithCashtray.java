@@ -15,10 +15,12 @@ public class CreateTransactionWithCashtray extends BankRequest {
     @NonNull
     public String cashtrayId;
     public String accountId;
+    public String couponId;
 
-    public CreateTransactionWithCashtray(String cashtrayId, String accountId) {
+    public CreateTransactionWithCashtray(String cashtrayId, String accountId, String couponId) {
         this.cashtrayId = cashtrayId;
         this.accountId = accountId;
+        this.couponId = couponId;
     }
     protected final String path() {
         return "/transactions";
@@ -33,6 +35,7 @@ public class CreateTransactionWithCashtray extends BankRequest {
         return new HashMap<String, Object>() {{
             put("cashtray_id", cashtrayId);
             put("account_id", accountId);
+            put("coupon_id", couponId);
         }};
     }
 

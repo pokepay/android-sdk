@@ -7,8 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class Parameter {
 
     public Map<String, Object> toMap() {
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        final ObjectMapper mapper = JsonConverter.createObjectMapper();
         return mapper.convertValue(this, Map.class);
     }
 

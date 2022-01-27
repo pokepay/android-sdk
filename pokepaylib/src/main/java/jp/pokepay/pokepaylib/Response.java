@@ -7,11 +7,11 @@ import java.text.SimpleDateFormat;
 
 public class Response {
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    public static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     public String toString() {
         try {
-            final ObjectMapper m = new ObjectMapper();
+            final ObjectMapper m = JsonConverter.createObjectMapper();
             m.setDateFormat(formatter);
             return m.writerWithDefaultPrettyPrinter().writeValueAsString(this);
         } catch (JsonProcessingException e) {

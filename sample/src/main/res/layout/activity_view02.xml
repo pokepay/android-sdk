@@ -62,6 +62,18 @@
         android:text="cashtray test" />
 
     <Button
+        android:id="@+id/button_check"
+        android:layout_width="183dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="320dp"
+        android:text="check test" />
+
+
+    <Button
         android:id="@+id/button_info"
         android:layout_width="183dp"
         android:layout_height="wrap_content"
@@ -73,14 +85,14 @@
         android:text="GetTokenInfo test" />
 
     <Button
-        android:id="@+id/button_check"
+        android:id="@+id/button_info2"
         android:layout_width="183dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginTop="320dp"
-        android:text="check test" />
+        android:layout_marginTop="480dp"
+        android:text="GetTokenInfo test2" />
 
 </RelativeLayout>

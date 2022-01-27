@@ -283,6 +283,55 @@ public class View03Activity extends AppCompatActivity {
                 }).start();
             }
         });
+
+        Button button11 = (Button)findViewById(R.id.buttonConfirmNewParametersShouldBeIgnored);
+        button11.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        handler.sendEmptyMessage(1);
+                        final Message msg = Message.obtain();
+                        try {
+                            final String result = lowLevelAPITests.ConfirmNewParametersShouldBeIgnoredTest();
+                            msg.obj = "ParseAsPokeregiToken: \n" + result;
+                        } catch (ProcessingError e) {
+                            msg.obj = "ProcessingError: " + e.toString();
+                        } catch (BankRequestError e) {
+                            msg.obj = "BankRequestError: " + e.toString();
+                        }
+                        handler.sendMessage(msg);
+                    }
+                }).start();
+            }
+        });
+
+        Button button12 = (Button) findViewById(R.id.buttonCouponTest);
+        button12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        handler.sendEmptyMessage(1);
+                        final Message msg = Message.obtain();
+                        try {
+                            final String result = lowLevelAPITests.CouponTest();
+                            msg.obj = "Coupon result: \n" + result;
+                        } catch (ProcessingError e) {
+                            System.out.println(e.toString());
+                            msg.obj = "ProcessingError: " + e.toString();
+                        } catch (BankRequestError e) {
+                            System.out.println(e.toString());
+                            msg.obj = "BankRequestError: " + e.toString();
+                        }
+                        handler.sendMessage(msg);
+                    }
+                }).start();
+            }
+        });
+
     }
 
     private Handler handler = new Handler(new Handler.Callback() {

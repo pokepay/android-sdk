@@ -2,7 +2,7 @@
 
 ## Document
 
-* https://docs.pokepay.jp/sdk/android.html
+* https://docs.pokepay.jp/guidelines/app-sdk/java.html
 
 ## Installation　（jcenter上のライブラリを使用）
 
@@ -10,9 +10,11 @@
 ```
 dependencies{
   .....
-  implementation 'jp.pocket-change.pokepay.android-sdk:pokepaylib:1.1.0'
+  implementation 'jp.pocket-change.pokepay.android-sdk:pokepaylib:{Version}' // (※)
 }
 ```
+
+(※) `{Version}` はその時点での最新バージョンを指定する
 
 ## Installation　（コンパイルして使用）
 
@@ -77,6 +79,19 @@ new Thread(new Runnable() {
         UserTransaction userTransaction = client.scanToken("https://www.pokepay.jp/cashtrays/dc204118-9e3b-493c-b396-b9259ce28663");
     }
 }).start();
+```
+
+2. If you use Payregi please add these lines main/AndroidManifest.xml
+```
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" ...
+
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-feature android:name="android.hardware.bluetooth" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+
+    <application ...
 ```
 
 ## Authorization

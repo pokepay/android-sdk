@@ -3,6 +3,7 @@ package jp.pokepay.pokepaylib;
 import android.content.Context;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -87,7 +88,7 @@ public class Pokepay {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
                 return new TokenInfo(
                     TokenInfo.Type.CASHTRAY,
-                    new GetCashtray(uuid).send(accessToken)
+                    null
                 );
             } else if (token.startsWith(env.WWW_BASE_URL() + "/bills/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/bills/").length());
@@ -119,19 +120,19 @@ public class Pokepay {
         }
 
         public UserTransaction scanToken(String token) throws ProcessingError, BankRequestError {
-            return scanToken(token, null, null, null);
+            return scanToken(token, null, null, null,null);
         }
 
-        public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products) throws ProcessingError, BankRequestError {
+        public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products, String couponId) throws ProcessingError, BankRequestError {
             final Env env = Env.current();
             if (token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
-                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId);
+                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId);
                 return createTransactionWithCashtray.send(accessToken);
             }
             else if (token.startsWith(env.WWW_BASE_URL() + "/bills/")) {
                 final String uuid = token.substring((env.WWW_BASE_URL() + "/bills/").length());
-                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount);
+                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount,couponId);
                 return createTransactionWithBill.send(accessToken);
             }
             else if (token.startsWith(env.WWW_BASE_URL() + "/checks/")) {
@@ -146,13 +147,13 @@ public class Pokepay {
             else {
                 String key = parseAsPokeregiToken(token);
                 if (key.length() > 0) {
-                    return scanTokenBLE(key);
+                    return scanTokenBLE(key, couponId);
                 }
             }
             throw new ProcessingError("Unknown token format");
         }
 
-        private UserTransaction scanTokenBLE(String token) throws ProcessingError, BankRequestError {
+        private UserTransaction scanTokenBLE(String token, String couponId) throws ProcessingError, BankRequestError {
             if (context == null) {
                 throw new ProcessingError("Scanning to pokeregi requires Context (for BLE)");
             }
@@ -161,7 +162,7 @@ public class Pokepay {
                 bleController = new BLEController(token, context);
                 bleController.connect(1000 * 10);
                 final String jwt = bleController.read(1000 * 10);
-                final CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null);
+                final CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null, couponId);
                 final JwtResult jwtResult = createTransactionWithJwt.send(accessToken);
                 if (jwtResult.data != null) {
                     bleController.write(jwtResult.data, 1000 * 10);
@@ -171,7 +172,7 @@ public class Pokepay {
                     final BankError err = jwtResult.parseAsAPIError();
                     throw new BankRequestError(999, err);
                 } else {
-                    final ObjectMapper mapper = new ObjectMapper();
+                    final ObjectMapper mapper = JsonConverter.createObjectMapper();
                     final String defaultError = "{\"type\":\"Invalid JSON structure\",\"message\":\"jwt response doesn't have neither data nor error.\"}";
                     final BankError err = mapper.readValue(defaultError, BankError.class);
                     throw new BankRequestError(999, err);

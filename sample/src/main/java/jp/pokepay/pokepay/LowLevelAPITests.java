@@ -2,14 +2,20 @@ package jp.pokepay.pokepay;
 
 
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 
-import org.json.JSONException;
+import java.util.HashMap;
+import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.Account.CreateAccount;
 import jp.pokepay.pokepaylib.BankAPI.Account.CreateAccountCpmToken;
 import jp.pokepay.pokepaylib.BankAPI.Account.GetAccount;
+import jp.pokepay.pokepaylib.BankAPI.Account.GetAccountCouponDetail;
+import jp.pokepay.pokepaylib.BankAPI.Account.GetAccountCoupons;
 import jp.pokepay.pokepaylib.BankAPI.Account.GetAccountTransactions;
 import jp.pokepay.pokepaylib.BankAPI.Account.GetAccountBalances;
+import jp.pokepay.pokepaylib.BankAPI.Account.PatchAccountCouponDetail;
+import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.BankAPI.Bill.CreateBill;
 import jp.pokepay.pokepaylib.BankAPI.Bill.DeleteBill;
@@ -25,6 +31,7 @@ import jp.pokepay.pokepaylib.BankAPI.Check.DeleteCheck;
 import jp.pokepay.pokepaylib.BankAPI.Check.GetCheck;
 import jp.pokepay.pokepaylib.BankAPI.Check.UpdateCheck;
 import jp.pokepay.pokepaylib.BankAPI.CpmToken.GetCpmToken;
+import jp.pokepay.pokepaylib.BankAPI.PrivateMoney.GetPrivateMoneyCoupons;
 import jp.pokepay.pokepaylib.BankAPI.PrivateMoney.SearchPrivateMoneys;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.AddTerminalPublicKey;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.GetTerminal;
@@ -39,18 +46,23 @@ import jp.pokepay.pokepaylib.BankAPI.User.GetUserTransactions;
 import jp.pokepay.pokepaylib.BankAPI.User.RegisterUserEmail;
 import jp.pokepay.pokepaylib.BankAPI.User.SendConfirmationEmail;
 import jp.pokepay.pokepaylib.Env;
+import jp.pokepay.pokepaylib.Parameters.Metadata;
 import jp.pokepay.pokepaylib.Parameters.Product;
 import jp.pokepay.pokepaylib.Pokepay;
 import jp.pokepay.pokepaylib.ProcessingError;
+import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.Account;
 import jp.pokepay.pokepaylib.Responses.AccountCpmToken;
 import jp.pokepay.pokepaylib.Responses.Bill;
 import jp.pokepay.pokepaylib.Responses.Cashtray;
 import jp.pokepay.pokepaylib.Responses.CashtrayAttempts;
 import jp.pokepay.pokepaylib.Responses.Check;
+import jp.pokepay.pokepaylib.Responses.Coupon;
+import jp.pokepay.pokepaylib.Responses.CouponDetail;
 import jp.pokepay.pokepaylib.Responses.NoContent;
 import jp.pokepay.pokepaylib.Responses.PaginatedAccountBalances;
 import jp.pokepay.pokepaylib.Responses.PaginatedAccounts;
+import jp.pokepay.pokepaylib.Responses.PaginatedCoupons;
 import jp.pokepay.pokepaylib.Responses.PaginatedPrivateMoneys;
 import jp.pokepay.pokepaylib.Responses.PaginatedTransactions;
 import jp.pokepay.pokepaylib.Responses.ServerKey;
@@ -61,7 +73,7 @@ import jp.pokepay.pokepaylib.TokenInfo;
 public class LowLevelAPITests {
     private final String merchantAccessToken = "eYNDMo_cAqPgxMW3qlMv9968awTwFpiwi_rR8XrRhaO6zMOgMfem2q1wfnlluo-v";// 購入店を想定
     private final String customerAccessToken = "S-WAIYRN6rVdb77rYGgMeRQgMLuQ2ZAM0Fo8HfocrrTWxH7tsehCkD6JJSjGhs-0";// 購入客を想定(残高あり)
-    private final String pokepayMoneyId = "87c012b9-e8ea-4e2f-97ed-764e5ac0167f";
+    private final String pokepayMoneyId = "4b138a4c-8944-4f98-a5c4-96d3c1c415eb";
 
     public LowLevelAPITests() {
         Pokepay.setEnv(Env.DEVELOPMENT);
@@ -100,7 +112,7 @@ public class LowLevelAPITests {
 
     public String AccountTest() throws BankRequestError, ProcessingError {
         // privateMoneyIdでアカウントの作成 //
-        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId);
+        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId, null);
         Account account = createAccount.send(merchantAccessToken);
         // アカウントの確認 //
         GetAccount getAccount = new GetAccount(account.id);
@@ -191,7 +203,7 @@ public class LowLevelAPITests {
             throw new Error("attempts should be 0");
         }
         System.out.println("決済しようとする => 失敗");
-        CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(cashtray.id, null);
+        CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(cashtray.id, null,null);
         try {
             UserTransaction transaction = createTransactionWithCashtray.send(customerAccessToken);
         } catch (BankRequestError e) {
@@ -213,7 +225,7 @@ public class LowLevelAPITests {
         cashtray = updateCashtray.send(merchantAccessToken);
         System.out.println("cashtray updated " + cashtray.id);
         System.out.println("決済しようとする => 成功");
-        createTransactionWithCashtray = new CreateTransactionWithCashtray(cashtray.id, null);
+        createTransactionWithCashtray = new CreateTransactionWithCashtray(cashtray.id, null,null);
         UserTransaction transaction = createTransactionWithCashtray.send(customerAccessToken);
         System.out.println("CashtrayAttempts取得 => 2個取得");
         getCashtrayAttempts = new GetCashtrayAttempts(cashtray.id);
@@ -238,6 +250,8 @@ public class LowLevelAPITests {
         if (check.is_disabled == true) {
             throw new ProcessingError("Disabled check");
         }
+        System.out.println(check.point_expires_at);
+        System.out.println(check.point_expires_in_days);
         System.out.println("check got " + check.id);
         // Checkの支払いを2円に変更 //
         UpdateCheck updateCheck = new UpdateCheck(check.id, 2.0, "check update");
@@ -261,12 +275,16 @@ public class LowLevelAPITests {
 
     public String PrivateMoneyTest() throws BankRequestError, ProcessingError {
         // フィルタ無しで全て確認 //
-        SearchPrivateMoneys searchPrivateMoneys = new SearchPrivateMoneys(null, true, null, null, 30);
+        SearchPrivateMoneys searchPrivateMoneys = new SearchPrivateMoneys(null, true, null, null, 100);
         PaginatedPrivateMoneys paginatedPrivateMoney = searchPrivateMoneys.send(customerAccessToken);
+        int noFilteredCount = paginatedPrivateMoney.count;
         // フィルタあり（部分一致）で確認 //
-        searchPrivateMoneys = new SearchPrivateMoneys("コイン", true, null, null, 30);
+        searchPrivateMoneys = new SearchPrivateMoneys("コイルマネー", true, null, null, 100);
         paginatedPrivateMoney = searchPrivateMoneys.send(customerAccessToken);
-        System.out.println("PrivateMoney:\n" + paginatedPrivateMoney.toString());
+        int filteredCount = paginatedPrivateMoney.count;
+        if (filteredCount >= noFilteredCount) {
+            throw new ProcessingError("filteredCount is less than noFilteredCount. its suspicious.");
+        }
         return "OK";
     }
 
@@ -295,7 +313,7 @@ public class LowLevelAPITests {
         Bill bill = createBill.send(merchantAccessToken);
         System.out.println("bill created " + bill.toString());
         // 上記のBillで取引を作成 //
-        CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(bill.id, null, 1.0);
+        CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(bill.id, null, 1.0,null);
         userTransaction = createTransactionWithBill.send(customerAccessToken);
         System.out.println("transaction created " + userTransaction.toString());
         // 取引の確認 //
@@ -352,9 +370,9 @@ public class LowLevelAPITests {
         }
 
         System.out.println("客のアクセストークンでCpmをcreate");
-        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId);
+        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId, null);
         Account account = createAccount.send(customerAccessToken);
-        CreateAccountCpmToken createAccountCpmToken = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, "data");
+        CreateAccountCpmToken createAccountCpmToken = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, new Metadata(new HashMap<String, String>()));
         AccountCpmToken cpmToken = createAccountCpmToken.send(customerAccessToken);
 
         System.out.println("客のアクセストークンでCpmをget");
@@ -365,7 +383,9 @@ public class LowLevelAPITests {
         }
         SystemClock.sleep(50);
         System.out.println("客のアクセストークンでCpmをcreate");
-        CreateAccountCpmToken createAccountCpmToken2 = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, "data");
+        Map<String, String> metadataMap = new HashMap<String, String>();
+        metadataMap.put("foo", "bar");
+        CreateAccountCpmToken createAccountCpmToken2 = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, new Metadata(metadataMap));
         AccountCpmToken cpmToken2 = createAccountCpmToken2.send(customerAccessToken);
         System.out.printf(cpmToken2.toString());
 
@@ -405,7 +425,10 @@ public class LowLevelAPITests {
         }
 
         System.out.println("客のアクセストークンでCpmをcreate");
-        CreateAccountCpmToken createAccountCpmToken3 = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, "data");
+        Map<String, String> metadataMap2 = new HashMap<String, String>();
+        metadataMap2.put("baz","qux");
+        metadataMap2.put("foo", "bar");
+        CreateAccountCpmToken createAccountCpmToken3 = new CreateAccountCpmToken(account.id, CreateAccountCpmToken.SCOPE_BOTH, 100, new Metadata(metadataMap2));
         AccountCpmToken cpmToken3 = createAccountCpmToken3.send(customerAccessToken);
 
         System.out.println("店のアクセストークンでCpmにpayment with products");
@@ -466,6 +489,58 @@ public class LowLevelAPITests {
         if (errorMessage != "Unknown token format") {
             throw new ProcessingError("invalid token shouldn't be matched");
         }
+        return "OK";
+    }
+
+    public String ConfirmNewParametersShouldBeIgnoredTest() throws ProcessingError, BankRequestError {
+        // APIに知らないパラメータがあっても無視してくれることをテスト
+        class GetAccount extends BankRequest {
+            @NonNull
+            public String id;
+            public GetAccount(String id){
+                this.id = id;
+            }
+            protected final String path() {
+                return "/accounts/" + id;
+            }
+            protected final Request.Method method() {
+                return Request.Method.GET;
+            }
+            public final SubsetOfAccount send(String accessToken) throws ProcessingError, BankRequestError {
+                return super.send(SubsetOfAccount.class, accessToken);
+            }
+        };
+        Pokepay.setEnv(Env.DEVELOPMENT);
+        Pokepay.Client client = new Pokepay.Client(customerAccessToken, null);
+        CreateAccount createAccount = new CreateAccount("accountTest", pokepayMoneyId, null);
+        GetAccount getAccount = new GetAccount(createAccount.send(customerAccessToken).id);
+        SubsetOfAccount account = getAccount.send(customerAccessToken);
+        System.out.println(account.id);
+        return "OK";
+    }
+
+    public  String CouponTest() throws ProcessingError, BankRequestError{
+        Pokepay.Client merchantClient = new Pokepay.Client(merchantAccessToken, null);
+        Pokepay.Client customerClient = new Pokepay.Client(customerAccessToken, null);
+        //list of coupons can receive
+        PaginatedCoupons paginatedCoupons= new GetPrivateMoneyCoupons(pokepayMoneyId,null, null,100).send(customerAccessToken);
+        System.out.println("paginated coupons: "+paginatedCoupons);
+        System.out.println("coupons count: "+paginatedCoupons.count);
+        Coupon coupon = paginatedCoupons.items[0];
+        System.out.println("Coupon: "+coupon);
+        CouponDetail couponDetail = new GetAccountCouponDetail(customerClient.getTerminalInfo().account.id, coupon.id).send(customerAccessToken);
+        System.out.println("Coupon detail: "+couponDetail);
+
+        CouponDetail patchCouponDetail = new PatchAccountCouponDetail(customerClient.getTerminalInfo().account.id, coupon.id,true, null).send(customerAccessToken);
+        System.out.println("Patch coupon detail: "+patchCouponDetail);
+        Account account = new GetAccount(customerClient.getTerminalInfo().account.id).send(customerAccessToken);
+        System.out.println("client account: "+account);
+        Account merchantAccount = new GetAccount(merchantClient.getTerminalInfo().account.id).send(merchantAccessToken);
+        System.out.println("merchant account: "+merchantAccount);
+
+        PaginatedCoupons accountPaginatedCoupons = new GetAccountCoupons(merchantClient.getTerminalInfo().account.id,false, null, null, 100).send(merchantAccessToken);
+        System.out.println("Account paginated coupons count: "+accountPaginatedCoupons.count);
+
         return "OK";
     }
 
