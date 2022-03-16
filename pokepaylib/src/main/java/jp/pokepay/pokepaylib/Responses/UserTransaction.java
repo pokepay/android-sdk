@@ -24,4 +24,5 @@ public class UserTransaction extends Response {
     public String  description;
     @NonNull
     public String  done_at;
+    public UserTransfer transfers[];
 }
