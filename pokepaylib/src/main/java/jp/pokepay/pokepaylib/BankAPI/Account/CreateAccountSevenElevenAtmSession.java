@@ -17,10 +17,13 @@ public class CreateAccountSevenElevenAtmSession extends BankRequest {
     public String accountId;
     @NonNull
     public String qrInfo;
+    @NonNull
+    public double amount;
 
-    public CreateAccountSevenElevenAtmSession(String accountId, String qrInfo) {
+    public CreateAccountSevenElevenAtmSession(String accountId, String qrInfo, double amount) {
         this.accountId = accountId;
         this.qrInfo = qrInfo;
+        this.amount = amount;
     }
 
     protected final String path() {
@@ -35,6 +38,7 @@ public class CreateAccountSevenElevenAtmSession extends BankRequest {
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
             put("qr_info", qrInfo);
+            put("amount", amount);
         }};
     }
 

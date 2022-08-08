@@ -8,5 +8,7 @@ public class SevenElevenAtmSession extends Response {
    @NonNull
    public String        qr_info;
    @NonNull
+   public double        amount;
+   @NonNull
    public Account       account;
 }
