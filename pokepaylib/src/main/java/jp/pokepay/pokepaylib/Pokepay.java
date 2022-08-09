@@ -72,6 +72,11 @@ public class Pokepay {
             return customDomain != null ? customDomain : env.WWW_BASE_URL();
         }
 
+        /**
+         * Create a client object with custom domain.
+         *
+         * It is encouraged to get the client once and use it throughout the application since this method needs to call api endpoint to get a custom domain.
+         */
         public static Client withCustomDomain(String accessToken, Context context, Boolean isMerchant, String challenge) throws ProcessingError, BankRequestError {
             final String customDomainName = new GetPrivateMoney(challenge).send(accessToken).custom_domain_name;
             final Client client = new Client(accessToken, context, isMerchant);
