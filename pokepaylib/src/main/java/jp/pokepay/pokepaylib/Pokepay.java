@@ -18,6 +18,8 @@ import jp.pokepay.pokepaylib.BankAPI.Cashtray.GetCashtray;
 import jp.pokepay.pokepaylib.BankAPI.Check.CreateCheck;
 import jp.pokepay.pokepaylib.BankAPI.Check.GetCheck;
 import jp.pokepay.pokepaylib.BankAPI.CpmToken.GetCpmToken;
+import jp.pokepay.pokepaylib.BankAPI.PrivateMoney.GetPrivateMoney;
+import jp.pokepay.pokepaylib.BankAPI.PrivateMoney.GetPrivateMoneyCoupons;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.GetTerminal;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithBill;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCashtray;
@@ -47,6 +49,7 @@ public class Pokepay {
         private String accessToken;
         private Boolean isMerchant;
         private Context context;
+        private String customDomain;
 
         public Client(String accessToken, Context context) {
             this.accessToken = accessToken;
@@ -58,6 +61,31 @@ public class Pokepay {
             this.accessToken = accessToken;
             this.context = context;
             this.isMerchant  = isMerchant;
+        }
+
+        public void setCustomDomain(String customDomain) {
+            this.customDomain = customDomain;
+        }
+
+        public String getWwwBaseUrl() {
+            final Env env = Env.current();
+            return customDomain != null ? customDomain : env.WWW_BASE_URL();
+        }
+
+        /**
+         * Create a client object with custom domain.
+         *
+         * It is encouraged to get the client once and use it throughout the application since this method needs to call api endpoint to get a custom domain.
+         */
+        public static Client withCustomDomain(String accessToken, Context context, Boolean isMerchant, String challenge) throws ProcessingError, BankRequestError {
+            final String customDomainName = new GetPrivateMoney(challenge).send(accessToken).custom_domain_name;
+            final Client client = new Client(accessToken, context, isMerchant);
+            client.setCustomDomain(customDomainName);
+            return client;
+        }
+
+        public static Client withCustomDomain(String accessToken, Context context, String challenge) throws ProcessingError, BankRequestError {
+            return Client.withCustomDomain(accessToken, context, false, challenge);
         }
 
         public Terminal getTerminalInfo() throws ProcessingError, BankRequestError {
@@ -83,21 +111,20 @@ public class Pokepay {
         }
 
         public TokenInfo getTokenInfo(String token) throws ProcessingError, BankRequestError {
-            final Env env = Env.current();
-            if (token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")) {
-                final String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
+            if (token.startsWith(getWwwBaseUrl() + "/cashtrays/")) {
+                final String uuid = token.substring((getWwwBaseUrl() + "/cashtrays/").length());
                 return new TokenInfo(
                     TokenInfo.Type.CASHTRAY,
                     null
                 );
-            } else if (token.startsWith(env.WWW_BASE_URL() + "/bills/")) {
-                final String uuid = token.substring((env.WWW_BASE_URL() + "/bills/").length());
+            } else if (token.startsWith(getWwwBaseUrl() + "/bills/")) {
+                final String uuid = token.substring((getWwwBaseUrl() + "/bills/").length());
                 return new TokenInfo(
                     TokenInfo.Type.BILL,
                     new GetBill(uuid).send(accessToken)
                 );
-            } else if (token.startsWith(env.WWW_BASE_URL() + "/checks/")) {
-                final String uuid = token.substring((env.WWW_BASE_URL() + "/checks/").length());
+            } else if (token.startsWith(getWwwBaseUrl() + "/checks/")) {
+                final String uuid = token.substring((getWwwBaseUrl() + "/checks/").length());
                 return new TokenInfo(
                     TokenInfo.Type.CHECK,
                     new GetCheck(uuid).send(accessToken)
@@ -124,19 +151,18 @@ public class Pokepay {
         }
 
         public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products, String couponId) throws ProcessingError, BankRequestError {
-            final Env env = Env.current();
-            if (token.startsWith(env.WWW_BASE_URL() + "/cashtrays/")) {
-                final String uuid = token.substring((env.WWW_BASE_URL() + "/cashtrays/").length());
+            if (token.startsWith(getWwwBaseUrl() + "/cashtrays/")) {
+                final String uuid = token.substring((getWwwBaseUrl() + "/cashtrays/").length());
                 final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId);
                 return createTransactionWithCashtray.send(accessToken);
             }
-            else if (token.startsWith(env.WWW_BASE_URL() + "/bills/")) {
-                final String uuid = token.substring((env.WWW_BASE_URL() + "/bills/").length());
+            else if (token.startsWith(getWwwBaseUrl() + "/bills/")) {
+                final String uuid = token.substring((getWwwBaseUrl() + "/bills/").length());
                 final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount,couponId);
                 return createTransactionWithBill.send(accessToken);
             }
-            else if (token.startsWith(env.WWW_BASE_URL() + "/checks/")) {
-                final String uuid = token.substring((env.WWW_BASE_URL() + "/checks/").length());
+            else if (token.startsWith(getWwwBaseUrl() + "/checks/")) {
+                final String uuid = token.substring((getWwwBaseUrl() + "/checks/").length());
                 final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
                 return createTransactionWithCheck.send(accessToken);
             }
@@ -203,25 +229,24 @@ public class Pokepay {
         }
 
         public String createToken(Double amount, String description, Integer expiresIn, String accountId, Product[] products) throws ProcessingError, BankRequestError {
-            final Env env = Env.current();
             if (isMerchant) {
                 CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn, products);
                 Cashtray cashtray = createCashtray.send(accessToken);
-                return env.WWW_BASE_URL() + "/cashtrays/" + cashtray.id;
+                return getWwwBaseUrl() + "/cashtrays/" + cashtray.id;
             } else if (amount != null) {
                 if (amount < 0) {
                     CreateBill createBill = new CreateBill(-amount, accountId, description, products);
                     Bill bill = createBill.send(accessToken);
-                    return env.WWW_BASE_URL() + "/bills/" + bill.id;
+                    return getWwwBaseUrl() + "/bills/" + bill.id;
                 } else {
                     CreateCheck createCheck = new CreateCheck(amount, accountId, description);
                     Check check = createCheck.send(accessToken);
-                    return env.WWW_BASE_URL() + "/checks/" + check.id;
+                    return getWwwBaseUrl() + "/checks/" + check.id;
                 }
             } else { // amount == null
                 CreateBill createBill = new CreateBill(amount, accountId, description, products);
                 Bill bill = createBill.send(accessToken);
-                return env.WWW_BASE_URL() + "/bills/" + bill.id;
+                return getWwwBaseUrl() + "/bills/" + bill.id;
             }
         }
     }
