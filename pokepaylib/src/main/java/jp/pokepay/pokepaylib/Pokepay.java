@@ -26,6 +26,7 @@ import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCashtray;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCheck;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCpm;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithJwt;
+import jp.pokepay.pokepaylib.BankAPI.User.GetUserSettingUrl;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.Token.ExchangeAuthCode;
 import jp.pokepay.pokepaylib.Parameters.Product;
@@ -37,6 +38,7 @@ import jp.pokepay.pokepaylib.Responses.Cashtray;
 import jp.pokepay.pokepaylib.Responses.Check;
 import jp.pokepay.pokepaylib.Responses.JwtResult;
 import jp.pokepay.pokepaylib.Responses.Terminal;
+import jp.pokepay.pokepaylib.Responses.UserSettingUrl;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class Pokepay {
@@ -248,6 +250,10 @@ public class Pokepay {
                 Bill bill = createBill.send(accessToken);
                 return getWwwBaseUrl() + "/bills/" + bill.id;
             }
+        }
+
+        public UserSettingUrl getUserSettingUrl() throws ProcessingError, BankRequestError {
+            return new GetUserSettingUrl().send(accessToken);
         }
     }
 
