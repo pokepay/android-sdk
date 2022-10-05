@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.Pokeregi;
 
+import static android.os.SystemClock.sleep;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -16,16 +18,18 @@ import android.content.Context;
 import android.os.ParcelUuid;
 import android.util.Log;
 
+import androidx.annotation.RequiresPermission;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import jp.pokepay.pokepaylib.AES128;
 import jp.pokepay.pokepaylib.ProcessingError;
 
-import static android.os.SystemClock.sleep;
 
 public class BLEController {
 
@@ -35,18 +39,19 @@ public class BLEController {
         DONE,
         ERROR,
         TIMEOUT,
-    };
+    }
 
     public class Result {
         public ResultCode code;
         public String data;
         public ProcessingError err;
+
         Result(ResultCode c, String d, ProcessingError e) {
             code = c;
             data = d;
             err = e;
         }
-    };
+    }
 
     final static private String TAG = "Pokeregi.BLE";
 
@@ -55,9 +60,9 @@ public class BLEController {
     private static final String rxCharId = "0020";
     private static final String txCharId = "0040";
 
-    private Context context;
-    private String serviceUUID;
-    private AES128 aes;
+    private final Context context;
+    private final String serviceUUID;
+    private final AES128 aes;
     private BluetoothManager mBleManager;
     private BluetoothLeScanner mBleScanner;
     private BluetoothAdapter mBleAdapter;
@@ -79,7 +84,7 @@ public class BLEController {
     private Result result = new Result(ResultCode.NOT_STARTED_YET, null, null);
 
     private void setResult(Result r) {
-        synchronized(result) {
+        synchronized (result) {
             result.code = r.code;
             result.data = r.data;
             result.err = r.err;
@@ -87,7 +92,7 @@ public class BLEController {
     }
 
     private Result getResult() {
-        synchronized(result) {
+        synchronized (result) {
             return new Result(result.code, result.data, result.err);
         }
     }
@@ -111,8 +116,8 @@ public class BLEController {
     private String getUUID(String token) {
         String uuid = serviceUUIDPrefix;
         char[] tokenArray = token.substring(0, 8).toCharArray();
-        for(int i=0; i < tokenArray.length-1; i++){
-            int c = ((int)tokenArray[i]) % 0x0F;
+        for (int i = 0; i < tokenArray.length - 1; i++) {
+            int c = ((int) tokenArray[i]) % 0x0F;
             String hex = Integer.toHexString(c);
             uuid += hex;
         }
@@ -122,11 +127,12 @@ public class BLEController {
 
     public BLEController(String token, Context context) {
         this.context = context;
-        aes = new AES128(token.substring(token.length()-16), aesInitVector);
+        aes = new AES128(token.substring(token.length() - 16), aesInitVector);
         serviceUUID = getUUID(token);
         setResult(new Result(ResultCode.NOT_STARTED_YET, null, null));
     }
 
+    @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
     public void connect(long timeoutMs) throws ProcessingError {
         // Log.d(TAG, "connect");
         if (getResult().code == ResultCode.PROCESSING) {
@@ -141,7 +147,7 @@ public class BLEController {
             throw new ProcessingError("BLE is not enabled");
         }
         final ScanFilter scanFilter = new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(serviceUUID)).build();
-        final ArrayList scanFilters = new ArrayList(){{ add(scanFilter); }};
+        final ArrayList<ScanFilter> scanFilters = new ArrayList<>(Collections.singleton(scanFilter));
         final ScanSettings scanSettings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
         setResult(new Result(ResultCode.PROCESSING, null, null));
         mBleScanner.startScan(scanFilters, scanSettings, scanCallback);
@@ -152,6 +158,7 @@ public class BLEController {
         }
     }
 
+    @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
     public void disconnect() {
         if (mBleGatt != null) {
             mBleGatt.close();
@@ -165,6 +172,7 @@ public class BLEController {
         setResult(new Result(ResultCode.NOT_STARTED_YET, null, null));
     }
 
+    @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
     public String read(long timeoutMs) throws ProcessingError {
         if (getResult().code == ResultCode.PROCESSING) {
             throw new ProcessingError("BLE running other operation");
@@ -184,6 +192,7 @@ public class BLEController {
         return result.data;
     }
 
+    @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
     public void write(String jwt, long timeoutMs) throws ProcessingError {
         if (getResult().code == ResultCode.PROCESSING) {
             throw new ProcessingError("BLE running other operation");
@@ -196,7 +205,7 @@ public class BLEController {
         final byte[] jwtRaw = aes.encode(jwt);
         int i = 0;
         do {
-            final byte[] chunk = Arrays.copyOfRange(jwtRaw, i, Math.min(i+500, jwtRaw.length));
+            final byte[] chunk = Arrays.copyOfRange(jwtRaw, i, Math.min(i + 500, jwtRaw.length));
             jwtChunks.add(chunk);
             i += 500;
         } while (i <= jwtRaw.length);
@@ -212,6 +221,7 @@ public class BLEController {
 
     private final ScanCallback scanCallback = new ScanCallback() {
 
+        @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
@@ -241,7 +251,7 @@ public class BLEController {
             try {
                 final Method refresh = gatt.getClass().getMethod("refresh");
                 if (refresh == null) {
-                    Log.e(TAG,"Could not find function BluetoothGatt.refresh()");
+                    Log.e(TAG, "Could not find function BluetoothGatt.refresh()");
                 }
                 final Boolean success = (Boolean) refresh.invoke(gatt);
                 if (!success) Log.e(TAG, "BluetoothGatt.refresh() returned false");
@@ -250,6 +260,7 @@ public class BLEController {
             }
         }
 
+        @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT"})
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
@@ -269,13 +280,14 @@ public class BLEController {
             }
         }
 
+        @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT"})
         @Override
         public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
             super.onMtuChanged(gatt, mtu, status);
             if (gatt != null && status == BluetoothGatt.GATT_SUCCESS) {
                 refreshGatt(gatt);
                 if (gatt.discoverServices()) {
-                    // Log.d(TAG, "Started discovering services");
+                    Log.d(TAG, "Started discovering services");
                 } else {
                     setResult(new Result(ResultCode.ERROR, null, new ProcessingError("BLE failed to request discover service")));
                 }
@@ -321,6 +333,7 @@ public class BLEController {
             }
         }
 
+        @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT"})
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             // Log.d(TAG, "onRead");
@@ -359,11 +372,12 @@ public class BLEController {
             }
         }
 
+        @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT"})
         @Override
-        public void  onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             // Log.d(TAG, "onWrite");
             super.onCharacteristicWrite(gatt, characteristic, status);
-            switch(status) {
+            switch (status) {
                 case BluetoothGatt.GATT_SUCCESS:
                     if (jwtChunks.size() > 0) {
                         final byte[] chunk = jwtChunks.remove(0);
