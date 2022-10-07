@@ -12,17 +12,39 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class CreateTransactionWithBill extends BankRequest {
+
+    public enum STRATEGY {
+        POINT_PREFERRED("point_preferred"),
+        MONEY_ONLY("money_only");
+
+        private final String strategy;
+
+        STRATEGY(String strategy) {
+            this.strategy = strategy;
+        }
+
+        public String getStrategy() {
+            return strategy;
+        }
+    }
+
     @NonNull
     public String billId;
     public String accountId;
     public Double amount;
     public String couponId;
+    public STRATEGY strategy;
 
-    public CreateTransactionWithBill(String billId, String accountId, Double amount,String couponId) {
+    public CreateTransactionWithBill(String billId, String accountId, Double amount,String couponId, STRATEGY strategy) {
         this.billId    = billId;
         this.accountId = accountId;
         this.amount    = amount;
         this.couponId = couponId;
+        this.strategy = strategy;
+    }
+
+    public CreateTransactionWithBill(String billId, String accountId, Double amount,String couponId) {
+        this(billId, accountId, amount, couponId, STRATEGY.POINT_PREFERRED);
     }
 
     protected final String path() {
@@ -40,6 +62,7 @@ public class CreateTransactionWithBill extends BankRequest {
             put("account_id", accountId);
             put("amount", amount);
             put("coupon_id", couponId);
+            put("strategy", strategy != null ? strategy.getStrategy() : null);
         }};
     }
 

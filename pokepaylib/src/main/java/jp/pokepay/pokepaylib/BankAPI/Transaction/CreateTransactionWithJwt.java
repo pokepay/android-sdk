@@ -12,15 +12,37 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.JwtResult;
 
 public class CreateTransactionWithJwt extends BankRequest {
+
+    public enum STRATEGY {
+        POINT_PREFERRED("point_preferred"),
+        MONEY_ONLY("money_only");
+
+        private final String strategy;
+
+        STRATEGY(String strategy) {
+            this.strategy = strategy;
+        }
+
+        public String getStrategy() {
+            return strategy;
+        }
+    }
+
+
     @NonNull
     public String data;
     public String accountId;
     public String couponId;
+    public STRATEGY strategy;
 
-    public CreateTransactionWithJwt(String data, String accountId, String couponId) {
+    public CreateTransactionWithJwt(String data, String accountId, String couponId, STRATEGY strategy) {
         this.data = data;
         this.accountId = accountId;
         this.couponId = couponId;
+    }
+
+    public CreateTransactionWithJwt(String data, String accountId, String couponId) {
+        this(data, accountId, couponId, STRATEGY.POINT_PREFERRED);
     }
 
     protected final String path() {
@@ -37,6 +59,7 @@ public class CreateTransactionWithJwt extends BankRequest {
             put("data", data);
             put("account_id", accountId);
             put("coupon_id", couponId);
+            put("strategy", strategy != null ? strategy.getStrategy() : null);
         }};
     }
 
