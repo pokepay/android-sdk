@@ -7,42 +7,24 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.Parameters.TransactionStrategy;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class CreateTransactionWithCashtray extends BankRequest {
 
-    public enum STRATEGY {
-        POINT_PREFERRED("point_preferred"),
-        MONEY_ONLY("money_only");
-
-        private final String strategy;
-
-        STRATEGY(String strategy) {
-            this.strategy = strategy;
-        }
-
-        public String getStrategy() {
-            return strategy;
-        }
-    }
-
     @NonNull
     public String cashtrayId;
     public String accountId;
     public String couponId;
-    public STRATEGY strategy;
+    public TransactionStrategy strategy;
 
-    public CreateTransactionWithCashtray(String cashtrayId, String accountId, String couponId, STRATEGY strategy) {
+    public CreateTransactionWithCashtray(String cashtrayId, String accountId, String couponId, TransactionStrategy strategy) {
         this.cashtrayId = cashtrayId;
         this.accountId = accountId;
         this.couponId = couponId;
         this.strategy = strategy;
-    }
-
-    public CreateTransactionWithCashtray(String cashtrayId, String accountId, String couponId) {
-        this(cashtrayId, accountId, couponId, STRATEGY.POINT_PREFERRED);
     }
 
     protected final String path() {
