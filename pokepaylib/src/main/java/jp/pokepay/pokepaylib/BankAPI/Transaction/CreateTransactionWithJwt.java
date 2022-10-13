@@ -7,17 +7,20 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.Parameters.TransactionStrategy;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.JwtResult;
 
 public class CreateTransactionWithJwt extends BankRequest {
+
     @NonNull
     public String data;
     public String accountId;
     public String couponId;
+    public TransactionStrategy strategy;
 
-    public CreateTransactionWithJwt(String data, String accountId, String couponId) {
+    public CreateTransactionWithJwt(String data, String accountId, String couponId, TransactionStrategy strategy) {
         this.data = data;
         this.accountId = accountId;
         this.couponId = couponId;
@@ -37,6 +40,7 @@ public class CreateTransactionWithJwt extends BankRequest {
             put("data", data);
             put("account_id", accountId);
             put("coupon_id", couponId);
+            put("strategy", strategy != null ? strategy.getStrategy() : null);
         }};
     }
 
