@@ -1,8 +1,8 @@
 package jp.pokepay.pokepaylib.Parameters;
 
 public enum TransactionStrategy {
-    POINT_PREFERRED("point_preferred"),
-    MONEY_ONLY("money_only");
+    POINT_PREFERRED("point-preferred"),
+    MONEY_ONLY("money-only");
 
     private final String strategy;
 
