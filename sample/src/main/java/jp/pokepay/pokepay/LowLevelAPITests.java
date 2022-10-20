@@ -241,7 +241,7 @@ public class LowLevelAPITests {
 
     public String CheckTest() throws BankRequestError, ProcessingError {
         // Checkの作成 //
-        CreateCheck createCheck = new CreateCheck(1.0, null, "check test");
+        CreateCheck createCheck = new CreateCheck(1.0, null, "check test", null);
         Check check = createCheck.send(merchantAccessToken);
         System.out.println("check created " + check.id);
         // Checkの確認 //
