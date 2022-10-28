@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -220,18 +221,30 @@ public class Pokepay {
         }
 
         public String createToken(Double amount, String description) throws ProcessingError, BankRequestError {
-            return createToken(amount, description, null, null, null);
+            return createToken(amount, description, null, null, null, null);
         }
 
         public String createToken(Double amount, String description, Integer expiresIn) throws ProcessingError, BankRequestError {
-            return createToken(amount, description, expiresIn, null, null);
+            return createToken(amount, description, expiresIn, null, null, null);
         }
 
         public String createToken(Double amount, String description, Integer expiresIn, String accountId) throws ProcessingError, BankRequestError {
-            return createToken(amount, description, expiresIn, accountId, null);
+            return createToken(amount, description, expiresIn, accountId, null, null);
         }
 
         public String createToken(Double amount, String description, Integer expiresIn, String accountId, Product[] products) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, expiresIn, accountId, products, null);
+        }
+
+        public String createToken(Double amount, String description, Date checkExpiresAt) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, checkExpiresAt, null);
+        }
+
+        public String createToken(Double amount, String description, Date checkExpiresAt, String accountId) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, null, accountId, null, checkExpiresAt);
+        }
+
+        public String createToken(Double amount, String description, Integer expiresIn, String accountId, Product[] products, Date checkExpiresAt) throws ProcessingError, BankRequestError {
             if (isMerchant) {
                 CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn, products);
                 Cashtray cashtray = createCashtray.send(accessToken);
@@ -242,7 +255,7 @@ public class Pokepay {
                     Bill bill = createBill.send(accessToken);
                     return getWwwBaseUrl() + "/bills/" + bill.id;
                 } else {
-                    CreateCheck createCheck = new CreateCheck(amount, accountId, description);
+                    CreateCheck createCheck = new CreateCheck(amount, accountId, description, checkExpiresAt);
                     Check check = createCheck.send(accessToken);
                     return getWwwBaseUrl() + "/checks/" + check.id;
                 }

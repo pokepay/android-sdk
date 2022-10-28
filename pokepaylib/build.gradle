@@ -17,7 +17,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 0
-        versionName "1.8.4"
+        versionName "1.8.5"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -60,7 +60,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository url: "file://${repo.absolutePath}"
-            pom.version = '1.8.4'	      // version
+            pom.version = '1.8.5'	      // version
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {

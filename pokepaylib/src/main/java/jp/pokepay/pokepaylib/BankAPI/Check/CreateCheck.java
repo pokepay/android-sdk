@@ -1,5 +1,6 @@
 package jp.pokepay.pokepaylib.BankAPI.Check;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,11 +14,13 @@ public class CreateCheck extends BankRequest {
     public Double amount;
     public String description;
     public String accountId;
+    public Date expiresAt;
 
-    public CreateCheck(Double amount, String accountId,  String description) {
+    public CreateCheck(Double amount, String accountId,  String description, Date expiresAt) {
         this.amount = amount;
         this.accountId = accountId;
         this.description = description;
+        this.expiresAt = expiresAt;
     }
 
     protected final String path() {
@@ -34,6 +37,7 @@ public class CreateCheck extends BankRequest {
             put("amount", amount);
             put("description", description);
             put("account_id", accountId);
+            put("expires_at", expiresAt != null ? Request.formatter.format(expiresAt) : null);
         }};
     }
 
