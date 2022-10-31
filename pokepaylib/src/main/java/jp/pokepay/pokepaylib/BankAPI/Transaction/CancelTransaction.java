@@ -12,7 +12,7 @@ public class CancelTransaction extends BankRequest {
     @NonNull
     public String id;
 
-    public CancelTransaction(String id) {
+    public CancelTransaction(@NonNull String id) {
         this.id = id;
     }
 

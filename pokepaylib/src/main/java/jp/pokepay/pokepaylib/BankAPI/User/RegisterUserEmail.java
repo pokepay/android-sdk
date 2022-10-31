@@ -15,7 +15,7 @@ public class RegisterUserEmail extends BankRequest {
     @NonNull
     public String token;
 
-    public RegisterUserEmail(String token) {
+    public RegisterUserEmail(@NonNull String token) {
         this.token = token;
     }
 

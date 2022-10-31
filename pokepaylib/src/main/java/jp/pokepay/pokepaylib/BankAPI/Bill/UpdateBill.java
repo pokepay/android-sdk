@@ -17,7 +17,7 @@ public class UpdateBill extends BankRequest {
     public Double amount;
     public String description;
 
-    public UpdateBill(String id, Double amount, String description) {
+    public UpdateBill(@NonNull String id, Double amount, String description) {
         this.id = id;
         this.amount = amount;
         this.description = description;

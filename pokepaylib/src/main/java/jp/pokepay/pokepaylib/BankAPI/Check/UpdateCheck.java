@@ -17,7 +17,7 @@ public class UpdateCheck extends BankRequest {
     public Double amount;
     public String description;
 
-    public UpdateCheck(String id, Double amount, String description) {
+    public UpdateCheck(@NonNull String id, Double amount, String description) {
         this.id = id;
         this.amount = amount;
         this.description = description;

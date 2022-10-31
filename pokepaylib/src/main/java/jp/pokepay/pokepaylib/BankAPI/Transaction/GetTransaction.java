@@ -12,7 +12,7 @@ public class GetTransaction extends BankRequest {
     @NonNull
     public String id;
 
-    public GetTransaction(String id) {
+    public GetTransaction(@NonNull String id) {
         this.id = id;
     }
 

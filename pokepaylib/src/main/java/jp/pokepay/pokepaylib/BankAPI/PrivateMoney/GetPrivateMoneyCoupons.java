@@ -40,7 +40,6 @@ public class GetPrivateMoneyCoupons extends BankRequest {
         Map<String, Object> map = new HashMap();
         if(before != null && !before.isEmpty()) map.put("before", before);
         if(after != null && !after.isEmpty()) map.put("after", after);
-        System.out.println("parameter: "+map.toString());
         return map;
     }
 

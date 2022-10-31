@@ -20,10 +20,11 @@ public class CreateTransactionWithJwt extends BankRequest {
     public String couponId;
     public TransactionStrategy strategy;
 
-    public CreateTransactionWithJwt(String data, String accountId, String couponId, TransactionStrategy strategy) {
+    public CreateTransactionWithJwt(@NonNull String data, String accountId, String couponId, TransactionStrategy strategy) {
         this.data = data;
         this.accountId = accountId;
         this.couponId = couponId;
+        this.strategy = strategy;
     }
 
     protected final String path() {
