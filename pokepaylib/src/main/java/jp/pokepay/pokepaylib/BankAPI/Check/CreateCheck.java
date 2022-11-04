@@ -37,7 +37,7 @@ public class CreateCheck extends BankRequest {
             put("amount", amount);
             put("description", description);
             put("account_id", accountId);
-            put("expires_at", expiresAt != null ? Request.formatter.format(expiresAt) : null);
+            put("expires_at", expiresAt != null ? Request.getFormatter().format(expiresAt) : null);
         }};
     }
 

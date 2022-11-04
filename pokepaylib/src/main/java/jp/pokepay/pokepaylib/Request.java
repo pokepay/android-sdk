@@ -15,6 +15,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
@@ -24,7 +25,17 @@ import jp.pokepay.pokepaylib.Responses.OAuthError;
 
 public class Request {
 
+    /**
+     * @deprecated use {@link #getFormatter()} instead.
+     */
+    @Deprecated
     public static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+
+    public static final SimpleDateFormat getFormatter() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return formatter;
+    }
 
     public static enum Method {
         GET("GET"),
