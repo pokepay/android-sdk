@@ -7,21 +7,26 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.Parameters.TransactionStrategy;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class CreateTransactionWithCashtray extends BankRequest {
+
     @NonNull
     public String cashtrayId;
     public String accountId;
     public String couponId;
+    public TransactionStrategy strategy;
 
-    public CreateTransactionWithCashtray(String cashtrayId, String accountId, String couponId) {
+    public CreateTransactionWithCashtray(String cashtrayId, String accountId, String couponId, TransactionStrategy strategy) {
         this.cashtrayId = cashtrayId;
         this.accountId = accountId;
         this.couponId = couponId;
+        this.strategy = strategy;
     }
+
     protected final String path() {
         return "/transactions";
     }
@@ -36,6 +41,7 @@ public class CreateTransactionWithCashtray extends BankRequest {
             put("cashtray_id", cashtrayId);
             put("account_id", accountId);
             put("coupon_id", couponId);
+            put("strategy", strategy != null ? strategy.getStrategy() : null);
         }};
     }
 

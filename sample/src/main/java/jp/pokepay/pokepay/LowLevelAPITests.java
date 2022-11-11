@@ -203,7 +203,7 @@ public class LowLevelAPITests {
             throw new Error("attempts should be 0");
         }
         System.out.println("決済しようとする => 失敗");
-        CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(cashtray.id, null,null);
+        CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(cashtray.id, null,null, null);
         try {
             UserTransaction transaction = createTransactionWithCashtray.send(customerAccessToken);
         } catch (BankRequestError e) {
@@ -225,7 +225,7 @@ public class LowLevelAPITests {
         cashtray = updateCashtray.send(merchantAccessToken);
         System.out.println("cashtray updated " + cashtray.id);
         System.out.println("決済しようとする => 成功");
-        createTransactionWithCashtray = new CreateTransactionWithCashtray(cashtray.id, null,null);
+        createTransactionWithCashtray = new CreateTransactionWithCashtray(cashtray.id, null,null, null);
         UserTransaction transaction = createTransactionWithCashtray.send(customerAccessToken);
         System.out.println("CashtrayAttempts取得 => 2個取得");
         getCashtrayAttempts = new GetCashtrayAttempts(cashtray.id);
@@ -241,7 +241,7 @@ public class LowLevelAPITests {
 
     public String CheckTest() throws BankRequestError, ProcessingError {
         // Checkの作成 //
-        CreateCheck createCheck = new CreateCheck(1.0, null, "check test");
+        CreateCheck createCheck = new CreateCheck(1.0, null, "check test", null);
         Check check = createCheck.send(merchantAccessToken);
         System.out.println("check created " + check.id);
         // Checkの確認 //
@@ -313,7 +313,7 @@ public class LowLevelAPITests {
         Bill bill = createBill.send(merchantAccessToken);
         System.out.println("bill created " + bill.toString());
         // 上記のBillで取引を作成 //
-        CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(bill.id, null, 1.0,null);
+        CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(bill.id, null, 1.0,null, null);
         userTransaction = createTransactionWithBill.send(customerAccessToken);
         System.out.println("transaction created " + userTransaction.toString());
         // 取引の確認 //

@@ -7,22 +7,26 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.Parameters.TransactionStrategy;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.UserTransaction;
 
 public class CreateTransactionWithBill extends BankRequest {
+
     @NonNull
     public String billId;
     public String accountId;
     public Double amount;
     public String couponId;
+    public TransactionStrategy strategy;
 
-    public CreateTransactionWithBill(String billId, String accountId, Double amount,String couponId) {
+    public CreateTransactionWithBill(String billId, String accountId, Double amount,String couponId, TransactionStrategy strategy) {
         this.billId    = billId;
         this.accountId = accountId;
         this.amount    = amount;
         this.couponId = couponId;
+        this.strategy = strategy;
     }
 
     protected final String path() {
@@ -40,6 +44,7 @@ public class CreateTransactionWithBill extends BankRequest {
             put("account_id", accountId);
             put("amount", amount);
             put("coupon_id", couponId);
+            put("strategy", strategy != null ? strategy.getStrategy() : null);
         }};
     }
 

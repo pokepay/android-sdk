@@ -18,4 +18,5 @@ public class CashtrayAttempt extends Response {
     public String error_message;
     @NonNull
     public Date created_at;
+    public String strategy;
 }

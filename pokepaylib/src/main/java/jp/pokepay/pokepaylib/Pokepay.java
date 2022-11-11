@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +30,7 @@ import jp.pokepay.pokepaylib.BankAPI.User.GetUserSettingUrl;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.Token.ExchangeAuthCode;
 import jp.pokepay.pokepaylib.Parameters.Product;
+import jp.pokepay.pokepaylib.Parameters.TransactionStrategy;
 import jp.pokepay.pokepaylib.Pokeregi.BLEController;
 import jp.pokepay.pokepaylib.Responses.AccessToken;
 import jp.pokepay.pokepaylib.Responses.BankError;
@@ -149,18 +151,18 @@ public class Pokepay {
 
         @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
         public UserTransaction scanToken(String token) throws ProcessingError, BankRequestError {
-            return scanToken(token, null, null, null, null);
+            return scanToken(token, null, null, null,null, TransactionStrategy.POINT_PREFERRED);
         }
 
         @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
-        public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products, String couponId) throws ProcessingError, BankRequestError {
+        public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products, String couponId, TransactionStrategy strategy) throws ProcessingError, BankRequestError {
             if (token.startsWith(getWwwBaseUrl() + "/cashtrays/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/cashtrays/").length());
-                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId);
+                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId, strategy);
                 return createTransactionWithCashtray.send(accessToken);
             } else if (token.startsWith(getWwwBaseUrl() + "/bills/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/bills/").length());
-                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount, couponId);
+                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount,couponId, strategy);
                 return createTransactionWithBill.send(accessToken);
             } else if (token.startsWith(getWwwBaseUrl() + "/checks/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/checks/").length());
@@ -172,14 +174,14 @@ public class Pokepay {
             } else {
                 String key = parseAsPokeregiToken(token);
                 if (key.length() > 0) {
-                    return scanTokenBLE(key, couponId);
+                    return scanTokenBLE(key, couponId, strategy);
                 }
             }
             throw new ProcessingError("Unknown token format");
         }
 
         @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
-        private UserTransaction scanTokenBLE(String token, String couponId) throws ProcessingError, BankRequestError {
+        private UserTransaction scanTokenBLE(String token, String couponId, TransactionStrategy strategy) throws ProcessingError, BankRequestError {
             if (context == null) {
                 throw new ProcessingError("Scanning to pokeregi requires Context (for BLE)");
             }
@@ -188,7 +190,7 @@ public class Pokepay {
                 bleController = new BLEController(token, context);
                 bleController.connect(1000 * 10);
                 final String jwt = bleController.read(1000 * 10);
-                final CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null, couponId);
+                final CreateTransactionWithJwt createTransactionWithJwt = new CreateTransactionWithJwt(jwt, null, couponId, strategy);
                 final JwtResult jwtResult = createTransactionWithJwt.send(accessToken);
                 if (jwtResult.data != null) {
                     bleController.write(jwtResult.data, 1000 * 10);
@@ -215,18 +217,30 @@ public class Pokepay {
         }
 
         public String createToken(Double amount, String description) throws ProcessingError, BankRequestError {
-            return createToken(amount, description, null, null, null);
+            return createToken(amount, description, null, null, null, null);
         }
 
         public String createToken(Double amount, String description, Integer expiresIn) throws ProcessingError, BankRequestError {
-            return createToken(amount, description, expiresIn, null, null);
+            return createToken(amount, description, expiresIn, null, null, null);
         }
 
         public String createToken(Double amount, String description, Integer expiresIn, String accountId) throws ProcessingError, BankRequestError {
-            return createToken(amount, description, expiresIn, accountId, null);
+            return createToken(amount, description, expiresIn, accountId, null, null);
         }
 
         public String createToken(Double amount, String description, Integer expiresIn, String accountId, Product[] products) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, expiresIn, accountId, products, null);
+        }
+
+        public String createToken(Double amount, String description, Date checkExpiresAt) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, checkExpiresAt, null);
+        }
+
+        public String createToken(Double amount, String description, Date checkExpiresAt, String accountId) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, null, accountId, null, checkExpiresAt);
+        }
+
+        public String createToken(Double amount, String description, Integer expiresIn, String accountId, Product[] products, Date checkExpiresAt) throws ProcessingError, BankRequestError {
             if (isMerchant) {
                 CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn, products);
                 Cashtray cashtray = createCashtray.send(accessToken);
@@ -237,7 +251,7 @@ public class Pokepay {
                     Bill bill = createBill.send(accessToken);
                     return getWwwBaseUrl() + "/bills/" + bill.id;
                 } else {
-                    CreateCheck createCheck = new CreateCheck(amount, accountId, description);
+                    CreateCheck createCheck = new CreateCheck(amount, accountId, description, checkExpiresAt);
                     Check check = createCheck.send(accessToken);
                     return getWwwBaseUrl() + "/checks/" + check.id;
                 }
