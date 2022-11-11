@@ -2,8 +2,9 @@ package jp.pokepay.pokepaylib;
 
 import android.content.Context;
 
+import androidx.annotation.RequiresPermission;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -15,12 +16,10 @@ import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.BankAPI.Bill.CreateBill;
 import jp.pokepay.pokepaylib.BankAPI.Bill.GetBill;
 import jp.pokepay.pokepaylib.BankAPI.Cashtray.CreateCashtray;
-import jp.pokepay.pokepaylib.BankAPI.Cashtray.GetCashtray;
 import jp.pokepay.pokepaylib.BankAPI.Check.CreateCheck;
 import jp.pokepay.pokepaylib.BankAPI.Check.GetCheck;
 import jp.pokepay.pokepaylib.BankAPI.CpmToken.GetCpmToken;
 import jp.pokepay.pokepaylib.BankAPI.PrivateMoney.GetPrivateMoney;
-import jp.pokepay.pokepaylib.BankAPI.PrivateMoney.GetPrivateMoneyCoupons;
 import jp.pokepay.pokepaylib.BankAPI.Terminal.GetTerminal;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithBill;
 import jp.pokepay.pokepaylib.BankAPI.Transaction.CreateTransactionWithCashtray;
@@ -50,9 +49,9 @@ public class Pokepay {
     }
 
     public static class Client {
-        private String accessToken;
-        private Boolean isMerchant;
-        private Context context;
+        private final String accessToken;
+        private final Boolean isMerchant;
+        private final Context context;
         private String customDomain;
 
         public Client(String accessToken, Context context) {
@@ -64,7 +63,7 @@ public class Pokepay {
         public Client(String accessToken, Context context, Boolean isMerchant) {
             this.accessToken = accessToken;
             this.context = context;
-            this.isMerchant  = isMerchant;
+            this.isMerchant = isMerchant;
         }
 
         public void setCustomDomain(String customDomain) {
@@ -78,7 +77,7 @@ public class Pokepay {
 
         /**
          * Create a client object with custom domain.
-         *
+         * <p>
          * It is encouraged to get the client once and use it throughout the application since this method needs to call api endpoint to get a custom domain.
          */
         public static Client withCustomDomain(String accessToken, Context context, Boolean isMerchant, String challenge) throws ProcessingError, BankRequestError {
@@ -118,63 +117,61 @@ public class Pokepay {
             if (token.startsWith(getWwwBaseUrl() + "/cashtrays/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/cashtrays/").length());
                 return new TokenInfo(
-                    TokenInfo.Type.CASHTRAY,
-                    null
+                        TokenInfo.Type.CASHTRAY,
+                        null
                 );
             } else if (token.startsWith(getWwwBaseUrl() + "/bills/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/bills/").length());
                 return new TokenInfo(
-                    TokenInfo.Type.BILL,
-                    new GetBill(uuid).send(accessToken)
+                        TokenInfo.Type.BILL,
+                        new GetBill(uuid).send(accessToken)
                 );
             } else if (token.startsWith(getWwwBaseUrl() + "/checks/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/checks/").length());
                 return new TokenInfo(
-                    TokenInfo.Type.CHECK,
-                    new GetCheck(uuid).send(accessToken)
+                        TokenInfo.Type.CHECK,
+                        new GetCheck(uuid).send(accessToken)
                 );
             } else if (token.matches("^[0-9]{20}$")) {
                 return new TokenInfo(
-                    TokenInfo.Type.CPM,
-                    new GetCpmToken(token).send(accessToken)
+                        TokenInfo.Type.CPM,
+                        new GetCpmToken(token).send(accessToken)
                 );
             } else {
                 String key = parseAsPokeregiToken(token);
                 if (key.length() > 0) {
                     return new TokenInfo(
-                        TokenInfo.Type.POKEREGI,
-                        null
+                            TokenInfo.Type.POKEREGI,
+                            null
                     );
                 }
             }
             throw new ProcessingError("Unknown token format");
         }
 
+        @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
         public UserTransaction scanToken(String token) throws ProcessingError, BankRequestError {
             return scanToken(token, null, null, null,null, TransactionStrategy.POINT_PREFERRED);
         }
 
+        @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
         public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products, String couponId, TransactionStrategy strategy) throws ProcessingError, BankRequestError {
             if (token.startsWith(getWwwBaseUrl() + "/cashtrays/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/cashtrays/").length());
                 final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId, strategy);
                 return createTransactionWithCashtray.send(accessToken);
-            }
-            else if (token.startsWith(getWwwBaseUrl() + "/bills/")) {
+            } else if (token.startsWith(getWwwBaseUrl() + "/bills/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/bills/").length());
                 final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount,couponId, strategy);
                 return createTransactionWithBill.send(accessToken);
-            }
-            else if (token.startsWith(getWwwBaseUrl() + "/checks/")) {
+            } else if (token.startsWith(getWwwBaseUrl() + "/checks/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/checks/").length());
                 final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
                 return createTransactionWithCheck.send(accessToken);
-            }
-            else if (token.matches("^[0-9]{20}$")) {
+            } else if (token.matches("^[0-9]{20}$")) {
                 final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, accountId, amount, products);
                 return createTransactionWithCpm.send(accessToken);
-            }
-            else {
+            } else {
                 String key = parseAsPokeregiToken(token);
                 if (key.length() > 0) {
                     return scanTokenBLE(key, couponId, strategy);
@@ -183,6 +180,7 @@ public class Pokepay {
             throw new ProcessingError("Unknown token format");
         }
 
+        @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
         private UserTransaction scanTokenBLE(String token, String couponId, TransactionStrategy strategy) throws ProcessingError, BankRequestError {
             if (context == null) {
                 throw new ProcessingError("Scanning to pokeregi requires Context (for BLE)");
@@ -207,9 +205,7 @@ public class Pokepay {
                     final BankError err = mapper.readValue(defaultError, BankError.class);
                     throw new BankRequestError(999, err);
                 }
-            } catch (ProcessingError e) {
-                throw e;
-            } catch (BankRequestError e) {
+            } catch (ProcessingError | BankRequestError e) {
                 throw e;
             } catch (Exception e) {
                 throw new ProcessingError(e.getMessage());
@@ -272,8 +268,8 @@ public class Pokepay {
     }
 
     public static class OAuthClient {
-        private String clientId;
-        private String clientSecret;
+        private final String clientId;
+        private final String clientSecret;
 
         public OAuthClient(String clientId, String clientSecret) {
             this.clientId = clientId;

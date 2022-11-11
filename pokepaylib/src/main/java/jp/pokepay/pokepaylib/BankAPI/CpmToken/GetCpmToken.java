@@ -1,6 +1,6 @@
 package jp.pokepay.pokepaylib.BankAPI.CpmToken;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;

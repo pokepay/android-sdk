@@ -20,7 +20,7 @@ public class GetAccountCoupons extends BankRequest {
     public String after;
     public Integer perPage;
 
-    public GetAccountCoupons(@android.support.annotation.NonNull String accountId, boolean isAvailable, String before, String after, Integer perPage) {
+    public GetAccountCoupons(@androidx.annotation.NonNull String accountId, boolean isAvailable, String before, String after, Integer perPage) {
         this.accountId = accountId;
         this.isAvailable = isAvailable;
         this.before = before;

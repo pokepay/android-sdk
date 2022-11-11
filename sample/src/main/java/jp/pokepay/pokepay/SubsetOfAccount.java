@@ -1,6 +1,6 @@
 package jp.pokepay.pokepay;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import jp.pokepay.pokepaylib.Response;
 
