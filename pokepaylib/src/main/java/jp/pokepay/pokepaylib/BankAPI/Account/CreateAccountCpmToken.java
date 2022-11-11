@@ -8,10 +8,10 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.Parameters.Metadata;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.AccountCpmToken;
-import jp.pokepay.pokepaylib.Parameters.Metadata;
 
 public class CreateAccountCpmToken extends BankRequest {
 
@@ -25,7 +25,7 @@ public class CreateAccountCpmToken extends BankRequest {
     public Integer expiresIn;
     public Metadata metadata;
 
-    public CreateAccountCpmToken(String accountId, int scopes, Integer expiresIn, Metadata metadata) {
+    public CreateAccountCpmToken(@NonNull String accountId, int scopes, Integer expiresIn, Metadata metadata) {
         this.accountId = accountId;
         this.scopes = scopes;
         this.expiresIn = expiresIn;
@@ -48,7 +48,9 @@ public class CreateAccountCpmToken extends BankRequest {
             if ((scopes & SCOPE_TOPUP) != 0) scopesArray.add("topup");
             put("scopes", scopesArray);
             put("expires_in", expiresIn);
-            put("metadata", toJsonString(metadata.map));
+            if (metadata.map != null) {
+                put("metadata", toJsonString(metadata.map));
+            }
         }};
     }
 
@@ -56,7 +58,7 @@ public class CreateAccountCpmToken extends BankRequest {
         return super.send(AccountCpmToken.class, accessToken);
     }
 
-    private String toJsonString(Map<String, String> map){
+    private String toJsonString(Map<String, String> map) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{");
         for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -69,7 +71,6 @@ public class CreateAccountCpmToken extends BankRequest {
         }
 
         stringBuilder.append("}");
-        System.out.println(stringBuilder.toString());
         return stringBuilder.toString();
     }
 }

@@ -12,7 +12,7 @@ public class ReceiveMessageAttachment extends BankRequest {
     @NonNull
     public String id;
 
-    public ReceiveMessageAttachment(String id) {
+    public ReceiveMessageAttachment(@NonNull String id) {
         this.id = id;
     }
 

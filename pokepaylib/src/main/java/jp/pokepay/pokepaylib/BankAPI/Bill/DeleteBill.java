@@ -12,7 +12,7 @@ public class DeleteBill extends BankRequest {
     @NonNull
     public String id;
 
-    public DeleteBill(String id) {
+    public DeleteBill(@NonNull String id) {
         this.id = id;
     }
 

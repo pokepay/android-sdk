@@ -16,10 +16,11 @@ public class CreateTransactionWithCpm extends BankRequest {
     @NonNull
     public String cpmToken;
     public String accountId;
+    @NonNull
     public Double amount;
     public Product[] products;
 
-    public CreateTransactionWithCpm(String cpmToken, String accountId, Double amount, Product[] products) {
+    public CreateTransactionWithCpm(@NonNull String cpmToken, String accountId,@NonNull Double amount, Product[] products) {
         this.cpmToken  = cpmToken;
         this.accountId = accountId;
         this.amount    = amount;

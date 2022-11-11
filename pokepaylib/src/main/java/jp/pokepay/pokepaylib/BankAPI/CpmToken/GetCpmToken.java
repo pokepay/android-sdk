@@ -12,7 +12,7 @@ public class GetCpmToken extends BankRequest {
     @NonNull
     public String cpmToken;
 
-    public GetCpmToken(String cpmToken) {
+    public GetCpmToken(@NonNull String cpmToken) {
         this.cpmToken = cpmToken;
     }
 

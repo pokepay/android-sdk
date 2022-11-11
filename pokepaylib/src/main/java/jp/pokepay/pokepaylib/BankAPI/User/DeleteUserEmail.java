@@ -14,7 +14,7 @@ public class DeleteUserEmail extends BankRequest {
     @NonNull
     public String email;
 
-    public DeleteUserEmail(String id, String email){
+    public DeleteUserEmail(@NonNull String id,@NonNull String email){
         this.id = id;
         this.email = email;
     }

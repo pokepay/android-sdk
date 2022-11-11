@@ -16,7 +16,7 @@ public class CreateTransactionWithCheck extends BankRequest {
     public String checkId;
     public String accountId;
 
-    public CreateTransactionWithCheck(String checkId, String accountId) {
+    public CreateTransactionWithCheck(@NonNull String checkId, String accountId) {
         this.checkId   = checkId;
         this.accountId = accountId;
     }

@@ -16,11 +16,10 @@ public class PatchAccountCouponDetail extends BankRequest {
     public String accountId;
     @NonNull
     public String couponId;
-    @NonNull
     public boolean isReceived = true;
     public String code;
 
-    public PatchAccountCouponDetail(String accountId, String couponId, boolean isReceived, String code) {
+    public PatchAccountCouponDetail(@NonNull String accountId,@NonNull String couponId, boolean isReceived, String code) {
         this.accountId = accountId;
         this.couponId = couponId;
         this.isReceived = isReceived;

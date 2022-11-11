@@ -18,7 +18,7 @@ public class GetAccountBalances extends BankRequest {
     public String after;
     public Integer perPage;
 
-    public GetAccountBalances(String id, String before, String after, Integer perPage) {
+    public GetAccountBalances(@NonNull String id, String before, String after, Integer perPage) {
         this.id = id;
         this.before = before;
         this.after = after;

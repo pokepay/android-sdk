@@ -19,7 +19,7 @@ public class SendToUser extends BankRequest {
     public String senderAccountId;
     public String description;
 
-    public SendToUser(String userId, double amount, String receiverTerminalId, String senderAccountId, String description) {
+    public SendToUser(@NonNull String userId, double amount, String receiverTerminalId, String senderAccountId, String description) {
         this.userId = userId;
         this.amount = amount;
         this.receiverTerminalId = receiverTerminalId;

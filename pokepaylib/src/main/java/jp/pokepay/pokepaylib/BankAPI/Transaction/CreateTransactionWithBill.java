@@ -21,7 +21,8 @@ public class CreateTransactionWithBill extends BankRequest {
     public String couponId;
     public TransactionStrategy strategy;
 
-    public CreateTransactionWithBill(String billId, String accountId, Double amount,String couponId, TransactionStrategy strategy) {
+    public CreateTransactionWithBill(@NonNull String billId, String accountId, Double amount,String couponId,
+                                     TransactionStrategy strategy) {
         this.billId    = billId;
         this.accountId = accountId;
         this.amount    = amount;

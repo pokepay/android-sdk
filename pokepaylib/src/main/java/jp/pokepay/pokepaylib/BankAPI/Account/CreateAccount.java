@@ -1,5 +1,7 @@
 package jp.pokepay.pokepaylib.BankAPI.Account;
 
+import androidx.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,10 +13,11 @@ import jp.pokepay.pokepaylib.Responses.Account;
 
 public class CreateAccount extends BankRequest {
     public String name;
+    @NonNull
     public String privateMoneyId;
     public String externalId;
 
-    public CreateAccount(String name, String privateMoneyId, String externalId) {
+    public CreateAccount(String name,@NonNull  String privateMoneyId, String externalId) {
         this.name = name;
         this.privateMoneyId = privateMoneyId;
         this.externalId = externalId;

@@ -12,7 +12,7 @@ public class DeleteCheck extends BankRequest {
     @NonNull
     public String id;
 
-    public DeleteCheck(String id) {
+    public DeleteCheck(@NonNull String id) {
         this.id = id;
     }
 

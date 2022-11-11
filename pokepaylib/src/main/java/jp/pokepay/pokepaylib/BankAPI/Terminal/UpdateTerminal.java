@@ -18,7 +18,7 @@ public class UpdateTerminal extends BankRequest {
     public String name;
     public String pushToken;
 
-    public UpdateTerminal(String accountId, String name, String pushToken) {
+    public UpdateTerminal(@NonNull String accountId,@NonNull String name, String pushToken) {
         this.accountId = accountId;
         this.name      = name;
         this.pushToken = pushToken;

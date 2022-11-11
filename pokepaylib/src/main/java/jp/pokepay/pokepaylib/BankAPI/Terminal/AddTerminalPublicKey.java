@@ -14,8 +14,10 @@ import jp.pokepay.pokepaylib.Responses.ServerKey;
 public class AddTerminalPublicKey extends BankRequest {
     @NonNull
     public String key;
-
-    public AddTerminalPublicKey(String key) {
+    /**
+     * @param key : PEM formatted public key
+    * */
+    public AddTerminalPublicKey(@NonNull String key) {
         this.key = key;
     }
 

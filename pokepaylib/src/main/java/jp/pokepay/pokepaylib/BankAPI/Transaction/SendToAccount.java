@@ -14,12 +14,14 @@ import jp.pokepay.pokepaylib.Responses.UserTransaction;
 public class SendToAccount extends BankRequest {
     @NonNull
     public String accountId;
+    @NonNull
     public double amount;
     public String receiverTerminalId;
     public String senderAccountId;
     public String description;
 
-    public SendToAccount(String accountId, double amount, String receiverTerminalId, String senderAccountId, String description) {
+    public SendToAccount(@NonNull String accountId,@NonNull double amount, String receiverTerminalId, String senderAccountId,
+                         String description) {
         this.accountId = accountId;
         this.amount = amount;
         this.receiverTerminalId = receiverTerminalId;

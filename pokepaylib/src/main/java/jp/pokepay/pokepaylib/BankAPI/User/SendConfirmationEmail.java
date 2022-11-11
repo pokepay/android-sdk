@@ -14,7 +14,7 @@ public class SendConfirmationEmail extends BankRequest {
     @NonNull
     public String email;
 
-    public SendConfirmationEmail(String id, String email) {
+    public SendConfirmationEmail(@NonNull String id, @NonNull String email) {
         this.id   = id;
         this.email = email;
     }

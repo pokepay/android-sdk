@@ -16,7 +16,7 @@ public class UpdateUser extends BankRequest {
     public String id;
     public String name;
 
-    public UpdateUser(String id, String name) {
+    public UpdateUser(@NonNull String id, String name) {
         this.id   = id;
         this.name = name;
     }

@@ -12,7 +12,7 @@ public class GetCashtray extends BankRequest {
     @NonNull
     public String id;
 
-    public GetCashtray(String id) {
+    public GetCashtray(@NonNull String id) {
         this.id = id;
     }
 

@@ -18,7 +18,7 @@ public class UpdateCashtray extends BankRequest {
     public String description;
     public Integer expiresIn;
 
-    public UpdateCashtray(String id, Double amount, String description, Integer expiresIn) {
+    public UpdateCashtray(@NonNull String id, Double amount, String description, Integer expiresIn) {
         this.id = id;
         this.amount = amount;
         this.description = description;

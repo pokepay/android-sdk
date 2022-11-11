@@ -45,7 +45,6 @@ public class GetAccountCoupons extends BankRequest {
         if(before != null && !before.isEmpty()) map.put("before", before);
         if(after != null && !after.isEmpty()) map.put("after", after);
         if(perPage != null) map.put("per_page", perPage);
-        System.out.println("parameter: "+map.toString());
         return map;
     }
 

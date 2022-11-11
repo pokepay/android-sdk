@@ -21,7 +21,7 @@ public class RefreshAccessToken extends OAuthRequest {
     @NonNull
     public String clientSecret;
 
-    public RefreshAccessToken(String refreshToken, String clientId, String clientSecret) {
+    public RefreshAccessToken(@NonNull String refreshToken,@NonNull String clientId,@NonNull String clientSecret) {
         this.refreshToken = refreshToken;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
