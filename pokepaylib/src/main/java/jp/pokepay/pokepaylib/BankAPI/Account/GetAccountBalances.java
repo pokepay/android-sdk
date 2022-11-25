@@ -16,13 +16,29 @@ public class GetAccountBalances extends BankRequest {
     public String id;
     public String before;
     public String after;
-    public Integer perPage;
+    public int perPage = 30;
 
+    @Deprecated
     public GetAccountBalances(@NonNull String id, String before, String after, Integer perPage) {
         this.id = id;
         this.before = before;
         this.after = after;
+        if (perPage != null) {
+            this.perPage = perPage;
+        }
+    }
+
+    public GetAccountBalances(@NonNull String id, String before, String after, int perPage) {
+        this.id = id;
+        this.before = before;
+        this.after = after;
         this.perPage = perPage;
+    }
+
+    public GetAccountBalances(@NonNull String id, String before, String after) {
+        this.id = id;
+        this.before = before;
+        this.after = after;
     }
 
     protected final String path() {

@@ -18,14 +18,32 @@ public class GetAccountCoupons extends BankRequest {
     public boolean isAvailable;
     public String before;
     public String after;
-    public Integer perPage;
+    public int perPage = 30;
 
-    public GetAccountCoupons(@androidx.annotation.NonNull String accountId, boolean isAvailable, String before, String after, Integer perPage) {
+    @Deprecated
+    public GetAccountCoupons(@NonNull String accountId, boolean isAvailable, String before, String after, Integer perPage) {
+        this.accountId = accountId;
+        this.isAvailable = isAvailable;
+        this.before = before;
+        this.after = after;
+        if (perPage != null) {
+            this.perPage = perPage;
+        }
+    }
+
+    public GetAccountCoupons(@NonNull String accountId, boolean isAvailable, String before, String after, int perPage) {
         this.accountId = accountId;
         this.isAvailable = isAvailable;
         this.before = before;
         this.after = after;
         this.perPage = perPage;
+    }
+
+    public GetAccountCoupons(@NonNull String accountId, boolean isAvailable, String before, String after) {
+        this.accountId = accountId;
+        this.after = after;
+        this.before = before;
+        this.isAvailable = isAvailable;
     }
 
     @Override
@@ -42,9 +60,9 @@ public class GetAccountCoupons extends BankRequest {
     protected final Map<String, Object> parameters() {
         Map<String, Object> map = new HashMap();
         map.put("is_available", isAvailable);
-        if(before != null && !before.isEmpty()) map.put("before", before);
-        if(after != null && !after.isEmpty()) map.put("after", after);
-        if(perPage != null) map.put("per_page", perPage);
+        if (before != null && !before.isEmpty()) map.put("before", before);
+        if (after != null && !after.isEmpty()) map.put("after", after);
+        map.put("per_page", perPage);
         return map;
     }
 

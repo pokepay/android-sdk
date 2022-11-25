@@ -11,12 +11,22 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.Check;
 
 public class CreateCheck extends BankRequest {
-    public Double amount;
+    public double amount;
     public String description;
     public String accountId;
     public Date expiresAt;
 
-    public CreateCheck(Double amount, String accountId,  String description, Date expiresAt) {
+    @Deprecated
+    public CreateCheck(Double amount, String accountId, String description, Date expiresAt) {
+        if (amount != null) {
+            this.amount = amount;
+        }
+        this.accountId = accountId;
+        this.description = description;
+        this.expiresAt = expiresAt;
+    }
+
+    public CreateCheck(double amount, String accountId, String description, Date expiresAt) {
         this.amount = amount;
         this.accountId = accountId;
         this.description = description;

@@ -20,8 +20,13 @@ public class CreateTransactionWithCashtray extends BankRequest {
     public String couponId;
     public TransactionStrategy strategy;
 
-    public CreateTransactionWithCashtray(@NonNull String cashtrayId, String accountId, String couponId,
-                                         TransactionStrategy strategy) {
+    public CreateTransactionWithCashtray(@NonNull String cashtrayId, String accountId, String couponId) {
+        this.cashtrayId = cashtrayId;
+        this.accountId = accountId;
+        this.couponId = couponId;
+    }
+
+    public CreateTransactionWithCashtray(@NonNull String cashtrayId, String accountId, String couponId, TransactionStrategy strategy) {
         this.cashtrayId = cashtrayId;
         this.accountId = accountId;
         this.couponId = couponId;

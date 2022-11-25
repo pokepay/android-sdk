@@ -21,7 +21,7 @@ public class ExchangeAuthCode extends OAuthRequest {
     @NonNull
     public String clientSecret;
 
-    public ExchangeAuthCode(@NonNull String code,@NonNull String clientId,@NonNull String clientSecret) {
+    public ExchangeAuthCode(@NonNull String code, @NonNull String clientId, @NonNull String clientSecret) {
         this.code = code;
         this.clientId = clientId;
         this.clientSecret = clientSecret;

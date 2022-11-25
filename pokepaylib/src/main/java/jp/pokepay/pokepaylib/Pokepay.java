@@ -50,7 +50,7 @@ public class Pokepay {
 
     public static class Client {
         private final String accessToken;
-        private final Boolean isMerchant;
+        private final boolean isMerchant;
         private final Context context;
         private String customDomain;
 
@@ -60,7 +60,14 @@ public class Pokepay {
             this.isMerchant = false;
         }
 
+        @Deprecated
         public Client(String accessToken, Context context, Boolean isMerchant) {
+            this.accessToken = accessToken;
+            this.context = context;
+            this.isMerchant = isMerchant;
+        }
+
+        public Client(String accessToken, Context context, boolean isMerchant) {
             this.accessToken = accessToken;
             this.context = context;
             this.isMerchant = isMerchant;
@@ -80,7 +87,17 @@ public class Pokepay {
          * <p>
          * It is encouraged to get the client once and use it throughout the application since this method needs to call api endpoint to get a custom domain.
          */
+        @Deprecated
         public static Client withCustomDomain(String accessToken, Context context, Boolean isMerchant, String challenge) throws ProcessingError, BankRequestError {
+            final String customDomainName = new GetPrivateMoney(challenge).send(accessToken).custom_domain_name;
+            final Client client = isMerchant != null ? new Client(accessToken, context, isMerchant) :
+                    new Client(accessToken, context);
+            client.setCustomDomain(customDomainName);
+            return client;
+        }
+
+        public static Client withCustomDomain(String accessToken, Context context, boolean isMerchant,
+                                              String challenge) throws ProcessingError, BankRequestError {
             final String customDomainName = new GetPrivateMoney(challenge).send(accessToken).custom_domain_name;
             final Client client = new Client(accessToken, context, isMerchant);
             client.setCustomDomain(customDomainName);
@@ -151,9 +168,10 @@ public class Pokepay {
 
         @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
         public UserTransaction scanToken(String token) throws ProcessingError, BankRequestError {
-            return scanToken(token, null, null, null,null, TransactionStrategy.POINT_PREFERRED);
+            return scanToken(token, 0.0, null, new Product[]{}, null, TransactionStrategy.POINT_PREFERRED);
         }
 
+        @Deprecated
         @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
         public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products, String couponId, TransactionStrategy strategy) throws ProcessingError, BankRequestError {
             if (token.startsWith(getWwwBaseUrl() + "/cashtrays/")) {
@@ -162,7 +180,35 @@ public class Pokepay {
                 return createTransactionWithCashtray.send(accessToken);
             } else if (token.startsWith(getWwwBaseUrl() + "/bills/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/bills/").length());
-                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount,couponId, strategy);
+                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount, couponId, strategy);
+                return createTransactionWithBill.send(accessToken);
+            } else if (token.startsWith(getWwwBaseUrl() + "/checks/")) {
+                final String uuid = token.substring((getWwwBaseUrl() + "/checks/").length());
+                final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
+                return createTransactionWithCheck.send(accessToken);
+            } else if (token.matches("^[0-9]{20}$")) {
+                final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, accountId, amount, products);
+                return createTransactionWithCpm.send(accessToken);
+            } else {
+                String key = parseAsPokeregiToken(token);
+                if (key.length() > 0) {
+                    return scanTokenBLE(key, couponId, strategy);
+                }
+            }
+            throw new ProcessingError("Unknown token format");
+        }
+
+        @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
+        public UserTransaction scanToken(String token, double amount, String accountId, Product[] products,
+                                         String couponId, TransactionStrategy strategy) throws ProcessingError,
+                BankRequestError {
+            if (token.startsWith(getWwwBaseUrl() + "/cashtrays/")) {
+                final String uuid = token.substring((getWwwBaseUrl() + "/cashtrays/").length());
+                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId, strategy);
+                return createTransactionWithCashtray.send(accessToken);
+            } else if (token.startsWith(getWwwBaseUrl() + "/bills/")) {
+                final String uuid = token.substring((getWwwBaseUrl() + "/bills/").length());
+                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount, couponId, strategy);
                 return createTransactionWithBill.send(accessToken);
             } else if (token.startsWith(getWwwBaseUrl() + "/checks/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/checks/").length());
@@ -216,33 +262,68 @@ public class Pokepay {
             }
         }
 
+        @Deprecated
         public String createToken(Double amount, String description) throws ProcessingError, BankRequestError {
             return createToken(amount, description, null, null, null, null);
         }
 
+        public String createToken(double amount, String description) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, 1, null, new Product[]{}, null);
+        }
+
+        @Deprecated
         public String createToken(Double amount, String description, Integer expiresIn) throws ProcessingError, BankRequestError {
             return createToken(amount, description, expiresIn, null, null, null);
         }
 
+        public String createToken(double amount, String description, int expiresIn) throws ProcessingError,
+                BankRequestError {
+            return createToken(amount, description, expiresIn, null, new Product[]{}, null);
+        }
+
+        @Deprecated
         public String createToken(Double amount, String description, Integer expiresIn, String accountId) throws ProcessingError, BankRequestError {
             return createToken(amount, description, expiresIn, accountId, null, null);
         }
 
+        public String createToken(double amount, String description, int expiresIn, String accountId) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, expiresIn, accountId, new Product[]{}, null);
+        }
+
+        @Deprecated
         public String createToken(Double amount, String description, Integer expiresIn, String accountId, Product[] products) throws ProcessingError, BankRequestError {
             return createToken(amount, description, expiresIn, accountId, products, null);
         }
 
+        public String createToken(double amount, String description, int expiresIn, String accountId,
+                                  Product[] products) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, expiresIn, accountId, products, null);
+        }
+
+        @Deprecated
         public String createToken(Double amount, String description, Date checkExpiresAt) throws ProcessingError, BankRequestError {
             return createToken(amount, description, checkExpiresAt, null);
         }
 
+        public String createToken(double amount, String description, Date checkExpiresAt) throws ProcessingError,
+                BankRequestError {
+            return createToken(amount, description, checkExpiresAt, null);
+        }
+
+        @Deprecated
         public String createToken(Double amount, String description, Date checkExpiresAt, String accountId) throws ProcessingError, BankRequestError {
             return createToken(amount, description, null, accountId, null, checkExpiresAt);
         }
 
+        public String createToken(double amount, String description, Date checkExpiresAt, String accountId, Product[] products) throws ProcessingError, BankRequestError {
+            return createToken(amount, description, 1, accountId, products, checkExpiresAt);
+        }
+
+        @Deprecated
         public String createToken(Double amount, String description, Integer expiresIn, String accountId, Product[] products, Date checkExpiresAt) throws ProcessingError, BankRequestError {
             if (isMerchant) {
-                CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn, products);
+                CreateCashtray createCashtray = new CreateCashtray(amount.doubleValue(), description, expiresIn.intValue(),
+                        products);
                 Cashtray cashtray = createCashtray.send(accessToken);
                 return getWwwBaseUrl() + "/cashtrays/" + cashtray.id;
             } else if (amount != null) {
@@ -257,6 +338,23 @@ public class Pokepay {
                 }
             } else { // amount == null
                 CreateBill createBill = new CreateBill(amount, accountId, description, products);
+                Bill bill = createBill.send(accessToken);
+                return getWwwBaseUrl() + "/bills/" + bill.id;
+            }
+        }
+
+        public String createToken(double amount, String description, int expiresIn, String accountId,
+                                  Product[] products, Date checkExpiresAt) throws ProcessingError, BankRequestError {
+            if (isMerchant) {
+                CreateCashtray createCashtray = new CreateCashtray(amount, description, expiresIn, products);
+                Cashtray cashtray = createCashtray.send(accessToken);
+                return getWwwBaseUrl() + "/cashtrays/" + cashtray.id;
+            } else if (amount >= 0) {
+                CreateCheck createCheck = new CreateCheck(amount, accountId, description, checkExpiresAt);
+                Check check = createCheck.send(accessToken);
+                return getWwwBaseUrl() + "/checks/" + check.id;
+            } else {
+                CreateBill createBill = new CreateBill(-amount, accountId, description, products);
                 Bill bill = createBill.send(accessToken);
                 return getWwwBaseUrl() + "/bills/" + bill.id;
             }

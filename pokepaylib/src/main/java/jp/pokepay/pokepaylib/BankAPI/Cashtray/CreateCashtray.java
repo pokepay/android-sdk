@@ -13,13 +13,29 @@ import jp.pokepay.pokepaylib.Responses.Cashtray;
 public class CreateCashtray extends BankRequest {
     public double amount;
     public String description;
-    public Integer expiresIn;
+    public int expiresIn = 1800;
     public Product[] products;
 
+    @Deprecated
     public CreateCashtray(double amount, String description, Integer expiresIn, Product[] products) {
         this.amount = amount;
         this.description = description;
+        if (expiresIn != null) {
+            this.expiresIn = expiresIn;
+        }
+        this.products = products;
+    }
+
+    public CreateCashtray(double amount, String description, int expiresIn, Product[] products) {
+        this.amount = amount;
+        this.description = description;
         this.expiresIn = expiresIn;
+        this.products = products;
+    }
+
+    public CreateCashtray(double amount, String description, Product[] products) {
+        this.amount = amount;
+        this.description = description;
         this.products = products;
     }
 

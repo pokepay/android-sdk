@@ -14,11 +14,29 @@ import jp.pokepay.pokepaylib.Responses.Cashtray;
 public class UpdateCashtray extends BankRequest {
     @NonNull
     public String id;
-    public Double amount;
+    public double amount;
     public String description;
-    public Integer expiresIn;
+    public int expiresIn = 0;
 
+    @Deprecated
     public UpdateCashtray(@NonNull String id, Double amount, String description, Integer expiresIn) {
+        this.id = id;
+        if (amount != null) {
+            this.amount = amount;
+        }
+        this.description = description;
+        if (expiresIn != null) {
+            this.expiresIn = expiresIn;
+        }
+    }
+
+    public UpdateCashtray(@NonNull String id, String description, double amount) {
+        this.id = id;
+        this.description = description;
+        this.amount = amount;
+    }
+
+    public UpdateCashtray(@NonNull String id, double amount, String description, int expiresIn) {
         this.id = id;
         this.amount = amount;
         this.description = description;
