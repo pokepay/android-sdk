@@ -1,5 +1,6 @@
 package jp.pokepay.pokepay;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -109,7 +110,7 @@ public class View02Activity extends AppCompatActivity {
                             Pokepay.Client client = new Pokepay.Client(accessToken1, View02Activity.this);
                             final String token = client.createToken(-1.0, "AndroidTest bill");
                             client = new Pokepay.Client(accessToken2, View02Activity.this,true);
-                            final UserTransaction userTransaction = client.scanToken(token);
+                            @SuppressLint("MissingPermission") final UserTransaction userTransaction = client.scanToken(token);
                             msg.obj = "Success transaction: " + userTransaction.toString();
                         } catch (ProcessingError e) {
                             msg.obj = "ProcessingError: " + e.getMessage();
@@ -136,7 +137,7 @@ public class View02Activity extends AppCompatActivity {
                             final String token = client.createToken(1.0, "AndroidTest cashtray");
                             final TokenInfo info = client.getTokenInfo(token);
                             client = new Pokepay.Client(accessToken2, View02Activity.this);
-                            final UserTransaction userTransaction = client.scanToken(token);
+                            @SuppressLint("MissingPermission") final UserTransaction userTransaction = client.scanToken(token);
                             msg.obj = "Success transaction: " + userTransaction.toString();
                         } catch (ProcessingError e) {
                             msg.obj = "ProcessingError: " + e.getMessage();
@@ -162,7 +163,7 @@ public class View02Activity extends AppCompatActivity {
                             Pokepay.Client client = new Pokepay.Client(accessToken2,View02Activity.this);
                             final String token = client.createToken(1.0, "AndroidTest check");
                             client = new Pokepay.Client(accessToken1,View02Activity.this);
-                            UserTransaction userTransaction = client.scanToken(token);
+                            @SuppressLint("MissingPermission") UserTransaction userTransaction = client.scanToken(token);
                             msg.obj = "Success transaction: " + userTransaction.toString();
                         } catch (ProcessingError e) {
                             msg.obj = "ProcessingError: " + e.getMessage();
