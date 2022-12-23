@@ -17,10 +17,9 @@ public class CreateAccountSevenElevenAtmSession extends BankRequest {
     public String accountId;
     @NonNull
     public String qrInfo;
-    @NonNull
     public double amount;
 
-    public CreateAccountSevenElevenAtmSession(String accountId, String qrInfo, double amount) {
+    public CreateAccountSevenElevenAtmSession(@NonNull String accountId, @NonNull String qrInfo, double amount) {
         this.accountId = accountId;
         this.qrInfo = qrInfo;
         this.amount = amount;

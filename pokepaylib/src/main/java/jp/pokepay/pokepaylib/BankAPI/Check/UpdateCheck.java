@@ -14,15 +14,23 @@ import jp.pokepay.pokepaylib.Responses.Check;
 public class UpdateCheck extends BankRequest {
     @NonNull
     public String id;
-    public Double amount;
+    public double amount;
     public String description;
 
+    @Deprecated
     public UpdateCheck(@NonNull String id, Double amount, String description) {
+        this.id = id;
+        if(amount != null){
+            this.amount = amount;
+        }
+        this.description = description;
+    }
+
+    public UpdateCheck(@NonNull String id, double amount, String description){
         this.id = id;
         this.amount = amount;
         this.description = description;
     }
-
     protected final String path() {
         return "/checks/" + id;
     }

@@ -14,12 +14,26 @@ import jp.pokepay.pokepaylib.Responses.Bill;
 public class UpdateBill extends BankRequest {
     @NonNull
     public String id;
-    public Double amount;
+    public double amount;
     public String description;
 
+    @Deprecated
     public UpdateBill(@NonNull String id, Double amount, String description) {
         this.id = id;
+        if (amount != null) {
+            this.amount = amount;
+        }
+        this.description = description;
+    }
+
+    public UpdateBill(@NonNull String id, double amount, String description) {
+        this.id = id;
         this.amount = amount;
+        this.description = description;
+    }
+
+    public UpdateBill(@NonNull String id, String description) {
+        this.id = id;
         this.description = description;
     }
 

@@ -11,13 +11,29 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.Bill;
 
 public class CreateBill extends BankRequest {
-    public Double amount;
+    public double amount;
     public String description;
     public String accountId;
     public Product[] products;
 
+    @Deprecated
     public CreateBill(Double amount, String accountId, String description, Product[] products) {
+        if (amount != null) {
+            this.amount = amount;
+        }
+        this.accountId = accountId;
+        this.description = description;
+        this.products = products;
+    }
+
+    public CreateBill(double amount, String accountId, String description, Product[] products) {
         this.amount = amount;
+        this.accountId = accountId;
+        this.description = description;
+        this.products = products;
+    }
+
+    public CreateBill(String accountId, String description, Product[] products) {
         this.accountId = accountId;
         this.description = description;
         this.products = products;

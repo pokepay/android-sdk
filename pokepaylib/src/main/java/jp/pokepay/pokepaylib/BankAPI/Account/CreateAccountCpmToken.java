@@ -22,13 +22,34 @@ public class CreateAccountCpmToken extends BankRequest {
     @NonNull
     public String accountId;
     public int scopes;
-    public Integer expiresIn;
+    public int expiresIn = 1;
     public Metadata metadata;
 
+    @Deprecated
     public CreateAccountCpmToken(@NonNull String accountId, int scopes, Integer expiresIn, Metadata metadata) {
         this.accountId = accountId;
         this.scopes = scopes;
+        if (expiresIn != null) {
+            this.expiresIn = expiresIn;
+        }
+        this.metadata = metadata;
+    }
+
+    public CreateAccountCpmToken(@NonNull String accountId, int scopes, int expiresIn, Metadata metadata) {
+        this.accountId = accountId;
+        this.scopes = scopes;
         this.expiresIn = expiresIn;
+        this.metadata = metadata;
+    }
+
+    public CreateAccountCpmToken(@NonNull String accountId, int scopes) {
+        this.accountId = accountId;
+        this.scopes = scopes;
+    }
+
+    public CreateAccountCpmToken(@NonNull String accountId, int scopes, Metadata metadata) {
+        this.accountId = accountId;
+        this.scopes = scopes;
         this.metadata = metadata;
     }
 
@@ -62,7 +83,6 @@ public class CreateAccountCpmToken extends BankRequest {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{");
         for (Map.Entry<String, String> entry : map.entrySet()) {
-
             stringBuilder.append("\"");
             stringBuilder.append(entry.getKey());
             stringBuilder.append("\":\"");

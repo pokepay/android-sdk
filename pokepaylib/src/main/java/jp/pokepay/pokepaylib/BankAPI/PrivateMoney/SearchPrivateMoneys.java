@@ -11,14 +11,34 @@ import jp.pokepay.pokepaylib.Responses.PaginatedPrivateMoneys;
 
 public class SearchPrivateMoneys extends BankRequest {
     public String name;
-    public boolean includeExclusive;
+    public boolean includeExclusive = false;
     public String before;
     public String after;
-    public Integer perPage;
+    public int perPage = 30;
 
     public SearchPrivateMoneys(String name, boolean includeExclusive, String before, String after, int perPage) {
         this.name = name;
         this.includeExclusive = includeExclusive;
+        this.before = before;
+        this.after = after;
+        this.perPage = perPage;
+    }
+
+    public SearchPrivateMoneys(String name, String before, String after) {
+        this.name = name;
+        this.before = before;
+        this.after = after;
+    }
+
+    public SearchPrivateMoneys(String name, String before, String after, boolean includeExclusive) {
+        this.name = name;
+        this.before = before;
+        this.after = after;
+        this.includeExclusive = includeExclusive;
+    }
+
+    public SearchPrivateMoneys(String name, String before, String after, int perPage) {
+        this.name = name;
         this.before = before;
         this.after = after;
         this.perPage = perPage;

@@ -14,7 +14,7 @@ public class UserTransaction extends Response {
     @NonNull
     public User    user;
     public double  balance;
-    public Double  customer_balance;
+    public double  customer_balance;
     public double  amount;
     public double  money_amount;
     public double  point_amount;

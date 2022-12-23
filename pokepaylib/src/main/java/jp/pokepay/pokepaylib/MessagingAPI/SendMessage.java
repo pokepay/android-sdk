@@ -26,9 +26,33 @@ public class SendMessage extends BankRequest {
 
     /**
      * @param amount: only can be add when sender is merchant.
-     * **/
+     **/
+    @Deprecated
     public SendMessage(@NonNull String toUserId, Double amount, String subject, String body,
                        @NonNull User sender, String fromAccountId) {
+        this.toUserId = toUserId;
+        if (amount != null) {
+            this.amount = amount;
+        }
+        this.subject = subject;
+        this.body = body;
+        this.sender = sender;
+        this.fromAccountId = fromAccountId;
+        this.requestId = UUID.randomUUID().toString();
+    }
+
+    public SendMessage(@NonNull String toUserId, String subject, String body, @NonNull User sender,
+                       String fromAccountId) {
+        this.toUserId = toUserId;
+        this.subject = subject;
+        this.body = body;
+        this.sender = sender;
+        this.fromAccountId = fromAccountId;
+        this.requestId = UUID.randomUUID().toString();
+    }
+
+    public SendMessage(@NonNull String toUserId, double amount, String subject, String body, @NonNull User sender,
+                       String fromAccountId) {
         this.toUserId = toUserId;
         this.amount = amount;
         this.subject = subject;
@@ -50,7 +74,7 @@ public class SendMessage extends BankRequest {
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
             put("to_user_id", toUserId);
-            if(sender.is_merchant){
+            if (sender.is_merchant) {
                 put("amount", amount);
             }
             put("subject", subject);

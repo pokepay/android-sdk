@@ -19,10 +19,16 @@ public class PatchAccountCouponDetail extends BankRequest {
     public boolean isReceived = true;
     public String code;
 
-    public PatchAccountCouponDetail(@NonNull String accountId,@NonNull String couponId, boolean isReceived, String code) {
+    public PatchAccountCouponDetail(@NonNull String accountId, @NonNull String couponId, boolean isReceived, String code) {
         this.accountId = accountId;
         this.couponId = couponId;
         this.isReceived = isReceived;
+        this.code = code;
+    }
+
+    public PatchAccountCouponDetail(@NonNull String accountId, @NonNull String couponId, String code) {
+        this.accountId = accountId;
+        this.couponId = couponId;
         this.code = code;
     }
 
@@ -39,8 +45,8 @@ public class PatchAccountCouponDetail extends BankRequest {
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
-            put("is_received",isReceived);
-            if(code != null && !code.isEmpty()) put("code", code);
+            put("is_received", isReceived);
+            if (code != null && !code.isEmpty()) put("code", code);
         }};
     }
 

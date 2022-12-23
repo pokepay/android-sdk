@@ -17,15 +17,45 @@ public class CreateTransactionWithBill extends BankRequest {
     @NonNull
     public String billId;
     public String accountId;
-    public Double amount;
+    public double amount;
     public String couponId;
     public TransactionStrategy strategy;
 
-    public CreateTransactionWithBill(@NonNull String billId, String accountId, Double amount,String couponId,
-                                     TransactionStrategy strategy) {
-        this.billId    = billId;
+    @Deprecated
+    public CreateTransactionWithBill(@NonNull String billId, String accountId, Double amount, String couponId, TransactionStrategy strategy) {
+        this.billId = billId;
         this.accountId = accountId;
-        this.amount    = amount;
+        if (amount != null) {
+            this.amount = amount;
+        }
+        this.couponId = couponId;
+        this.strategy = strategy;
+    }
+
+    public CreateTransactionWithBill(@NonNull String billId, String accountId, String couponId) {
+        this.billId = billId;
+        this.accountId = accountId;
+        this.couponId = couponId;
+    }
+
+    public CreateTransactionWithBill(@NonNull String billId, String accountId, String couponId, double amount) {
+        this.billId = billId;
+        this.accountId = accountId;
+        this.couponId = couponId;
+        this.amount = amount;
+    }
+
+    public CreateTransactionWithBill(@NonNull String billId, String accountId, String couponId, TransactionStrategy strategy) {
+        this.billId = billId;
+        this.accountId = accountId;
+        this.couponId = couponId;
+        this.strategy = strategy;
+    }
+
+    public CreateTransactionWithBill(@NonNull String billId, String accountId, double amount, String couponId, TransactionStrategy strategy) {
+        this.billId = billId;
+        this.accountId = accountId;
+        this.amount = amount;
         this.couponId = couponId;
         this.strategy = strategy;
     }

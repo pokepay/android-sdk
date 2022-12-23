@@ -10,7 +10,7 @@ public class Cashtray extends Response {
     @NonNull
     public String id;
     @NonNull
-    public Double amount;
+    public double amount;
     @NonNull
     public String description;
     @NonNull

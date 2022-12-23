@@ -16,13 +16,19 @@ public class GetPrivateMoneyCoupons extends BankRequest {
     public String privateMoneyId;
     public String before;
     public String after;
-    public int perPage;
+    public int perPage = 30;
 
     public GetPrivateMoneyCoupons(@NonNull String privateMoneyId, String before, String after, int perPage) {
         this.privateMoneyId = privateMoneyId;
         this.before = before;
         this.after = after;
         this.perPage = perPage;
+    }
+
+    public GetPrivateMoneyCoupons(@NonNull String privateMoneyId, String before, String after) {
+        this.privateMoneyId = privateMoneyId;
+        this.after = after;
+        this.before = before;
     }
 
     @Override
@@ -38,8 +44,8 @@ public class GetPrivateMoneyCoupons extends BankRequest {
     @Override
     protected final Map<String, Object> parameters() {
         Map<String, Object> map = new HashMap();
-        if(before != null && !before.isEmpty()) map.put("before", before);
-        if(after != null && !after.isEmpty()) map.put("after", after);
+        if (before != null && !before.isEmpty()) map.put("before", before);
+        if (after != null && !after.isEmpty()) map.put("after", after);
         return map;
     }
 

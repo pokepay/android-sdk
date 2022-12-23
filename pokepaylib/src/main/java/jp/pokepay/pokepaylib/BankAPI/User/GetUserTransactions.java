@@ -16,9 +16,25 @@ public class GetUserTransactions extends BankRequest {
     public String id;
     public String before;
     public String after;
-    public Integer perPage;
+    public int perPage = 30;
 
+    @Deprecated
     public GetUserTransactions(@NonNull String id, String before, String after, Integer perPage) {
+        this.id = id;
+        this.before = before;
+        this.after = after;
+        if (perPage != null) {
+            this.perPage = perPage;
+        }
+    }
+
+    public GetUserTransactions(@NonNull String id, String before, String after) {
+        this.id = id;
+        this.before = before;
+        this.after = after;
+    }
+
+    public GetUserTransactions(@NonNull String id, String before, String after, int perPage) {
         this.id = id;
         this.before = before;
         this.after = after;

@@ -29,9 +29,12 @@ public class MessagingAPITests {
             // ユーザ１のterminalを取得　（user id 取得のため
             final GetTerminal getTerminal = new GetTerminal();
             final Terminal terminal = getTerminal.send(accessToken1);
+            final GetTerminal getTerminal2 = new GetTerminal();
+            final Terminal terminal2 = getTerminal.send(accessToken2);
             res += "Terminal: " + terminal.toString() + "\n";
             // メッセージを送る fromユーザ２ toユーザ１
-            final SendMessage sendMessage = new SendMessage(terminal.user.id, 2.0, "messageing tests", "body", null);
+            final SendMessage sendMessage = new SendMessage(terminal.user.id, 2.0, "messageing tests", "body",
+                    terminal2.user,terminal2.account.id);
             final Message message = sendMessage.send(accessToken2);
             res += "Message: " + message.toString() + "\n";
             // 未読数を取得
