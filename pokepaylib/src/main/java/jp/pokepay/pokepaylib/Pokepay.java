@@ -79,7 +79,11 @@ public class Pokepay {
 
         public String getWwwBaseUrl() {
             final Env env = Env.current();
-            return customDomain != null ? customDomain : env.WWW_BASE_URL();
+            return customDomain != null ? customDomain : getDefaultWwwBaseUrl();
+        }
+
+        public String getDefaultWwwBaseUrl() {
+            return env.WWW_BASE_URL();
         }
 
         /**
@@ -202,15 +206,15 @@ public class Pokepay {
         public UserTransaction scanToken(String token, double amount, String accountId, Product[] products,
                                          String couponId, TransactionStrategy strategy) throws ProcessingError,
                 BankRequestError {
-            if (token.startsWith(getWwwBaseUrl() + "/cashtrays/")) {
+            if (token.startsWith(getWwwBaseUrl() + "/cashtrays/") || token.startsWith(getDefaultWwwBaseUrl() + "/cashtrays/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/cashtrays/").length());
                 final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId, strategy);
                 return createTransactionWithCashtray.send(accessToken);
-            } else if (token.startsWith(getWwwBaseUrl() + "/bills/")) {
+            } else if (token.startsWith(getWwwBaseUrl() + "/bills/") || token.startsWith(getDefaultWwwBaseUrl() + "/bills/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/bills/").length());
                 final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount, couponId, strategy);
                 return createTransactionWithBill.send(accessToken);
-            } else if (token.startsWith(getWwwBaseUrl() + "/checks/")) {
+            } else if (token.startsWith(getWwwBaseUrl() + "/checks/") || token.startsWith(getDefaultWwwBaseUrl() + "/checks/")) {
                 final String uuid = token.substring((getWwwBaseUrl() + "/checks/").length());
                 final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
                 return createTransactionWithCheck.send(accessToken);
