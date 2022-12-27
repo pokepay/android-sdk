@@ -78,11 +78,11 @@ public class Pokepay {
         }
 
         public String getWwwBaseUrl() {
-            final Env env = Env.current();
             return customDomain != null ? customDomain : getDefaultWwwBaseUrl();
         }
 
         public String getDefaultWwwBaseUrl() {
+            final Env env = Env.current();
             return env.WWW_BASE_URL();
         }
 
@@ -135,20 +135,21 @@ public class Pokepay {
         }
 
         public TokenInfo getTokenInfo(String token) throws ProcessingError, BankRequestError {
-            if (token.startsWith(getWwwBaseUrl() + "/cashtrays/")) {
-                final String uuid = token.substring((getWwwBaseUrl() + "/cashtrays/").length());
+            String baseUrl = token.startsWith(getWwwBaseUrl()) ? getWwwBaseUrl() : getDefaultWwwBaseUrl();
+            if (token.startsWith(baseUrl + "/cashtrays/")) {
+                final String uuid = token.substring((baseUrl + "/cashtrays/").length());
                 return new TokenInfo(
                         TokenInfo.Type.CASHTRAY,
                         null
                 );
-            } else if (token.startsWith(getWwwBaseUrl() + "/bills/")) {
-                final String uuid = token.substring((getWwwBaseUrl() + "/bills/").length());
+            } else if (token.startsWith(baseUrl + "/bills/")) {
+                final String uuid = token.substring((baseUrl + "/bills/").length());
                 return new TokenInfo(
                         TokenInfo.Type.BILL,
                         new GetBill(uuid).send(accessToken)
                 );
-            } else if (token.startsWith(getWwwBaseUrl() + "/checks/")) {
-                final String uuid = token.substring((getWwwBaseUrl() + "/checks/").length());
+            } else if (token.startsWith(baseUrl + "/checks/")) {
+                final String uuid = token.substring((baseUrl + "/checks/").length());
                 return new TokenInfo(
                         TokenInfo.Type.CHECK,
                         new GetCheck(uuid).send(accessToken)
@@ -178,16 +179,17 @@ public class Pokepay {
         @Deprecated
         @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
         public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products, String couponId, TransactionStrategy strategy) throws ProcessingError, BankRequestError {
-            if (token.startsWith(getWwwBaseUrl() + "/cashtrays/")) {
-                final String uuid = token.substring((getWwwBaseUrl() + "/cashtrays/").length());
+            String baseUrl = token.startsWith(getWwwBaseUrl()) ? getWwwBaseUrl() : getDefaultWwwBaseUrl();
+            if (token.startsWith(baseUrl + "/cashtrays/")) {
+                final String uuid = token.substring((baseUrl + "/cashtrays/").length());
                 final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId, strategy);
                 return createTransactionWithCashtray.send(accessToken);
-            } else if (token.startsWith(getWwwBaseUrl() + "/bills/")) {
-                final String uuid = token.substring((getWwwBaseUrl() + "/bills/").length());
+            } else if (token.startsWith(baseUrl + "/bills/")) {
+                final String uuid = token.substring((baseUrl + "/bills/").length());
                 final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount, couponId, strategy);
                 return createTransactionWithBill.send(accessToken);
-            } else if (token.startsWith(getWwwBaseUrl() + "/checks/")) {
-                final String uuid = token.substring((getWwwBaseUrl() + "/checks/").length());
+            } else if (token.startsWith(baseUrl + "/checks/")) {
+                final String uuid = token.substring((baseUrl + "/checks/").length());
                 final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
                 return createTransactionWithCheck.send(accessToken);
             } else if (token.matches("^[0-9]{20}$")) {
@@ -206,16 +208,17 @@ public class Pokepay {
         public UserTransaction scanToken(String token, double amount, String accountId, Product[] products,
                                          String couponId, TransactionStrategy strategy) throws ProcessingError,
                 BankRequestError {
-            if (token.startsWith(getWwwBaseUrl() + "/cashtrays/") || token.startsWith(getDefaultWwwBaseUrl() + "/cashtrays/")) {
-                final String uuid = token.substring((getWwwBaseUrl() + "/cashtrays/").length());
+            String baseUrl = token.startsWith(getWwwBaseUrl()) ? getWwwBaseUrl() : getDefaultWwwBaseUrl();
+            if (token.startsWith(baseUrl + "/cashtrays/")) {
+                final String uuid = token.substring((baseUrl + "/cashtrays/").length());
                 final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId, strategy);
                 return createTransactionWithCashtray.send(accessToken);
-            } else if (token.startsWith(getWwwBaseUrl() + "/bills/") || token.startsWith(getDefaultWwwBaseUrl() + "/bills/")) {
-                final String uuid = token.substring((getWwwBaseUrl() + "/bills/").length());
+            } else if (token.startsWith(baseUrl + "/bills/")) {
+                final String uuid = token.substring((baseUrl + "/bills/").length());
                 final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount, couponId, strategy);
                 return createTransactionWithBill.send(accessToken);
-            } else if (token.startsWith(getWwwBaseUrl() + "/checks/") || token.startsWith(getDefaultWwwBaseUrl() + "/checks/")) {
-                final String uuid = token.substring((getWwwBaseUrl() + "/checks/").length());
+            } else if (token.startsWith(baseUrl + "/checks/")) {
+                final String uuid = token.substring((baseUrl + "/checks/").length());
                 final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
                 return createTransactionWithCheck.send(accessToken);
             } else if (token.matches("^[0-9]{20}$")) {
