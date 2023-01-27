@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
@@ -19,6 +20,7 @@ public class CreateTransactionWithCashtray extends BankRequest {
     public String accountId;
     public String couponId;
     public TransactionStrategy strategy;
+    public UUID requestId;
 
     public CreateTransactionWithCashtray(@NonNull String cashtrayId, String accountId, String couponId) {
         this.cashtrayId = cashtrayId;
@@ -31,6 +33,14 @@ public class CreateTransactionWithCashtray extends BankRequest {
         this.accountId = accountId;
         this.couponId = couponId;
         this.strategy = strategy;
+    }
+
+    public CreateTransactionWithCashtray(@NonNull String cashtrayId, String accountId, String couponId, TransactionStrategy strategy, UUID requestId) {
+        this.cashtrayId = cashtrayId;
+        this.accountId = accountId;
+        this.couponId = couponId;
+        this.strategy = strategy;
+        this.requestId = requestId;
     }
 
     protected final String path() {
@@ -48,6 +58,7 @@ public class CreateTransactionWithCashtray extends BankRequest {
             put("account_id", accountId);
             put("coupon_id", couponId);
             put("strategy", strategy != null ? strategy.getStrategy() : null);
+            put("request_id", requestId != null ? requestId.toString(): null);
         }};
     }
 
