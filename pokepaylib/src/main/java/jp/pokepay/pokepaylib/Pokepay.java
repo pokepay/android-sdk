@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -173,27 +174,34 @@ public class Pokepay {
 
         @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
         public UserTransaction scanToken(String token) throws ProcessingError, BankRequestError {
-            return scanToken(token, 0.0, null, new Product[]{}, null, TransactionStrategy.POINT_PREFERRED);
+            return scanToken(token, 0.0, null, new Product[]{}, null, TransactionStrategy.POINT_PREFERRED, null);
         }
 
         @Deprecated
         @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
         public UserTransaction scanToken(String token, Double amount, String accountId, Product[] products, String couponId, TransactionStrategy strategy) throws ProcessingError, BankRequestError {
+            return scanToken(token, amount != null ? amount : 0, accountId, products, couponId, strategy);
+        }
+
+        @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
+        public UserTransaction scanToken(String token, double amount, String accountId, Product[] products,
+                                         String couponId, TransactionStrategy strategy, UUID requestId) throws ProcessingError,
+                BankRequestError {
             String baseUrl = token.startsWith(getWwwBaseUrl()) ? getWwwBaseUrl() : getDefaultWwwBaseUrl();
             if (token.startsWith(baseUrl + "/cashtrays/")) {
                 final String uuid = token.substring((baseUrl + "/cashtrays/").length());
-                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId, strategy);
+                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId, strategy, requestId);
                 return createTransactionWithCashtray.send(accessToken);
             } else if (token.startsWith(baseUrl + "/bills/")) {
                 final String uuid = token.substring((baseUrl + "/bills/").length());
-                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount, couponId, strategy);
+                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount, couponId, strategy, requestId);
                 return createTransactionWithBill.send(accessToken);
             } else if (token.startsWith(baseUrl + "/checks/")) {
                 final String uuid = token.substring((baseUrl + "/checks/").length());
-                final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
+                final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId, requestId);
                 return createTransactionWithCheck.send(accessToken);
             } else if (token.matches("^[0-9]{20}$")) {
-                final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, accountId, amount, products);
+                final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, accountId, amount, products, requestId);
                 return createTransactionWithCpm.send(accessToken);
             } else {
                 String key = parseAsPokeregiToken(token);
@@ -208,29 +216,7 @@ public class Pokepay {
         public UserTransaction scanToken(String token, double amount, String accountId, Product[] products,
                                          String couponId, TransactionStrategy strategy) throws ProcessingError,
                 BankRequestError {
-            String baseUrl = token.startsWith(getWwwBaseUrl()) ? getWwwBaseUrl() : getDefaultWwwBaseUrl();
-            if (token.startsWith(baseUrl + "/cashtrays/")) {
-                final String uuid = token.substring((baseUrl + "/cashtrays/").length());
-                final CreateTransactionWithCashtray createTransactionWithCashtray = new CreateTransactionWithCashtray(uuid, accountId, couponId, strategy);
-                return createTransactionWithCashtray.send(accessToken);
-            } else if (token.startsWith(baseUrl + "/bills/")) {
-                final String uuid = token.substring((baseUrl + "/bills/").length());
-                final CreateTransactionWithBill createTransactionWithBill = new CreateTransactionWithBill(uuid, accountId, amount, couponId, strategy);
-                return createTransactionWithBill.send(accessToken);
-            } else if (token.startsWith(baseUrl + "/checks/")) {
-                final String uuid = token.substring((baseUrl + "/checks/").length());
-                final CreateTransactionWithCheck createTransactionWithCheck = new CreateTransactionWithCheck(uuid, accountId);
-                return createTransactionWithCheck.send(accessToken);
-            } else if (token.matches("^[0-9]{20}$")) {
-                final CreateTransactionWithCpm createTransactionWithCpm = new CreateTransactionWithCpm(token, accountId, amount, products);
-                return createTransactionWithCpm.send(accessToken);
-            } else {
-                String key = parseAsPokeregiToken(token);
-                if (key.length() > 0) {
-                    return scanTokenBLE(key, couponId, strategy);
-                }
-            }
-            throw new ProcessingError("Unknown token format");
+            return scanToken(token, amount, accountId, products, couponId, strategy, null);
         }
 
         @RequiresPermission(allOf = {"android.permission.BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_SCAN"})
