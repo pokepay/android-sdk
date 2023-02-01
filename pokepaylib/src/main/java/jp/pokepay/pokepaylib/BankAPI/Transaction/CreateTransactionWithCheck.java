@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
@@ -15,10 +16,17 @@ public class CreateTransactionWithCheck extends BankRequest {
     @NonNull
     public String checkId;
     public String accountId;
+    public UUID requestId;
 
     public CreateTransactionWithCheck(@NonNull String checkId, String accountId) {
         this.checkId   = checkId;
         this.accountId = accountId;
+    }
+
+    public CreateTransactionWithCheck(@NonNull String checkId, String accountId, UUID requestId) {
+        this.checkId   = checkId;
+        this.accountId = accountId;
+        this.requestId = requestId;
     }
 
     protected final String path() {
@@ -34,6 +42,7 @@ public class CreateTransactionWithCheck extends BankRequest {
         return new HashMap<String, Object>() {{
             put("check_id", checkId);
             put("account_id", accountId);
+            put("request_id", requestId != null ? requestId.toString(): null);
         }};
     }
 

@@ -18,4 +18,5 @@ public class Account extends Response {
     @NonNull
     public PrivateMoney private_money;
     public Date         nearest_expires_at;
+    public double       point_debt;
 }

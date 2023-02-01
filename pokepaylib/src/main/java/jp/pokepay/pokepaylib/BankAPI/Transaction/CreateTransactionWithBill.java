@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
@@ -20,6 +21,7 @@ public class CreateTransactionWithBill extends BankRequest {
     public double amount;
     public String couponId;
     public TransactionStrategy strategy;
+    public UUID requestId;
 
     @Deprecated
     public CreateTransactionWithBill(@NonNull String billId, String accountId, Double amount, String couponId, TransactionStrategy strategy) {
@@ -60,6 +62,15 @@ public class CreateTransactionWithBill extends BankRequest {
         this.strategy = strategy;
     }
 
+    public CreateTransactionWithBill(@NonNull String billId, String accountId, double amount, String couponId, TransactionStrategy strategy, UUID requestId) {
+        this.billId = billId;
+        this.accountId = accountId;
+        this.amount = amount;
+        this.couponId = couponId;
+        this.strategy = strategy;
+        this.requestId = requestId;
+    }
+
     protected final String path() {
         return "/transactions";
     }
@@ -76,6 +87,7 @@ public class CreateTransactionWithBill extends BankRequest {
             put("amount", amount);
             put("coupon_id", couponId);
             put("strategy", strategy != null ? strategy.getStrategy() : null);
+            put("request_id", requestId != null ? requestId.toString(): null);
         }};
     }
 

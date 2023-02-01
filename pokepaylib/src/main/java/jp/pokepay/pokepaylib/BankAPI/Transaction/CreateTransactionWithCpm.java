@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
@@ -18,6 +19,7 @@ public class CreateTransactionWithCpm extends BankRequest {
     public String accountId;
     public double amount;
     public Product[] products;
+    public UUID requestId;
 
     @Deprecated
     public CreateTransactionWithCpm(@NonNull String cpmToken, String accountId, Double amount, Product[] products) {
@@ -36,6 +38,14 @@ public class CreateTransactionWithCpm extends BankRequest {
         this.products = products;
     }
 
+    public CreateTransactionWithCpm(@NonNull String cpmToken, String accountId, double amount, Product[] products, UUID requestId){
+        this.cpmToken = cpmToken;
+        this.accountId = accountId;
+        this.amount = amount;
+        this.products = products;
+        this.requestId = requestId;
+    }
+
     protected final String path() {
         return "/transactions";
     }
@@ -50,6 +60,7 @@ public class CreateTransactionWithCpm extends BankRequest {
             put("cpm_token", cpmToken);
             put("account_id", accountId);
             put("amount", amount);
+            put("request_id", requestId != null ? requestId.toString(): null);
             if (products != null) {
                 Map<String, Object>[] productsMap = new Map[products.length];
                 for (int i = 0; i < products.length; i++) {
