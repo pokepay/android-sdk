@@ -2,14 +2,10 @@ package jp.pokepay.pokepaylib.BankAPI.User;
 
 import androidx.annotation.NonNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
-import jp.pokepay.pokepaylib.Responses.PaginatedAccounts;
 import jp.pokepay.pokepaylib.Responses.UserWithAuthFactors;
 
 public class GetUserWithAuthFactors extends BankRequest {
