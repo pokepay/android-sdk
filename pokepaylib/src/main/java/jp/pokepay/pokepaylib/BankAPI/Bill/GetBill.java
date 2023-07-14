@@ -6,7 +6,7 @@ import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
-import jp.pokepay.pokepaylib.Responses.Bill;
+import jp.pokepay.pokepaylib.Responses.BillWithAdditionalPrivateMoneys;
 
 public class GetBill extends BankRequest {
     @NonNull
@@ -24,7 +24,7 @@ public class GetBill extends BankRequest {
         return Request.Method.GET;
     }
 
-    public final Bill send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(Bill.class, accessToken);
+    public final BillWithAdditionalPrivateMoneys send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(BillWithAdditionalPrivateMoneys.class, accessToken);
     }
 }
