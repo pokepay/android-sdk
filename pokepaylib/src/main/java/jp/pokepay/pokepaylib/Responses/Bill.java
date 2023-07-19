@@ -20,4 +20,5 @@ public class Bill extends Response {
     public String token;
     public Double min_amount;
     public Double max_amount;
+    public PrivateMoney[] additional_private_moneys;
 }
