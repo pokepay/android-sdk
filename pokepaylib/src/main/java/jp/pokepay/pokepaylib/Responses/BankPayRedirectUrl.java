@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import jp.pokepay.pokepaylib.Response;
 
-public class UserSettingUrl extends Response {
+public class BankPayRedirectUrl extends Response {
     @NonNull
-    public String redirect_url;
+    public String redirectUrl;
 }

@@ -38,7 +38,7 @@ public class GetBankPay extends BankRequest {
         }};
     }
 
-    public final BankPay send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(BankPay.class, accessToken);
+    public final BankPay[] send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(BankPay[].class, accessToken);
     }
 }
