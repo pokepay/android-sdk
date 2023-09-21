@@ -8,17 +8,12 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.Parameters.Gender;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.IdentificationResult;
 
-public class BankPayTopUp extends BankRequest {
-    enum Gender {
-        male,
-        female,
-        other
-    }
-
+public class IdentifyIndividual extends BankRequest {
     @NonNull
     public String accountId;
     @NonNull
@@ -32,7 +27,7 @@ public class BankPayTopUp extends BankRequest {
     public String address;
     public Date dateOfBirth;
 
-    public BankPayTopUp(@NonNull String accountId, @NonNull String signature, @NonNull String signingCert, @NonNull String expectedHash, String name, Gender gender, String address, Date dateOfBirth) {
+    public IdentifyIndividual(@NonNull String accountId, @NonNull String signature, @NonNull String signingCert, @NonNull String expectedHash, String name, Gender gender, String address, Date dateOfBirth) {
         this.accountId = accountId;
         this.signature = signature;
         this.signingCert = signingCert;
@@ -63,7 +58,7 @@ public class BankPayTopUp extends BankRequest {
             }
 
             if (gender != null) {
-                put("gender", gender);
+                put("gender", gender.getGender());
             }
 
             if (address != null) {
