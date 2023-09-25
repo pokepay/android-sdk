@@ -25,9 +25,12 @@ public class IdentifyIndividual extends BankRequest {
     public String name;
     public Gender gender;
     public String address;
-    public Date dateOfBirth;
+    /**
+     * pattern = YYYY-MM-DD
+     */
+    public String dateOfBirth;
 
-    public IdentifyIndividual(@NonNull String accountId, @NonNull String signature, @NonNull String signingCert, @NonNull String expectedHash, String name, Gender gender, String address, Date dateOfBirth) {
+    public IdentifyIndividual(@NonNull String accountId, @NonNull String signature, @NonNull String signingCert, @NonNull String expectedHash, String name, Gender gender, String address, String dateOfBirth) {
         this.accountId = accountId;
         this.signature = signature;
         this.signingCert = signingCert;
