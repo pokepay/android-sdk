@@ -16,7 +16,7 @@ public class BankPay extends Response {
     @NonNull
     public String branch_name;
     @NonNull
-    public int deposit_type;
+    public String deposit_type;
     @NonNull
     public String masked_account_number;
     @NonNull
