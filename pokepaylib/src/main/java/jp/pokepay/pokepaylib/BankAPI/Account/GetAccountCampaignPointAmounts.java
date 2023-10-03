@@ -2,10 +2,6 @@ package jp.pokepay.pokepaylib.BankAPI.Account;
 
 import androidx.annotation.NonNull;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
