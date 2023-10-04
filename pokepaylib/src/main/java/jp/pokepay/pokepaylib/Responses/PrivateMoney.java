@@ -33,6 +33,8 @@ public class PrivateMoney extends Response {
     public String       commercial_act_url;
     @NonNull
     public boolean      can_use_credit_card;
+    @NonNull
+    public boolean      can_use_c2c_transfer;
     public String       custom_domain_name;
 }
 
