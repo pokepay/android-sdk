@@ -18,11 +18,13 @@ public class CreateBankPay extends BankRequest {
     public String callbackUrl;
     @NonNull
     public String privateMoneyId;
+    public String kana;
 
-    public CreateBankPay(@NonNull String id, String callbackUrl, String privateMoneyId) {
+    public CreateBankPay(@NonNull String id, @NonNull String callbackUrl, @NonNull String privateMoneyId, String kana) {
         this.id = id;
         this.callbackUrl = callbackUrl;
         this.privateMoneyId = privateMoneyId;
+        this.kana = kana;
     }
 
     protected final String path() {
@@ -38,6 +40,10 @@ public class CreateBankPay extends BankRequest {
         return new HashMap<String, Object>() {{
             put("callback_url", callbackUrl);
             put("private_money_id", privateMoneyId);
+
+            if (kana != null) {
+                put("kana", kana);
+            }
         }};
     }
 
