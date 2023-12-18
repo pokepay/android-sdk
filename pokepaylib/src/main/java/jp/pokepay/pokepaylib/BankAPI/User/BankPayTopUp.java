@@ -20,12 +20,14 @@ public class BankPayTopUp extends BankRequest {
     public String bankId;
     @NonNull
     public String amount;
+    public String requestId;
 
-    public BankPayTopUp(@NonNull String id, @NonNull String accountId, @NonNull String bankId, @NonNull String amount) {
+    public BankPayTopUp(@NonNull String id, @NonNull String accountId, @NonNull String bankId, @NonNull String amount, String requestId) {
         this.id = id;
         this.accountId = accountId;
         this.bankId = bankId;
         this.amount = amount;
+        this.requestId = requestId;
     }
 
     protected final String path() {
@@ -42,6 +44,9 @@ public class BankPayTopUp extends BankRequest {
             put("account_id", accountId);
             put("bank_id", bankId);
             put("amount", amount);
+            if (requestId != null) {
+                put("request_id", requestId);
+            }
         }};
     }
 
