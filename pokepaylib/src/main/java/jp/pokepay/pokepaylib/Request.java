@@ -178,6 +178,17 @@ public class Request {
                     con.setRequestProperty("accept", "application/json");
                     con.setRequestProperty("accept", "*/*");
                     addHeaders(con, headers);
+                    if (parameters != null) {
+                        final byte[] body = JsonConverter.toString(parameters).getBytes("UTF-8");
+                        con.setDoOutput(true);
+                        con.setRequestProperty("Accept-Language", "jp");
+                        con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
+                        con.setRequestProperty("Content-Length", String.valueOf(body.length));
+                        OutputStream out = con.getOutputStream();
+                        out.write(body);
+                        out.flush();
+                        out.close();
+                    }
                     break;
                 }
                 case PATCH: {
