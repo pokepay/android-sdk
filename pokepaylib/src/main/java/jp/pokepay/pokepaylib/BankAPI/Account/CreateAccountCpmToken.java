@@ -90,7 +90,12 @@ public class CreateAccountCpmToken extends BankRequest {
             stringBuilder.append("\"");
             stringBuilder.append(",");
         }
-        stringBuilder.deleteCharAt(stringBuilder.lastIndexOf(","));
+
+        int lastCommaIndex = stringBuilder.lastIndexOf(",");
+        if (lastCommaIndex >= 0) {
+            stringBuilder.deleteCharAt(lastCommaIndex);
+        }
+
         stringBuilder.append("}");
         return stringBuilder.toString();
     }
