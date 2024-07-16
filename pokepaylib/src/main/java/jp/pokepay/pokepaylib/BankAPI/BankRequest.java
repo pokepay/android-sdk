@@ -5,6 +5,7 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.Env;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
+import jp.pokepay.pokepaylib.PartnerAPI.PartnerRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 
@@ -24,7 +25,7 @@ public abstract class BankRequest {
         headers.put("Authorization", auth);
         try {
             return Request.send(cls, BankRequestError.class, url, method(), parameters(), headers);
-        } catch (OAuthRequestError error) {
+        } catch (OAuthRequestError | PartnerRequestError error) {
             throw new RuntimeException("PANIC! This must not be happened");
         }
     }

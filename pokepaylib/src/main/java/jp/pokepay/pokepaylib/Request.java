@@ -19,9 +19,11 @@ import java.util.TimeZone;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
+import jp.pokepay.pokepaylib.PartnerAPI.PartnerRequestError;
 import jp.pokepay.pokepaylib.Responses.BankError;
 import jp.pokepay.pokepaylib.Responses.NoContent;
 import jp.pokepay.pokepaylib.Responses.OAuthError;
+import jp.pokepay.pokepaylib.Responses.PartnerError;
 
 public class Request {
 
@@ -97,7 +99,7 @@ public class Request {
             final Class errCls,
             final String url,
             final Method meth)
-            throws ProcessingError, BankRequestError, OAuthRequestError  {
+            throws ProcessingError, BankRequestError, OAuthRequestError, PartnerRequestError  {
         return send(cls, errCls, url, meth, null, null);
     }
 
@@ -107,7 +109,7 @@ public class Request {
             final String url,
             final Method meth,
             final Map<String, Object> parameters)
-            throws ProcessingError, BankRequestError, OAuthRequestError {
+            throws ProcessingError, BankRequestError, OAuthRequestError, PartnerRequestError {
         return send(cls, errCls, url, meth, parameters, null);
     }
 
@@ -118,7 +120,7 @@ public class Request {
             final Method meth,
             final Map<String, Object> parametersRaw,
             final Map<String, String> headers)
-            throws ProcessingError, BankRequestError, OAuthRequestError {
+            throws ProcessingError, BankRequestError, OAuthRequestError, PartnerRequestError {
         final int CONNECTION_TIMEOUT = 30 * 1000;
         final int READ_TIMEOUT = 30 * 1000;
         HttpURLConnection con = null;
@@ -257,6 +259,9 @@ public class Request {
                 } else if (errCls == OAuthRequestError.class) {
                     final OAuthError error = mapper.readValue(responseBody, OAuthError.class);
                     throw new OAuthRequestError(status, error);
+                } else if (errCls == PartnerRequestError.class) {
+                    final PartnerError error = mapper.readValue(responseBody, PartnerError.class);
+                    throw new PartnerRequestError(status, error);
                 } else {
                     throw new ProcessingError("Invalid Error type specified");
                 }
@@ -264,6 +269,8 @@ public class Request {
         } catch (BankRequestError e) {
             throw e;
         } catch (OAuthRequestError e) {
+            throw e;
+        } catch (PartnerRequestError e) {
             throw e;
         } catch (Exception e) {
             final StringWriter st = new StringWriter();
