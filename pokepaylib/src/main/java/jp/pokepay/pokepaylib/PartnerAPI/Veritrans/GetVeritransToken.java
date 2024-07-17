@@ -2,11 +2,11 @@ package jp.pokepay.pokepaylib.PartnerAPI.Veritrans;
 
 import androidx.annotation.NonNull;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
 import jp.pokepay.pokepaylib.PartnerAPI.PartnerRequest;
 import jp.pokepay.pokepaylib.PartnerAPI.PartnerRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
@@ -49,6 +49,10 @@ public class GetVeritransToken extends PartnerRequest {
     }
 
     public final VeritransToken send() throws ProcessingError, PartnerRequestError {
-        return super.send(VeritransToken.class);
+        try {
+            return Request.send(VeritransToken.class, VeritransRequestError.class, path(), method(), parameters());
+        } catch (OAuthRequestError | BankRequestError e) {
+            throw new RuntimeException("PANIC! This must not be happened");
+        }
     }
 }
