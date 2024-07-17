@@ -10,19 +10,22 @@ import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.GetVeritransToken;
 import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.VeritransRequestError;
 
 public class GetVeritransTokenTest {
+    private final String testCardNumber = "4111111111111111";
+    private final String testTokenApiKey = "cd76ca65-7f54-4dec-8ba3-11c12e36a548";
+
     @Test
     public void MDKTokenCanGet() throws ProcessingError {
         try {
-            new GetVeritransToken("4111111111111111", "12/23", "123", "cd76ca65-7f54-4dec-8ba3-11c12e36a548").send();
+            new GetVeritransToken(testCardNumber, "12/23", "123", testTokenApiKey).send();
         } catch (PartnerRequestError e) {
             fail(e.toString());
         }
     }
 
     @Test
-    public void InvalidExpireDate() throws ProcessingError, PartnerRequestError {
+    public void ThrowErrorIfdExpireDateIsInvalid() throws ProcessingError, PartnerRequestError {
         try {
-            new GetVeritransToken("4111111111111111", "1223", "123", "cd76ca65-7f54-4dec-8ba3-11c12e36a548").send();
+            new GetVeritransToken(testCardNumber, "1223", "123", testTokenApiKey).send();
             fail();
         } catch (VeritransRequestError e) {
             assertEquals("failure", e.error.status);
