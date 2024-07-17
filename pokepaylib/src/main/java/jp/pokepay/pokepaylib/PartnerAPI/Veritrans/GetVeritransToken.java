@@ -23,7 +23,7 @@ public class GetVeritransToken extends PartnerRequest {
     @NonNull
     public String tokenApiKey;
 
-    GetVeritransToken(@NonNull String cardNumber, @NonNull String cardExpiryDate, @NonNull String securityCode, @NonNull String tokenApiKey) {
+    public GetVeritransToken(@NonNull String cardNumber, @NonNull String cardExpiryDate, @NonNull String securityCode, @NonNull String tokenApiKey) {
         this.cardNumber = cardNumber;
         this.cardExpiryDate = cardExpiryDate;
         this.securityCode = securityCode;
