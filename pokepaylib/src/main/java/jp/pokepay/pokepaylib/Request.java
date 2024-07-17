@@ -149,72 +149,9 @@ public class Request {
                     addHeaders(con, headers);
                     break;
                 }
-                case POST: {
-                    URL u = new URL(url);
-                    con = (HttpURLConnection) u.openConnection();
-                    con.setConnectTimeout(CONNECTION_TIMEOUT);
-                    con.setReadTimeout(READ_TIMEOUT);
-                    con.setRequestMethod(meth.toString());
-                    con.setRequestProperty("accept", "application/json");
-                    con.setRequestProperty("accept", "*/*");
-                    addHeaders(con, headers);
-                    if (parameters != null) {
-                        final byte[] body = JsonConverter.toString(parameters).getBytes("UTF-8");
-                        con.setDoOutput(true);
-                        con.setRequestProperty("Accept-Language", "jp");
-                        con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                        con.setRequestProperty("Content-Length", String.valueOf(body.length));
-                        OutputStream out = con.getOutputStream();
-                        out.write(body);
-                        out.flush();
-                        out.close();
-                    }
-                    break;
-                }
-                case DELETE: {
-                    URL u = new URL(url);
-                    con = (HttpURLConnection) u.openConnection();
-                    con.setConnectTimeout(CONNECTION_TIMEOUT);
-                    con.setReadTimeout(READ_TIMEOUT);
-                    con.setRequestMethod(meth.toString());
-                    con.setRequestProperty("accept", "application/json");
-                    con.setRequestProperty("accept", "*/*");
-                    addHeaders(con, headers);
-                    if (parameters != null) {
-                        final byte[] body = JsonConverter.toString(parameters).getBytes("UTF-8");
-                        con.setDoOutput(true);
-                        con.setRequestProperty("Accept-Language", "jp");
-                        con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                        con.setRequestProperty("Content-Length", String.valueOf(body.length));
-                        OutputStream out = con.getOutputStream();
-                        out.write(body);
-                        out.flush();
-                        out.close();
-                    }
-                    break;
-                }
-                case PATCH: {
-                    URL u = new URL(url);
-                    con = (HttpURLConnection) u.openConnection();
-                    con.setConnectTimeout(CONNECTION_TIMEOUT);
-                    con.setReadTimeout(READ_TIMEOUT);
-                    con.setRequestMethod(meth.toString());
-                    con.setRequestProperty("accept", "application/json");
-                    con.setRequestProperty("accept", "*/*");
-                    addHeaders(con, headers);
-                    if (parameters != null) {
-                        final byte[] body = JsonConverter.toString(parameters).getBytes("UTF-8");
-                        con.setDoOutput(true);
-                        con.setRequestProperty("Accept-Language", "jp");
-                        con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                        con.setRequestProperty("Content-Length", String.valueOf(body.length));
-                        OutputStream out = con.getOutputStream();
-                        out.write(body);
-                        out.flush();
-                        out.close();
-                    }
-                    break;
-                }
+                case POST:
+                case DELETE:
+                case PATCH:
                 case PUT: {
                     URL u = new URL(url);
                     con = (HttpURLConnection) u.openConnection();
