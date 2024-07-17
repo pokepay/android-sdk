@@ -30,7 +30,7 @@ public class TopupWithCreditCardMdkToken extends BankRequest {
     }
 
     protected final String path() {
-        return " /veritrans/card-authorize/topup-with-mdk-token";
+        return "/veritrans/card-authorize/topup-with-mdk-token";
     }
 
     protected final Request.Method method() {
