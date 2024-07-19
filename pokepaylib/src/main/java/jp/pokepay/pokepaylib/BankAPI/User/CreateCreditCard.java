@@ -24,10 +24,6 @@ public class CreateCreditCard extends BankRequest {
         this.organizationCode = organizationCode;
     }
 
-    public CreateCreditCard(@NonNull String id, @NonNull String token) {
-        this(id, token, null);
-    }
-
     protected final String path() {
         return "/users/" + id + "/cards";
     }

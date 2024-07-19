@@ -17,7 +17,7 @@ public class CreateCreditCardTest {
 
     private String fetchVeritransMdkToken() {
         final String testCardNumber = "4111111111111111";
-        final String testTokenApiKey = "cd76ca65-7f54-4dec-8ba3-11c12e36a548";
+        final String testTokenApiKey = "9ad14759-7082-457e-a874-864c78edc05a";
 
         try {
             VeritransToken response = new GetVeritransToken(testCardNumber, "12/23", "123", testTokenApiKey).send();
@@ -32,7 +32,7 @@ public class CreateCreditCardTest {
     public void canCreate() throws BankRequestError, ProcessingError {
         final String mdkToken = fetchVeritransMdkToken();
 
-        CreditCard response = new CreateCreditCard(userId, mdkToken).send(accessToken);
+        CreditCard response = new CreateCreditCard(userId, mdkToken, "coilinc").send(accessToken);
         assertEquals("411111********11", response.card_number);
     }
 
@@ -40,7 +40,7 @@ public class CreateCreditCardTest {
     public void invalidMDKToken() throws ProcessingError {
         final String mdkToken = "INVALID";
         try {
-            CreditCard response = new CreateCreditCard(userId, mdkToken).send(accessToken);
+            CreditCard response = new CreateCreditCard(userId, mdkToken, "coilinc").send(accessToken);
             fail();
         }catch (BankRequestError e) {
             assertEquals("{\n" +
