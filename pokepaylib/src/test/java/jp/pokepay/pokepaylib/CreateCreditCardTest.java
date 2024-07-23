@@ -6,9 +6,9 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
-import jp.pokepay.pokepaylib.BankAPI.User.CreateCreditCard;
+import jp.pokepay.pokepaylib.BankAPI.autogen.requests.*;
 import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.GetVeritransToken;
-import jp.pokepay.pokepaylib.Responses.CreditCard;
+import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 import jp.pokepay.pokepaylib.Responses.VeritransToken;
 
 public class CreateCreditCardTest {
