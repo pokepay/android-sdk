@@ -149,7 +149,7 @@ public class Request {
             final ObjectMapper mapper = JsonConverter.createObjectMapper();
             if (HttpURLConnection.HTTP_OK <= status && status < HttpURLConnection.HTTP_MULT_CHOICE) {
                 final String responseBody = getResponseBody(con.getInputStream(), encoding);
-                if (cls == NoContent.class && responseBody == "") {
+                if (cls == NoContent.class && responseBody.isEmpty()) {
                     return (R) (new NoContent());
                 }
                 return mapper.readValue(responseBody, cls);
