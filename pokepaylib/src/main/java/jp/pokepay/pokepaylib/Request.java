@@ -149,6 +149,9 @@ public class Request {
             final ObjectMapper mapper = JsonConverter.createObjectMapper();
             if (HttpURLConnection.HTTP_OK <= status && status < HttpURLConnection.HTTP_MULT_CHOICE) {
                 final String responseBody = getResponseBody(con.getInputStream(), encoding);
+                if (cls == String.class) {
+                    return (R) responseBody;
+                }
                 if (cls == NoContent.class && responseBody.isEmpty()) {
                     return (R) (new NoContent());
                 }

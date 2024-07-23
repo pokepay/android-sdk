@@ -32,6 +32,7 @@
         <activity android:name="jp.pokepay.pokepay.ScannerActivity" />
         <activity android:name="jp.pokepay.pokepay.View02Activity" />
         <activity android:name="jp.pokepay.pokepay.View03Activity"/>
+        <activity android:name="jp.pokepay.pokepay.CreditCardActivity"/>
     </application>
 
 
