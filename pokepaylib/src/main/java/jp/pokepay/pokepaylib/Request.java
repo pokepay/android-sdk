@@ -19,7 +19,7 @@ import java.util.TimeZone;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
-import jp.pokepay.pokepaylib.PartnerAPI.PartnerRequestError;
+import jp.pokepay.pokepaylib.PartnerAPI.ExternalServiceRequestError;
 import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.VeritransError;
 import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.VeritransRequestError;
 import jp.pokepay.pokepaylib.Responses.BankError;
@@ -77,15 +77,15 @@ public class Request {
         return responseBody.toString();
     }
 
-    public static <R> R send(final Class<R> cls, final Class errCls, final String url, final Method meth) throws ProcessingError, BankRequestError, OAuthRequestError, PartnerRequestError {
+    public static <R> R send(final Class<R> cls, final Class errCls, final String url, final Method meth) throws ProcessingError, BankRequestError, OAuthRequestError, ExternalServiceRequestError {
         return send(cls, errCls, url, meth, null, null);
     }
 
-    public static <R> R send(final Class<R> cls, final Class errCls, final String url, final Method meth, final Map<String, Object> parameters) throws ProcessingError, BankRequestError, OAuthRequestError, PartnerRequestError {
+    public static <R> R send(final Class<R> cls, final Class errCls, final String url, final Method meth, final Map<String, Object> parameters) throws ProcessingError, BankRequestError, OAuthRequestError, ExternalServiceRequestError {
         return send(cls, errCls, url, meth, parameters, null);
     }
 
-    public static <R> R send(final Class<R> cls, final Class errCls, final String url, final Method meth, final Map<String, Object> parametersRaw, final Map<String, String> headers) throws ProcessingError, BankRequestError, OAuthRequestError, PartnerRequestError {
+    public static <R> R send(final Class<R> cls, final Class errCls, final String url, final Method meth, final Map<String, Object> parametersRaw, final Map<String, String> headers) throws ProcessingError, BankRequestError, OAuthRequestError, ExternalServiceRequestError {
         final int CONNECTION_TIMEOUT = 30 * 1000;
         final int READ_TIMEOUT = 30 * 1000;
         HttpURLConnection con = null;
@@ -171,7 +171,7 @@ public class Request {
                     throw new ProcessingError("Invalid Error type specified");
                 }
             }
-        } catch (BankRequestError | OAuthRequestError | PartnerRequestError e) {
+        } catch (BankRequestError | OAuthRequestError | ExternalServiceRequestError e) {
             throw e;
         } catch (Exception e) {
             final StringWriter st = new StringWriter();

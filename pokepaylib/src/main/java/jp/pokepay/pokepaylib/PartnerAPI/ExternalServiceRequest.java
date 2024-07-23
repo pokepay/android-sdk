@@ -7,7 +7,7 @@ import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 
-public abstract class PartnerRequest {
+public abstract class ExternalServiceRequest {
 
     protected abstract String path();
     protected abstract Request.Method method();
@@ -16,9 +16,9 @@ public abstract class PartnerRequest {
         return null;
     }
 
-    protected <T> T send(Class<T> cls) throws ProcessingError, PartnerRequestError {
+    protected <T> T send(Class<T> cls) throws ProcessingError, ExternalServiceRequestError {
         try {
-            return Request.send(cls, PartnerRequestError.class, path(), method(), parameters());
+            return Request.send(cls, ExternalServiceRequestError.class, path(), method(), parameters());
         } catch (BankRequestError | OAuthRequestError e) {
             throw new RuntimeException("PANIC! This must not be happened");
         }

@@ -7,13 +7,13 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
-import jp.pokepay.pokepaylib.PartnerAPI.PartnerRequest;
-import jp.pokepay.pokepaylib.PartnerAPI.PartnerRequestError;
+import jp.pokepay.pokepaylib.PartnerAPI.ExternalServiceRequest;
+import jp.pokepay.pokepaylib.PartnerAPI.ExternalServiceRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.VeritransToken;
 
-public class GetVeritransToken extends PartnerRequest {
+public class GetVeritransToken extends ExternalServiceRequest {
     @NonNull
     public String cardNumber;
     @NonNull
@@ -48,7 +48,7 @@ public class GetVeritransToken extends PartnerRequest {
         }};
     }
 
-    public final VeritransToken send() throws ProcessingError, PartnerRequestError {
+    public final VeritransToken send() throws ProcessingError, ExternalServiceRequestError {
         try {
             return Request.send(VeritransToken.class, VeritransRequestError.class, path(), method(), parameters());
         } catch (OAuthRequestError | BankRequestError e) {

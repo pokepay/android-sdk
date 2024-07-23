@@ -5,7 +5,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import jp.pokepay.pokepaylib.PartnerAPI.PartnerRequestError;
+import jp.pokepay.pokepaylib.PartnerAPI.ExternalServiceRequestError;
 import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.GetVeritransToken;
 import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.VeritransRequestError;
 
@@ -17,13 +17,13 @@ public class GetVeritransTokenTest {
     public void MDKTokenCanGet() throws ProcessingError {
         try {
             new GetVeritransToken(testCardNumber, "12/23", "123", testTokenApiKey).send();
-        } catch (PartnerRequestError e) {
+        } catch (ExternalServiceRequestError e) {
             fail(e.toString());
         }
     }
 
     @Test
-    public void ThrowErrorIfdExpireDateIsInvalid() throws ProcessingError, PartnerRequestError {
+    public void ThrowErrorIfdExpireDateIsInvalid() throws ProcessingError, ExternalServiceRequestError {
         try {
             new GetVeritransToken(testCardNumber, "1223", "123", testTokenApiKey).send();
             fail();
