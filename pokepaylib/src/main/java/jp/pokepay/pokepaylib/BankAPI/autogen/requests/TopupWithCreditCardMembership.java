@@ -17,20 +17,16 @@ public class TopupWithCreditCardMembership extends BankRequest {
     private Boolean deleteCardIfAuthFail;
     private String organizationCode;
 
-    public TopupWithCreditCardMembership(String userId, String cardRegisteredAt, String accountId, int amount) {
+    public TopupWithCreditCardMembership(String userId, String cardRegisteredAt, String accountId, int amount, String organizationCode) {
         this.userId = userId;
         this.cardRegisteredAt = cardRegisteredAt;
         this.accountId = accountId;
         this.amount = amount;
+        this.organizationCode = organizationCode;
     }
 
     public TopupWithCreditCardMembership deleteCardIfAuthFail(Boolean deleteCardIfAuthFail) {
         this.deleteCardIfAuthFail = deleteCardIfAuthFail;
-        return this;
-    }
-
-    public TopupWithCreditCardMembership organizationCode(String organizationCode) {
-        this.organizationCode = organizationCode;
         return this;
     }
 

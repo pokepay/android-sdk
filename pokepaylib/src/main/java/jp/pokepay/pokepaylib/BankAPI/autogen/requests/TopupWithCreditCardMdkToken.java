@@ -17,16 +17,12 @@ public class TopupWithCreditCardMdkToken extends BankRequest {
     private String organizationCode;
     private Boolean isCardholderNameSpecified;
 
-    public TopupWithCreditCardMdkToken(String userId, String token, String accountId, int amount) {
+    public TopupWithCreditCardMdkToken(String userId, String token, String accountId, int amount, String organizationCode) {
         this.userId = userId;
         this.token = token;
         this.accountId = accountId;
         this.amount = amount;
-    }
-
-    public TopupWithCreditCardMdkToken organizationCode(String organizationCode) {
         this.organizationCode = organizationCode;
-        return this;
     }
 
     public TopupWithCreditCardMdkToken setCardholderNameSpecified(Boolean cardholderNameSpecified) {
