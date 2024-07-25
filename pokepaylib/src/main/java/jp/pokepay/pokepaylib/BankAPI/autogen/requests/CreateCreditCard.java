@@ -22,7 +22,7 @@ public class CreateCreditCard extends BankRequest {
         this.organizationCode = organizationCode;
     }
 
-    public CreateCreditCard setCardholderNameSpecified(Boolean cardholderNameSpecified) {
+    public CreateCreditCard isCardholderNameSpecified(Boolean cardholderNameSpecified) {
         isCardholderNameSpecified = cardholderNameSpecified;
         return this;
     }

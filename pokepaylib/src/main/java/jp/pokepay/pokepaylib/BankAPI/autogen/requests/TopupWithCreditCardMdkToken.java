@@ -25,7 +25,7 @@ public class TopupWithCreditCardMdkToken extends BankRequest {
         this.organizationCode = organizationCode;
     }
 
-    public TopupWithCreditCardMdkToken setCardholderNameSpecified(Boolean cardholderNameSpecified) {
+    public TopupWithCreditCardMdkToken isCardholderNameSpecified(Boolean cardholderNameSpecified) {
         isCardholderNameSpecified = cardholderNameSpecified;
         return this;
     }
