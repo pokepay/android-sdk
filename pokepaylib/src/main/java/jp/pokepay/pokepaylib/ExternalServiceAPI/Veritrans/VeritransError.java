@@ -1,4 +1,4 @@
-package jp.pokepay.pokepaylib.PartnerAPI.Veritrans;
+package jp.pokepay.pokepaylib.ExternalServiceAPI.Veritrans;
 
 import androidx.annotation.NonNull;
 

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.BankAPI.autogen.requests.*;
-import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.GetVeritransToken;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.Veritrans.GetVeritransToken;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 import jp.pokepay.pokepaylib.Responses.VeritransToken;
 

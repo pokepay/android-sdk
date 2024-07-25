@@ -1,4 +1,4 @@
-package jp.pokepay.pokepaylib.PartnerAPI;
+package jp.pokepay.pokepaylib.ExternalServiceAPI;
 
 import java.util.Map;
 

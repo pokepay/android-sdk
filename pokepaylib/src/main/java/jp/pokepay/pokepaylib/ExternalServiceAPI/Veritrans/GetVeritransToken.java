@@ -1,4 +1,4 @@
-package jp.pokepay.pokepaylib.PartnerAPI.Veritrans;
+package jp.pokepay.pokepaylib.ExternalServiceAPI.Veritrans;
 
 import androidx.annotation.NonNull;
 
@@ -7,8 +7,8 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
-import jp.pokepay.pokepaylib.PartnerAPI.ExternalServiceRequest;
-import jp.pokepay.pokepaylib.PartnerAPI.ExternalServiceRequestError;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.ExternalServiceRequest;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.ExternalServiceRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.VeritransToken;

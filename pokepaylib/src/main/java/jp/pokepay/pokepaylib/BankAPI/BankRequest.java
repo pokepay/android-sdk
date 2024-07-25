@@ -5,7 +5,7 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.Env;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
-import jp.pokepay.pokepaylib.PartnerAPI.ExternalServiceRequestError;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.ExternalServiceRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 

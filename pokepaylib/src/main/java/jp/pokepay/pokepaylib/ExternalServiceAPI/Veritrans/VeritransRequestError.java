@@ -1,6 +1,6 @@
-package jp.pokepay.pokepaylib.PartnerAPI.Veritrans;
+package jp.pokepay.pokepaylib.ExternalServiceAPI.Veritrans;
 
-import jp.pokepay.pokepaylib.PartnerAPI.ExternalServiceRequestError;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.ExternalServiceRequestError;
 
 public class VeritransRequestError extends ExternalServiceRequestError {
     public VeritransError error;

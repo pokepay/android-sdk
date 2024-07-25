@@ -17,7 +17,7 @@ import jp.pokepay.pokepaylib.BankAPI.autogen.requests.TopupWithCreditCardMdkToke
 import jp.pokepay.pokepaylib.BankAPI.autogen.requests.TopupWithCreditCardMembership;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.CreditCard;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.PaginatedCreditCards;
-import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.GetVeritransToken;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.Veritrans.GetVeritransToken;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Responses.VeritransToken;
 

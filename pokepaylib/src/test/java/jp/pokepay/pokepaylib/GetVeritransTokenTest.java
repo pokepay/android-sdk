@@ -5,9 +5,9 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import jp.pokepay.pokepaylib.PartnerAPI.ExternalServiceRequestError;
-import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.GetVeritransToken;
-import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.VeritransRequestError;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.ExternalServiceRequestError;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.Veritrans.GetVeritransToken;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.Veritrans.VeritransRequestError;
 
 public class GetVeritransTokenTest {
     private final String testCardNumber = "4111111111111111";

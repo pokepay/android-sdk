@@ -19,9 +19,9 @@ import java.util.TimeZone;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
-import jp.pokepay.pokepaylib.PartnerAPI.ExternalServiceRequestError;
-import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.VeritransError;
-import jp.pokepay.pokepaylib.PartnerAPI.Veritrans.VeritransRequestError;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.ExternalServiceRequestError;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.Veritrans.VeritransError;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.Veritrans.VeritransRequestError;
 import jp.pokepay.pokepaylib.Responses.BankError;
 import jp.pokepay.pokepaylib.Responses.NoContent;
 import jp.pokepay.pokepaylib.Responses.OAuthError;
