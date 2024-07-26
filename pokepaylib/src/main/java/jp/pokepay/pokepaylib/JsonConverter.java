@@ -22,10 +22,9 @@ public class JsonConverter {
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
 
-    public static String toString(final Map<String, Object> map)
-            throws JsonGenerationException, JsonMappingException, IOException {
-        final JSONObject j = new JSONObject(map);
-        return j.toString();
+    public static String toString(final Map<String, Object> map) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(map);
     }
 
     public static <T> T toObject(final String jsonString, final Class<T> cls)

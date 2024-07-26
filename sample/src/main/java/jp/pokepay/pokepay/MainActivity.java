@@ -3,6 +3,7 @@ package jp.pokepay.pokepay;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.View;
 import android.widget.Button;
 
@@ -35,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, QRCameraActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button creditCardButton = (Button)findViewById(R.id.credit_card_test_button);
+        creditCardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CreditCardActivity.class);
                 startActivity(intent);
             }
         });

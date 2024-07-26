@@ -9,27 +9,33 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/button02"
+        android:id="@+id/list_credit_cards"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="API TESTS VERSION 0.2" />
+        android:text="List Credit Cards" />
 
     <Button
-        android:id="@+id/button03"
+        android:id="@+id/create_credit_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="API TESTS VERSION 0.3" />
+        android:text="Crate Credit Card" />
 
     <Button
-        android:id="@+id/button09"
+        android:id="@+id/topup_with_credit_card_mdk_token"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="API TESTS VERSION 0.9" />
+        android:text="Topup With CreditCard MdkToken" />
 
     <Button
-        android:id="@+id/credit_card_test_button"
+        android:id="@+id/topup_with_credit_card_veritrans_membership"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Credit Card API Test" />
+        android:text="Topup With CreditCard Veritrans Membership" />
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
 </LinearLayout>

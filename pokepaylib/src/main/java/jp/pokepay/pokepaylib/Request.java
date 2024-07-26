@@ -1,7 +1,6 @@
 package jp.pokepay.pokepaylib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +11,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +19,9 @@ import java.util.TimeZone;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.ExternalServiceRequestError;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.Veritrans.VeritransError;
+import jp.pokepay.pokepaylib.ExternalServiceAPI.Veritrans.VeritransRequestError;
 import jp.pokepay.pokepaylib.Responses.BankError;
 import jp.pokepay.pokepaylib.Responses.NoContent;
 import jp.pokepay.pokepaylib.Responses.OAuthError;
@@ -36,24 +39,6 @@ public class Request {
         formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
         return formatter;
     }
-
-    public static enum Method {
-        GET("GET"),
-        POST("POST"),
-        PUT("PUT"),
-        DELETE("DELETE"),
-        PATCH("PATCH");
-
-        private final String name;
-
-        private Method(String s) {
-            name = s;
-        }
-
-        public String toString() {
-            return name;
-        }
-    };
 
     private static void addHeaders(HttpURLConnection con, final Map<String, String> headers) {
         if (headers == null) return;
@@ -92,33 +77,15 @@ public class Request {
         return responseBody.toString();
     }
 
-    public static <R> R send(
-            final Class<R> cls,
-            final Class errCls,
-            final String url,
-            final Method meth)
-            throws ProcessingError, BankRequestError, OAuthRequestError  {
+    public static <R> R send(final Class<R> cls, final Class errCls, final String url, final Method meth) throws ProcessingError, BankRequestError, OAuthRequestError, ExternalServiceRequestError {
         return send(cls, errCls, url, meth, null, null);
     }
 
-    public static <R> R send(
-            final Class<R> cls,
-            final Class errCls,
-            final String url,
-            final Method meth,
-            final Map<String, Object> parameters)
-            throws ProcessingError, BankRequestError, OAuthRequestError {
+    public static <R> R send(final Class<R> cls, final Class errCls, final String url, final Method meth, final Map<String, Object> parameters) throws ProcessingError, BankRequestError, OAuthRequestError, ExternalServiceRequestError {
         return send(cls, errCls, url, meth, parameters, null);
     }
 
-    public static <R> R send(
-            final Class<R> cls,
-            final Class errCls,
-            final String url,
-            final Method meth,
-            final Map<String, Object> parametersRaw,
-            final Map<String, String> headers)
-            throws ProcessingError, BankRequestError, OAuthRequestError {
+    public static <R> R send(final Class<R> cls, final Class errCls, final String url, final Method meth, final Map<String, Object> parametersRaw, final Map<String, String> headers) throws ProcessingError, BankRequestError, OAuthRequestError, ExternalServiceRequestError {
         final int CONNECTION_TIMEOUT = 30 * 1000;
         final int READ_TIMEOUT = 30 * 1000;
         HttpURLConnection con = null;
@@ -147,72 +114,9 @@ public class Request {
                     addHeaders(con, headers);
                     break;
                 }
-                case POST: {
-                    URL u = new URL(url);
-                    con = (HttpURLConnection) u.openConnection();
-                    con.setConnectTimeout(CONNECTION_TIMEOUT);
-                    con.setReadTimeout(READ_TIMEOUT);
-                    con.setRequestMethod(meth.toString());
-                    con.setRequestProperty("accept", "application/json");
-                    con.setRequestProperty("accept", "*/*");
-                    addHeaders(con, headers);
-                    if (parameters != null) {
-                        final byte[] body = JsonConverter.toString(parameters).getBytes("UTF-8");
-                        con.setDoOutput(true);
-                        con.setRequestProperty("Accept-Language", "jp");
-                        con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                        con.setRequestProperty("Content-Length", String.valueOf(body.length));
-                        OutputStream out = con.getOutputStream();
-                        out.write(body);
-                        out.flush();
-                        out.close();
-                    }
-                    break;
-                }
-                case DELETE: {
-                    URL u = new URL(url);
-                    con = (HttpURLConnection) u.openConnection();
-                    con.setConnectTimeout(CONNECTION_TIMEOUT);
-                    con.setReadTimeout(READ_TIMEOUT);
-                    con.setRequestMethod(meth.toString());
-                    con.setRequestProperty("accept", "application/json");
-                    con.setRequestProperty("accept", "*/*");
-                    addHeaders(con, headers);
-                    if (parameters != null) {
-                        final byte[] body = JsonConverter.toString(parameters).getBytes("UTF-8");
-                        con.setDoOutput(true);
-                        con.setRequestProperty("Accept-Language", "jp");
-                        con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                        con.setRequestProperty("Content-Length", String.valueOf(body.length));
-                        OutputStream out = con.getOutputStream();
-                        out.write(body);
-                        out.flush();
-                        out.close();
-                    }
-                    break;
-                }
-                case PATCH: {
-                    URL u = new URL(url);
-                    con = (HttpURLConnection) u.openConnection();
-                    con.setConnectTimeout(CONNECTION_TIMEOUT);
-                    con.setReadTimeout(READ_TIMEOUT);
-                    con.setRequestMethod(meth.toString());
-                    con.setRequestProperty("accept", "application/json");
-                    con.setRequestProperty("accept", "*/*");
-                    addHeaders(con, headers);
-                    if (parameters != null) {
-                        final byte[] body = JsonConverter.toString(parameters).getBytes("UTF-8");
-                        con.setDoOutput(true);
-                        con.setRequestProperty("Accept-Language", "jp");
-                        con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
-                        con.setRequestProperty("Content-Length", String.valueOf(body.length));
-                        OutputStream out = con.getOutputStream();
-                        out.write(body);
-                        out.flush();
-                        out.close();
-                    }
-                    break;
-                }
+                case POST:
+                case DELETE:
+                case PATCH:
                 case PUT: {
                     URL u = new URL(url);
                     con = (HttpURLConnection) u.openConnection();
@@ -223,7 +127,7 @@ public class Request {
                     con.setRequestProperty("accept", "*/*");
                     addHeaders(con, headers);
                     if (parameters != null) {
-                        final byte[] body = JsonConverter.toString(parameters).getBytes("UTF-8");
+                        final byte[] body = JsonConverter.toString(parameters).getBytes(StandardCharsets.UTF_8);
                         con.setDoOutput(true);
                         con.setRequestProperty("Accept-Language", "jp");
                         con.setRequestProperty("Content-Type", "application/JSON; charset=utf-8");
@@ -245,8 +149,11 @@ public class Request {
             final ObjectMapper mapper = JsonConverter.createObjectMapper();
             if (HttpURLConnection.HTTP_OK <= status && status < HttpURLConnection.HTTP_MULT_CHOICE) {
                 final String responseBody = getResponseBody(con.getInputStream(), encoding);
-                if (cls == NoContent.class && responseBody == "") {
-                    return (R)(new NoContent());
+                if (cls == String.class) {
+                    return (R) responseBody;
+                }
+                if (cls == NoContent.class && responseBody.isEmpty()) {
+                    return (R) (new NoContent());
                 }
                 return mapper.readValue(responseBody, cls);
             } else {
@@ -257,13 +164,14 @@ public class Request {
                 } else if (errCls == OAuthRequestError.class) {
                     final OAuthError error = mapper.readValue(responseBody, OAuthError.class);
                     throw new OAuthRequestError(status, error);
+                } else if (errCls == VeritransRequestError.class) {
+                    final VeritransError error = mapper.readValue(responseBody, VeritransError.class);
+                    throw new VeritransRequestError(error);
                 } else {
                     throw new ProcessingError("Invalid Error type specified");
                 }
             }
-        } catch (BankRequestError e) {
-            throw e;
-        } catch (OAuthRequestError e) {
+        } catch (BankRequestError | OAuthRequestError | ExternalServiceRequestError e) {
             throw e;
         } catch (Exception e) {
             final StringWriter st = new StringWriter();
@@ -273,6 +181,20 @@ public class Request {
             if (con != null) {
                 con.disconnect();
             }
+        }
+    }
+
+    public enum Method {
+        GET("GET"), POST("POST"), PUT("PUT"), DELETE("DELETE"), PATCH("PATCH");
+
+        private final String name;
+
+        Method(String s) {
+            name = s;
+        }
+
+        public String toString() {
+            return name;
         }
     }
 }
