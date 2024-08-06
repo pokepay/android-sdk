@@ -22,12 +22,15 @@ public class GetVeritransToken extends ExternalServiceRequest {
     public String securityCode;
     @NonNull
     public String tokenApiKey;
+    @NonNull
+    public String cardholderName
 
-    public GetVeritransToken(@NonNull String cardNumber, @NonNull String cardExpiryDate, @NonNull String securityCode, @NonNull String tokenApiKey) {
+    public GetVeritransToken(@NonNull String cardNumber, @NonNull String cardExpiryDate, @NonNull String securityCode, @NonNull String tokenApiKey, @NonNull String cardholderName) {
         this.cardNumber = cardNumber;
         this.cardExpiryDate = cardExpiryDate;
         this.securityCode = securityCode;
         this.tokenApiKey = tokenApiKey;
+        this.cardholderName = cardholderName;
     }
 
     protected final String path() {
@@ -45,6 +48,7 @@ public class GetVeritransToken extends ExternalServiceRequest {
             put("card_expire", cardExpiryDate);
             put("security_code", securityCode);
             put("token_api_key", tokenApiKey);
+            put("cardholder_name", cardholderName);
         }};
     }
 
