@@ -23,7 +23,7 @@ public class GetVeritransToken extends ExternalServiceRequest {
     @NonNull
     public String tokenApiKey;
     @NonNull
-    public String cardholderName
+    public String cardholderName;
 
     public GetVeritransToken(@NonNull String cardNumber, @NonNull String cardExpiryDate, @NonNull String securityCode, @NonNull String tokenApiKey, @NonNull String cardholderName) {
         this.cardNumber = cardNumber;

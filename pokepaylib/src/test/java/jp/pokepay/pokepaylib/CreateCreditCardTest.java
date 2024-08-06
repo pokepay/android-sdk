@@ -20,7 +20,7 @@ public class CreateCreditCardTest {
         final String testTokenApiKey = "9ad14759-7082-457e-a874-864c78edc05a";
 
         try {
-            VeritransToken response = new GetVeritransToken(testCardNumber, "12/23", "123", testTokenApiKey).send();
+            VeritransToken response = new GetVeritransToken(testCardNumber, "12/23", "123", testTokenApiKey, "FOO BAR").send();
             return response.token;
         } catch (Exception e) {
             fail();

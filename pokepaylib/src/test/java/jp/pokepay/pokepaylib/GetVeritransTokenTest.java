@@ -16,7 +16,7 @@ public class GetVeritransTokenTest {
     @Test
     public void MDKTokenCanGet() throws ProcessingError {
         try {
-            new GetVeritransToken(testCardNumber, "12/23", "123", testTokenApiKey, 'FOO BAR').send();
+            new GetVeritransToken(testCardNumber, "12/23", "123", testTokenApiKey, "FOO BAR").send();
         } catch (ExternalServiceRequestError e) {
             fail(e.toString());
         }
@@ -25,7 +25,7 @@ public class GetVeritransTokenTest {
     @Test
     public void ThrowErrorIfdExpireDateIsInvalid() throws ProcessingError, ExternalServiceRequestError {
         try {
-            new GetVeritransToken(testCardNumber, "1223", "123", testTokenApiKey, 'FOO BAR').send();
+            new GetVeritransToken(testCardNumber, "1223", "123", testTokenApiKey, "FOO BAR").send();
             fail();
         } catch (VeritransRequestError e) {
             assertEquals("failure", e.error.status);
