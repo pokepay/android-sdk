@@ -26,6 +26,7 @@ public class CreditCardActivity extends AppCompatActivity {
     final String accountId = "7a226542-feb2-4614-9e87-907745ff5342";
     final String accessToken = "55nF6HJRyGCHgvEQZP7Pd5K33ggX-C5ZH_q3eqqe5Cg1dGeV_G2-CZ0rmChJ1OcN";
     final String tokenApiKey = "9ad14759-7082-457e-a874-864c78edc05a";
+    final String cardholderName = "FOO BAR";
 
     final int json = 1;
     final int html = 2;
@@ -48,9 +49,9 @@ public class CreditCardActivity extends AppCompatActivity {
         return true;
     });
 
-    private String fetchVeritransMdkToken(String cardNumber, String cardExpireDate, String securityCode, String tokenApiKey) {
+    private String fetchVeritransMdkToken(String cardNumber, String cardExpireDate, String securityCode, String tokenApiKey, String cardholderName) {
         try {
-            VeritransToken response = new GetVeritransToken(cardNumber, cardExpireDate, securityCode, tokenApiKey).send();
+            VeritransToken response = new GetVeritransToken(cardNumber, cardExpireDate, securityCode, tokenApiKey, cardholderName).send();
             return response.token;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -89,7 +90,8 @@ public class CreditCardActivity extends AppCompatActivity {
             final String cardNumber = "4111111111111111";
             final String cardExpireDate = "12/23";
             final String securityCode = "123";
-            final String token = fetchVeritransMdkToken(cardNumber, cardExpireDate, securityCode, tokenApiKey);
+            final String cardholderName = "FOO BAR";
+            final String token = fetchVeritransMdkToken(cardNumber, cardExpireDate, securityCode, tokenApiKey, cardholderName);
 
             final CreditCard response;
             try {
@@ -110,7 +112,8 @@ public class CreditCardActivity extends AppCompatActivity {
             final String cardNumber = "4111111111111111";
             final String cardExpireDate = "12/28";
             final String securityCode = "123";
-            final String token = fetchVeritransMdkToken(cardNumber, cardExpireDate, securityCode, tokenApiKey);
+            final String cardholderName = "FOO BAR";
+            final String token = fetchVeritransMdkToken(cardNumber, cardExpireDate, securityCode, tokenApiKey, cardholderName);
             final int amount = 42;
 
             final String text;
