@@ -16,8 +16,9 @@ public class TopupWithCreditCardMembership extends BankRequest {
     private Integer amount;
     private Boolean deleteCardIfAuthFail;
     private String organizationCode;
+    private String requestId;
 
-    public TopupWithCreditCardMembership(String userId, String cardRegisteredAt, String accountId, int amount, String organizationCode) {
+    public TopupWithCreditCardMembership(String userId, String cardRegisteredAt, String accountId, Integer amount, String organizationCode) {
         this.userId = userId;
         this.cardRegisteredAt = cardRegisteredAt;
         this.accountId = accountId;
@@ -27,6 +28,11 @@ public class TopupWithCreditCardMembership extends BankRequest {
 
     public TopupWithCreditCardMembership deleteCardIfAuthFail(Boolean deleteCardIfAuthFail) {
         this.deleteCardIfAuthFail = deleteCardIfAuthFail;
+        return this;
+    }
+
+    public TopupWithCreditCardMembership requestId(String requestId) {
+        this.requestId = requestId;
         return this;
     }
 
@@ -60,6 +66,9 @@ public class TopupWithCreditCardMembership extends BankRequest {
             }
             if (organizationCode != null) {
                 put("organization_code", organizationCode);
+            }
+            if (requestId != null) {
+                put("request_id", requestId);
             }
         }};
     }
