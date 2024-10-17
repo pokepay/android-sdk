@@ -14,21 +14,25 @@ public class TopupWithCreditCardMdkToken extends BankRequest {
     private String token;
     private String accountId;
     private Integer amount;
-    private String requestId;
     private String organizationCode;
     private Boolean isCardholderNameSpecified;
+    private String requestId;
 
-    public TopupWithCreditCardMdkToken(String userId, String token, String accountId, Integer amount, String requestId, String organizationCode) {
+    public TopupWithCreditCardMdkToken(String userId, String token, String accountId, Integer amount, String organizationCode) {
         this.userId = userId;
         this.token = token;
         this.accountId = accountId;
         this.amount = amount;
-        this.requestId = requestId;
         this.organizationCode = organizationCode;
     }
 
     public TopupWithCreditCardMdkToken isCardholderNameSpecified(Boolean cardholderNameSpecified) {
         isCardholderNameSpecified = cardholderNameSpecified;
+        return this;
+    }
+
+    public TopupWithCreditCardMdkToken requestId(String requestId) {
+        this.requestId = requestId;
         return this;
     }
 
@@ -57,14 +61,14 @@ public class TopupWithCreditCardMdkToken extends BankRequest {
             if (amount != null) {
                 put("amount", amount);
             }
-            if (requestId != null) {
-                put("request_id", requestId);
-            }
             if (organizationCode != null) {
                 put("organization_code", organizationCode);
             }
             if (isCardholderNameSpecified != null) {
                 put("is_cardholder_name_specified", isCardholderNameSpecified);
+            }
+            if (requestId != null) {
+                put("request_id", requestId);
             }
         }};
     }
