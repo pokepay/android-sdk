@@ -1,8 +1,10 @@
 package jp.pokepay.pokepaylib.ExternalServiceAPI;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.BuildConfig;
 import jp.pokepay.pokepaylib.OAuthAPI.OAuthRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
@@ -17,6 +19,8 @@ public abstract class ExternalServiceRequest {
     }
 
     protected <T> T send(Class<T> cls) throws ProcessingError, ExternalServiceRequestError {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("X-SDK-Version", BuildConfig.VERSION_NAME);
         try {
             return Request.send(cls, ExternalServiceRequestError.class, path(), method(), parameters());
         } catch (BankRequestError | OAuthRequestError e) {
