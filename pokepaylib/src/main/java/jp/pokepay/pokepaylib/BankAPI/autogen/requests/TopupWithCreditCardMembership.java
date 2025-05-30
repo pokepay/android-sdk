@@ -18,7 +18,7 @@ public class TopupWithCreditCardMembership extends BankRequest {
     private String organizationCode;
     private String requestId;
 
-    public TopupWithCreditCardMembership(String userId, String cardRegisteredAt, String accountId, Integer amount, String organizationCode) {
+    public TopupWithCreditCardMembership(String userId, String cardRegisteredAt, String accountId, int amount, String organizationCode) {
         this.userId = userId;
         this.cardRegisteredAt = cardRegisteredAt;
         this.accountId = accountId;
