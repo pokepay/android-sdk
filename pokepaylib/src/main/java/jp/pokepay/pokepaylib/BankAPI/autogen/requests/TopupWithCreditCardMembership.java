@@ -12,18 +12,29 @@ import jp.pokepay.pokepaylib.Request;
 public class TopupWithCreditCardMembership extends BankRequest {
     private String userId;
     private String cardRegisteredAt;
+    private String cardUuid;
     private String accountId;
     private Integer amount;
     private Boolean deleteCardIfAuthFail;
     private String organizationCode;
     private String requestId;
+    private Integer topupQuotaId;
 
-    public TopupWithCreditCardMembership(String userId, String cardRegisteredAt, String accountId, Integer amount, String organizationCode) {
+    public TopupWithCreditCardMembership(String userId, String accountId, int amount, String organizationCode) {
         this.userId = userId;
-        this.cardRegisteredAt = cardRegisteredAt;
         this.accountId = accountId;
         this.amount = amount;
         this.organizationCode = organizationCode;
+    }
+
+    public TopupWithCreditCardMembership cardRegisteredAt(String cardRegisteredAt) {
+        this.cardRegisteredAt = cardRegisteredAt;
+        return this;
+    }
+
+    public TopupWithCreditCardMembership cardUuid(String cardUuid) {
+        this.cardUuid = cardUuid;
+        return this;
     }
 
     public TopupWithCreditCardMembership deleteCardIfAuthFail(Boolean deleteCardIfAuthFail) {
@@ -33,6 +44,11 @@ public class TopupWithCreditCardMembership extends BankRequest {
 
     public TopupWithCreditCardMembership requestId(String requestId) {
         this.requestId = requestId;
+        return this;
+    }
+
+    public TopupWithCreditCardMembership topupQuotaId(Integer topupQuotaId) {
+        this.topupQuotaId = topupQuotaId;
         return this;
     }
 
@@ -55,6 +71,9 @@ public class TopupWithCreditCardMembership extends BankRequest {
             if (cardRegisteredAt != null) {
                 put("card_registered_at", cardRegisteredAt);
             }
+            if (cardUuid != null) {
+                put("card_uuid", cardUuid);
+            }
             if (accountId != null) {
                 put("account_id", accountId);
             }
@@ -69,6 +88,9 @@ public class TopupWithCreditCardMembership extends BankRequest {
             }
             if (requestId != null) {
                 put("request_id", requestId);
+            }
+            if (topupQuotaId != null) {
+                put("topup_quota_id", topupQuotaId);
             }
         }};
     }

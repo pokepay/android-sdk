@@ -12,13 +12,23 @@ import jp.pokepay.pokepaylib.Responses.NoContent;
 
 public class DeleteCreditCard extends BankRequest {
     private String cardRegisteredAt;
+    private String cardUuid;
     private String organizationCode;
     private String userId;
 
-    public DeleteCreditCard(String userId, String cardRegisteredAt, String organizationCode) {
+    public DeleteCreditCard(String userId, String organizationCode) {
         this.userId = userId;
-        this.cardRegisteredAt = cardRegisteredAt;
         this.organizationCode = organizationCode;
+    }
+
+    public DeleteCreditCard cardRegisteredAt(String cardRegisteredAt) {
+        this.cardRegisteredAt = cardRegisteredAt;
+        return this;
+    }
+
+    public DeleteCreditCard cardUuid(String cardUuid) {
+        this.cardUuid = cardUuid;
+        return this;
     }
 
     @Override
@@ -36,6 +46,9 @@ public class DeleteCreditCard extends BankRequest {
         return new HashMap<String, Object>() {{
             if (cardRegisteredAt != null) {
                 put("card_registered_at", cardRegisteredAt);
+            }
+            if (cardUuid != null) {
+                put("card_uuid", cardUuid);
             }
             if (organizationCode != null) {
                 put("organization_code", organizationCode);
