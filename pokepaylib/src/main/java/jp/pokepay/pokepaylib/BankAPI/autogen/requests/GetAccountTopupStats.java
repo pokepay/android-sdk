@@ -33,7 +33,7 @@ public class GetAccountTopupStats extends BankRequest {
         }};
     }
 
-    public final NIL send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(NIL.class, accessToken);
+    public final AccountTopupStats send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(AccountTopupStats.class, accessToken);
     }
 }

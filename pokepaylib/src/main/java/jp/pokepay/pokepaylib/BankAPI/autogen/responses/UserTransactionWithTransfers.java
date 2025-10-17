@@ -2,6 +2,8 @@
 package jp.pokepay.pokepaylib.BankAPI.autogen.responses;
 
 import jp.pokepay.pokepaylib.Response;
+import jp.pokepay.pokepaylib.Responses.Account;
+import jp.pokepay.pokepaylib.Responses.User;
 
 public class UserTransactionWithTransfers extends Response {
     public String id;
@@ -15,6 +17,6 @@ public class UserTransactionWithTransfers extends Response {
     public String done_at;
     public String type;
     public Boolean is_modified;
-    public UserTransferWithoutAccount[] transfers;
+    public UserTransactionWithTransfers[] transfers;
 }
 
