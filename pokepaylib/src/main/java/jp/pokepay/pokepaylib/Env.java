@@ -4,7 +4,11 @@ public enum Env {
     DEVELOPMENT("-dev"),
     SANDBOX("-sandbox"),
     PRODUCTION(""),
-    QA("-qa");
+    QA("-qa"),
+    TOPIC1("-topic1"),
+    TOPIC2("-topic2"),
+    TOPIC3("-topic3"),
+    LOADTEST("-loadtest");
 
     private final String key;
 
