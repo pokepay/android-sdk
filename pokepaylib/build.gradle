@@ -1,12 +1,7 @@
-apply plugin: 'com.android.library'
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
-    }
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+    id 'signing'
 }
 
 android {
@@ -69,11 +64,11 @@ uploadArchives {
             pom.version = '2.0.22'	      // version
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+            repository(url: "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/") {
                 authentication(userName: ossrhUsername, password: ossrhPassword)
             }
 
-            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+            snapshotRepository(url: "https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/") {
                 authentication(userName: ossrhUsername, password: ossrhPassword)
             }
 
@@ -110,7 +105,60 @@ uploadArchives {
         }
     }
 }
+
+publishing {
+    publications {
+        mavenAar(MavenPublication) {
+            groupId = 'jp.pocket-change.pokepay.android-sdk'
+            artifactId = 'pokepaylib'
+            version = '2.0.22'
+
+            artifact("$buildDir/outputs/aar/pokepaylib-release.aar")
+
+            pom {
+                name = 'Pokepay Android SDK'
+                description = 'This is an SDK for embedding Pokepay\'s payment platform into Android applications.'
+                url = 'https://docs.pokepay.jp/guidelines/app-sdk/java.html'
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'ann.lin'
+                        name = 'Ann Lin'
+                        email = 'ann.lin@coilinc.jp'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/pokepay/android-sdk.git'
+                    developerConnection = 'scm:git:ssh://github.com/pokepay/android-sdk.git'
+                    url = 'https://github.com/pokepay/android-sdk'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+    }
+}
+
+
+
 apply plugin: 'signing'
 signing {
-    sign configurations.archives
+    sign publishing.publications.mavenAar
 }
