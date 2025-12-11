@@ -57,55 +57,6 @@ artifacts {
     archives androidSourcesJar
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository url: "file://${repo.absolutePath}"
-            pom.version = '2.0.22'	      // version
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                name 'Pokepay Android SDK'
-                packaging 'aar'
-                // optionally artifactId can be defined here
-                description 'This is an SDK for embedding Pokepay\'s payment platform into Android applications.'
-                url 'https://docs.pokepay.jp/guidelines/app-sdk/java.html'
-
-                scm {
-                    connection 'scm:git:git://github.com/pokepay/android-sdk.git'
-                    developerConnection 'scm:git:ssh://github.com/pokepay/android-sdk.git'
-                    url 'https://github.com/pokepay/android-sdk'
-                }
-
-                licenses {
-                    license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id 'ann.lin'
-                        name 'Ann Lin'
-                        email 'ann.lin@coilinc.jp'
-                    }
-                }
-            }
-            pom.groupId = 'jp.pocket-change.pokepay.android-sdk'    // グループ名
-            pom.artifactId = 'pokepaylib'     // ライブラリ名
-        }
-    }
-}
-
 publishing {
     publications {
         mavenAar(MavenPublication) {
