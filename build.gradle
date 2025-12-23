@@ -24,3 +24,110 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task release {
+    group = 'release'
+    description = 'Performs a complete release: clean, build, tag, publish, and deploy to Sonatype'
+    
+    doLast {
+        // Extract version from pokepaylib/build.gradle
+        println "=========================================="
+        println "Pokepay Android SDK Release Script"
+        println "=========================================="
+        println ""
+        
+        def buildGradleFile = file('pokepaylib/build.gradle')
+        def versionName = null
+        buildGradleFile.eachLine { line ->
+            def matcher = line =~ /versionName\s+"([^"]+)"/
+            if (matcher) {
+                versionName = matcher[0][1]
+            }
+        }
+        
+        if (!versionName) {
+            throw new GradleException("Could not extract version from pokepaylib/build.gradle")
+        }
+        
+        println "Found version: ${versionName}"
+        println ""
+        
+        // Check credentials
+        if (!project.hasProperty('ossrhUsername') || !project.hasProperty('ossrhPassword')) {
+            throw new GradleException("Missing credentials. Please ensure ossrhUsername and ossrhPassword are set in gradle.properties")
+        }
+        
+        println "Credentials loaded successfully"
+        println ""
+        println "Starting release process for version ${versionName}..."
+        println ""
+        
+        // Step 1: Clean and Build
+        println "Step 1/5: Cleaning and building project..."
+        project.tasks.clean.execute()
+        project.tasks.build.execute()
+        println "Build completed successfully"
+        println ""
+        
+        // Step 2: Git Tag
+        println "Step 2/5: Creating and pushing git tag ${versionName}..."
+        def tagResult = "git tag ${versionName}".execute()
+        tagResult.waitFor()
+        if (tagResult.exitValue() != 0) {
+            throw new GradleException("git tag failed (tag may already exist)")
+        }
+        
+        def pushResult = "git push --tags".execute()
+        pushResult.waitFor()
+        if (pushResult.exitValue() != 0) {
+            throw new GradleException("git push --tags failed")
+        }
+        println "Git tag created and pushed successfully"
+        println ""
+        
+        // Step 3: Publish
+        println "Step 3/5: Publishing to Maven repository..."
+        project.tasks.publish.execute()
+        println "Published successfully"
+        println ""
+        
+        // Step 4: Search for open repositories
+        println "Step 4/5: Searching for open repositories..."
+        def searchCmd = [
+            'curl', '-s', '-u', "${project.ossrhUsername}:${project.ossrhPassword}",
+            '-H', 'Accept: application/json',
+            'https://ossrh-staging-api.central.sonatype.com/manual/search/repositories?state=open'
+        ]
+        def searchProc = searchCmd.execute()
+        searchProc.waitFor()
+        if (searchProc.exitValue() != 0) {
+            throw new GradleException("Failed to search for open repositories")
+        }
+        println "Open repositories response:"
+        println searchProc.text
+        println ""
+        
+        // Step 5: Upload to repository
+        println "Step 5/5: Uploading to Sonatype repository..."
+        def uploadCmd = [
+            'curl', '-s', '-u', "${project.ossrhUsername}:${project.ossrhPassword}",
+            '-X', 'POST',
+            "https://ossrh-staging-api.central.sonatype.com/manual/upload/repository/${project.ossrhUsername}/219.104.131.128/jp.pocket-change.pokepay.android-sdk--default-repository",
+            '-H', 'Content-Type: application/json',
+            '-d', '{"publishing_type":"user_managed"}'
+        ]
+        def uploadProc = uploadCmd.execute()
+        uploadProc.waitFor()
+        if (uploadProc.exitValue() != 0) {
+            throw new GradleException("Failed to upload to repository")
+        }
+        println "Upload response:"
+        println uploadProc.text
+        println ""
+        
+        println "=========================================="
+        println "Release ${versionName} completed successfully!"
+        println "=========================================="
+        println ""
+    }
+}
