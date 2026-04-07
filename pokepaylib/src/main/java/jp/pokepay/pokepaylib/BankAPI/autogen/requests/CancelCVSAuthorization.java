@@ -11,10 +11,10 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.NoContent;
 
 public class CancelCVSAuthorization extends BankRequest {
-    private Uuid accountId;
-    private Uuid orderId;
+    private String accountId;
+    private String orderId;
 
-    public CancelCVSAuthorization(Uuid accountId, Uuid orderId) {
+    public CancelCVSAuthorization(String accountId, String orderId) {
         this.accountId = accountId;
         this.orderId = orderId;
     }

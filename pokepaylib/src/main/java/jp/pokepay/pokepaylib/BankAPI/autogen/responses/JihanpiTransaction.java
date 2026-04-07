@@ -5,7 +5,7 @@ import jp.pokepay.pokepaylib.Response;
 
 public class JihanpiTransaction extends Response {
     public String order_id;
-    public Nil transaction;
+    public UserTransactionWithTransfers transaction;
     public Account account;
     public JihanpiVendingMachine vending_machine_info;
     public String state;
