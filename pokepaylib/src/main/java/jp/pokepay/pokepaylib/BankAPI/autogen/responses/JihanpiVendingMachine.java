@@ -3,9 +3,9 @@ package jp.pokepay.pokepaylib.BankAPI.autogen.responses;
 
 import jp.pokepay.pokepaylib.Response;
 
-public class CreditCard extends Response {
-    public String id;
-    public String card_number;
-    public String registered_at;
+public class JihanpiVendingMachine extends Response {
+    public String nfc_tag_id;
+    public String shop_id;
+    public String shop_name;
 }
 

@@ -2,8 +2,8 @@
 package jp.pokepay.pokepaylib.BankAPI.autogen.responses;
 
 import jp.pokepay.pokepaylib.Response;
-import jp.pokepay.pokepaylib.Responses.Account;
 import jp.pokepay.pokepaylib.Responses.User;
+import jp.pokepay.pokepaylib.Responses.Account;
 
 public class UserTransactionWithTransfers extends Response {
     public String id;
@@ -12,11 +12,13 @@ public class UserTransactionWithTransfers extends Response {
     public Double amount;
     public Double money_amount;
     public Double point_amount;
+    public Double raw_point_amount;
+    public Double campaign_point_amount;
     public Account account;
     public String description;
     public String done_at;
     public String type;
     public Boolean is_modified;
-    public UserTransactionWithTransfers[] transfers;
+    public UserTransferWithoutAccount[] transfers;
 }
 

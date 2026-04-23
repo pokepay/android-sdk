@@ -17,6 +17,7 @@ public class CreateTransactionWithCheck extends BankRequest {
     public String checkId;
     public String accountId;
     public UUID requestId;
+    public Integer topupQuotaId;
 
     public CreateTransactionWithCheck(@NonNull String checkId, String accountId) {
         this.checkId   = checkId;
@@ -27,6 +28,11 @@ public class CreateTransactionWithCheck extends BankRequest {
         this.checkId   = checkId;
         this.accountId = accountId;
         this.requestId = requestId;
+    }
+
+    public CreateTransactionWithCheck topupQuotaId(Integer topupQuotaId) {
+        this.topupQuotaId = topupQuotaId;
+        return this;
     }
 
     protected final String path() {
@@ -43,6 +49,9 @@ public class CreateTransactionWithCheck extends BankRequest {
             put("check_id", checkId);
             put("account_id", accountId);
             put("request_id", requestId != null ? requestId.toString(): null);
+            if (topupQuotaId != null) {
+                put("topup_quota_id", topupQuotaId);
+            }
         }};
     }
 

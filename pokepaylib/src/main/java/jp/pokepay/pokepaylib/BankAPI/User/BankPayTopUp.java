@@ -21,6 +21,7 @@ public class BankPayTopUp extends BankRequest {
     @NonNull
     public String amount;
     public String requestId;
+    public Integer topupQuotaId;
 
     public BankPayTopUp(@NonNull String id, @NonNull String accountId, @NonNull String bankId, @NonNull String amount, String requestId) {
         this.id = id;
@@ -28,6 +29,11 @@ public class BankPayTopUp extends BankRequest {
         this.bankId = bankId;
         this.amount = amount;
         this.requestId = requestId;
+    }
+
+    public BankPayTopUp topupQuotaId(Integer topupQuotaId) {
+        this.topupQuotaId = topupQuotaId;
+        return this;
     }
 
     protected final String path() {
@@ -46,6 +52,9 @@ public class BankPayTopUp extends BankRequest {
             put("amount", amount);
             if (requestId != null) {
                 put("request_id", requestId);
+            }
+            if (topupQuotaId != null) {
+                put("topup_quota_id", topupQuotaId);
             }
         }};
     }

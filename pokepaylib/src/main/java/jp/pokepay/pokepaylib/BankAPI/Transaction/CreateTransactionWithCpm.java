@@ -20,6 +20,7 @@ public class CreateTransactionWithCpm extends BankRequest {
     public double amount;
     public Product[] products;
     public UUID requestId;
+    public Integer topupQuotaId;
 
     @Deprecated
     public CreateTransactionWithCpm(@NonNull String cpmToken, String accountId, Double amount, Product[] products) {
@@ -46,6 +47,11 @@ public class CreateTransactionWithCpm extends BankRequest {
         this.requestId = requestId;
     }
 
+    public CreateTransactionWithCpm topupQuotaId(Integer topupQuotaId) {
+        this.topupQuotaId = topupQuotaId;
+        return this;
+    }
+
     protected final String path() {
         return "/transactions";
     }
@@ -67,6 +73,9 @@ public class CreateTransactionWithCpm extends BankRequest {
                     productsMap[i] = products[i].toMap();
                 }
                 put("products", productsMap);
+            }
+            if (topupQuotaId != null) {
+                put("topup_quota_id", topupQuotaId);
             }
         }};
     }

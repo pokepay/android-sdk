@@ -21,6 +21,7 @@ public class CreateTransactionWithCashtray extends BankRequest {
     public String couponId;
     public TransactionStrategy strategy;
     public UUID requestId;
+    public Integer topupQuotaId;
 
     public CreateTransactionWithCashtray(@NonNull String cashtrayId, String accountId, String couponId) {
         this.cashtrayId = cashtrayId;
@@ -43,6 +44,11 @@ public class CreateTransactionWithCashtray extends BankRequest {
         this.requestId = requestId;
     }
 
+    public CreateTransactionWithCashtray topupQuotaId(Integer topupQuotaId) {
+        this.topupQuotaId = topupQuotaId;
+        return this;
+    }
+
     protected final String path() {
         return "/transactions";
     }
@@ -59,6 +65,9 @@ public class CreateTransactionWithCashtray extends BankRequest {
             put("coupon_id", couponId);
             put("strategy", strategy != null ? strategy.getStrategy() : null);
             put("request_id", requestId != null ? requestId.toString(): null);
+            if (topupQuotaId != null) {
+                put("topup_quota_id", topupQuotaId);
+            }
         }};
     }
 

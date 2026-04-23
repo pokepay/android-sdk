@@ -19,12 +19,18 @@ public class CreateTransactionWithJwt extends BankRequest {
     public String accountId;
     public String couponId;
     public TransactionStrategy strategy;
+    public Integer topupQuotaId;
 
     public CreateTransactionWithJwt(@NonNull String data, String accountId, String couponId, TransactionStrategy strategy) {
         this.data = data;
         this.accountId = accountId;
         this.couponId = couponId;
         this.strategy = strategy;
+    }
+
+    public CreateTransactionWithJwt topupQuotaId(Integer topupQuotaId) {
+        this.topupQuotaId = topupQuotaId;
+        return this;
     }
 
     protected final String path() {
@@ -42,6 +48,9 @@ public class CreateTransactionWithJwt extends BankRequest {
             put("account_id", accountId);
             put("coupon_id", couponId);
             put("strategy", strategy != null ? strategy.getStrategy() : null);
+            if (topupQuotaId != null) {
+                put("topup_quota_id", topupQuotaId);
+            }
         }};
     }
 
