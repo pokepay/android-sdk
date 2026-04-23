@@ -8,6 +8,6 @@ public class PaginatedCVSAuthorizations extends Response {
     public Integer count;
     public String next;
     public String prev;
-    public CvsAuthorization[] items;
+    public CVSAuthorization[] items;
 }
 

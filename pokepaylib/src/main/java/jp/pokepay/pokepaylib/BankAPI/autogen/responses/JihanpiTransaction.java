@@ -2,6 +2,7 @@
 package jp.pokepay.pokepaylib.BankAPI.autogen.responses;
 
 import jp.pokepay.pokepaylib.Response;
+import jp.pokepay.pokepaylib.Responses.Account;;
 
 public class JihanpiTransaction extends Response {
     public String order_id;

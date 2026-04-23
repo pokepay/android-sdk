@@ -18,11 +18,17 @@ public class CreateAccountSevenElevenAtmSession extends BankRequest {
     @NonNull
     public String qrInfo;
     public double amount;
+    public Integer topupQuotaId;
 
     public CreateAccountSevenElevenAtmSession(@NonNull String accountId, @NonNull String qrInfo, double amount) {
         this.accountId = accountId;
         this.qrInfo = qrInfo;
         this.amount = amount;
+    }
+
+    public CreateAccountSevenElevenAtmSession topupQuotaId(Integer topupQuotaId) {
+        this.topupQuotaId = topupQuotaId;
+        return this;
     }
 
     protected final String path() {
@@ -38,6 +44,9 @@ public class CreateAccountSevenElevenAtmSession extends BankRequest {
         return new HashMap<String, Object>() {{
             put("qr_info", qrInfo);
             put("amount", amount);
+            if (topupQuotaId != null) {
+                put("topup_quota_id", topupQuotaId);
+            }
         }};
     }
 
