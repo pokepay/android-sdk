@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 0
-        versionName "2.0.22"
+        versionName "2.0.23"
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
@@ -29,7 +29,6 @@ android {
             targetCompatibility 1.8
         }
     }
-
 }
 
 dependencies {
@@ -62,7 +61,7 @@ publishing {
         mavenAar(MavenPublication) {
             groupId = 'jp.pocket-change.pokepay.android-sdk'
             artifactId = 'pokepaylib'
-            version = '2.0.22'
+            version = '2.0.23'
 
             artifact("$buildDir/outputs/aar/pokepaylib-release.aar")
 
