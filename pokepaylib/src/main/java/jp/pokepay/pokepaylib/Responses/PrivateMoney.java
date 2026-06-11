@@ -36,5 +36,14 @@ public class PrivateMoney extends Response {
     @NonNull
     public boolean      can_use_c2c_transfer;
     public String       custom_domain_name;
+    public TopupMethod[] topup_methods;
+
+    public TopupMethod getCreditCardTopupMethod() {
+        if (topup_methods == null) return null;
+        for (TopupMethod method : topup_methods) {
+            if (method.isCreditCard()) return method;
+        }
+        return null;
+    }
 }
 
