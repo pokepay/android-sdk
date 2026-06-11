@@ -36,5 +36,6 @@ public class PrivateMoney extends Response {
     @NonNull
     public boolean      can_use_c2c_transfer;
     public String       custom_domain_name;
+    public TopupMethod[] topup_methods;
 }
 
