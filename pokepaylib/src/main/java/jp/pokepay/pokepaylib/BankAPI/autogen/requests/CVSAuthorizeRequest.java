@@ -17,9 +17,9 @@ public class CVSAuthorizeRequest extends BankRequest {
     private String name2;
     private String tel;
     private Integer topupQuotaId;
-    private String accountId;
+    private Uuid accountId;
 
-    public CVSAuthorizeRequest(String accountId, String serviceOptionType, int amount, String name1, String name2, String tel) {
+    public CVSAuthorizeRequest(Uuid accountId, String serviceOptionType, int amount, String name1, String name2, String tel) {
         this.accountId = accountId;
         this.serviceOptionType = serviceOptionType;
         this.amount = amount;
