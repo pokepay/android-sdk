@@ -10,7 +10,7 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
-public class CVSAuthorizeRequest extends BankRequest {
+public class CvsAuthorizeRequest extends BankRequest {
     private String serviceOptionType;
     private Integer amount;
     private String name1;
@@ -19,7 +19,7 @@ public class CVSAuthorizeRequest extends BankRequest {
     private Integer topupQuotaId;
     private String accountId;
 
-    public CVSAuthorizeRequest(String accountId, String serviceOptionType, int amount, String name1, String name2, String tel) {
+    public CvsAuthorizeRequest(String accountId, String serviceOptionType, int amount, String name1, String name2, String tel) {
         this.accountId = accountId;
         this.serviceOptionType = serviceOptionType;
         this.amount = amount;
@@ -28,7 +28,7 @@ public class CVSAuthorizeRequest extends BankRequest {
         this.tel = tel;
     }
 
-    public CVSAuthorizeRequest topupQuotaId(Integer topupQuotaId) {
+    public CvsAuthorizeRequest topupQuotaId(Integer topupQuotaId) {
         this.topupQuotaId = topupQuotaId;
         return this;
     }
@@ -67,7 +67,7 @@ public class CVSAuthorizeRequest extends BankRequest {
         }};
     }
 
-    public final CVSAuthorization send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(CVSAuthorization.class, accessToken);
+    public final CvsAuthorization send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(CvsAuthorization.class, accessToken);
     }
 }

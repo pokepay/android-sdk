@@ -3,11 +3,11 @@ package jp.pokepay.pokepaylib.BankAPI.autogen.responses;
 
 import jp.pokepay.pokepaylib.Response;
 
-public class PaginatedCVSAuthorizations extends Response {
+public class PaginatedCvsAuthorizations extends Response {
     public Integer per_page;
     public Integer count;
     public String next;
     public String prev;
-    public CVSAuthorization[] items;
+    public CvsAuthorization[] items;
 }
 

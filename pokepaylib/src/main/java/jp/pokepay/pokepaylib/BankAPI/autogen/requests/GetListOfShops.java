@@ -17,14 +17,22 @@ public class GetListOfShops extends BankRequest {
     private String after;
     private Integer perPage;
 
-    public GetListOfShops(String privateMoneyId, String before, String after) {
+    public GetListOfShops(String privateMoneyId) {
         this.privateMoneyId = privateMoneyId;
-        this.before = before;
-        this.after = after;
     }
 
     public GetListOfShops userTagGroupItemId(String userTagGroupItemId) {
         this.userTagGroupItemId = userTagGroupItemId;
+        return this;
+    }
+
+    public GetListOfShops before(String before) {
+        this.before = before;
+        return this;
+    }
+
+    public GetListOfShops after(String after) {
+        this.after = after;
         return this;
     }
 

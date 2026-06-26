@@ -10,27 +10,27 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
-public class GetCVSAuthorizations extends BankRequest {
+public class GetCvsAuthorizations extends BankRequest {
     private String accountId;
     private String before;
     private String after;
     private Integer perPage;
 
-    public GetCVSAuthorizations(String accountId) {
+    public GetCvsAuthorizations(String accountId) {
         this.accountId = accountId;
     }
 
-    public GetCVSAuthorizations before(String before) {
+    public GetCvsAuthorizations before(String before) {
         this.before = before;
         return this;
     }
 
-    public GetCVSAuthorizations after(String after) {
+    public GetCvsAuthorizations after(String after) {
         this.after = after;
         return this;
     }
 
-    public GetCVSAuthorizations perPage(Integer perPage) {
+    public GetCvsAuthorizations perPage(Integer perPage) {
         this.perPage = perPage;
         return this;
     }
@@ -60,7 +60,7 @@ public class GetCVSAuthorizations extends BankRequest {
         }};
     }
 
-    public final PaginatedCVSAuthorizations send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(PaginatedCVSAuthorizations.class, accessToken);
+    public final PaginatedCvsAuthorizations send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(PaginatedCvsAuthorizations.class, accessToken);
     }
 }

@@ -16,10 +16,18 @@ public class GetUserTagGroups extends BankRequest {
     private String after;
     private Integer perPage;
 
-    public GetUserTagGroups(String privateMoneyId, String before, String after) {
+    public GetUserTagGroups(String privateMoneyId) {
         this.privateMoneyId = privateMoneyId;
+    }
+
+    public GetUserTagGroups before(String before) {
         this.before = before;
+        return this;
+    }
+
+    public GetUserTagGroups after(String after) {
         this.after = after;
+        return this;
     }
 
     public GetUserTagGroups perPage(Integer perPage) {

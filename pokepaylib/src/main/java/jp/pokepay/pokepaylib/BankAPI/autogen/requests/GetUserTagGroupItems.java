@@ -17,11 +17,19 @@ public class GetUserTagGroupItems extends BankRequest {
     private String after;
     private Integer perPage;
 
-    public GetUserTagGroupItems(String organizationCode, String tagGroupId, String before, String after) {
+    public GetUserTagGroupItems(String organizationCode, String tagGroupId) {
         this.organizationCode = organizationCode;
         this.tagGroupId = tagGroupId;
+    }
+
+    public GetUserTagGroupItems before(String before) {
         this.before = before;
+        return this;
+    }
+
+    public GetUserTagGroupItems after(String after) {
         this.after = after;
+        return this;
     }
 
     public GetUserTagGroupItems perPage(Integer perPage) {
