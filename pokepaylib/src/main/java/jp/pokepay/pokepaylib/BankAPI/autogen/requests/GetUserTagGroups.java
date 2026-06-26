@@ -10,27 +10,27 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
-public class GetCVSAuthorizations extends BankRequest {
-    private String accountId;
+public class GetUserTagGroups extends BankRequest {
+    private String privateMoneyId;
     private String before;
     private String after;
     private Integer perPage;
 
-    public GetCVSAuthorizations(String accountId) {
-        this.accountId = accountId;
+    public GetUserTagGroups(String privateMoneyId) {
+        this.privateMoneyId = privateMoneyId;
     }
 
-    public GetCVSAuthorizations before(String before) {
+    public GetUserTagGroups before(String before) {
         this.before = before;
         return this;
     }
 
-    public GetCVSAuthorizations after(String after) {
+    public GetUserTagGroups after(String after) {
         this.after = after;
         return this;
     }
 
-    public GetCVSAuthorizations perPage(Integer perPage) {
+    public GetUserTagGroups perPage(Integer perPage) {
         this.perPage = perPage;
         return this;
     }
@@ -42,12 +42,15 @@ public class GetCVSAuthorizations extends BankRequest {
 
     @Override
     public String path() {
-        return "/accounts" + "/" + this.accountId + "/cvs";
+        return "/user-tag-groups";
     }
 
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
+            if (privateMoneyId != null) {
+                put("private_money_id", privateMoneyId);
+            }
             if (before != null) {
                 put("before", before);
             }
@@ -60,7 +63,7 @@ public class GetCVSAuthorizations extends BankRequest {
         }};
     }
 
-    public final PaginatedCVSAuthorizations send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(PaginatedCVSAuthorizations.class, accessToken);
+    public final PaginatedUserTagGroups send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(PaginatedUserTagGroups.class, accessToken);
     }
 }

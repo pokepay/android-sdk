@@ -4,7 +4,7 @@ package jp.pokepay.pokepaylib.BankAPI.autogen.responses;
 import jp.pokepay.pokepaylib.Response;
 import jp.pokepay.pokepaylib.Responses.Account;
 
-public class CVSAuthorization extends Response {
+public class CvsAuthorization extends Response {
     public String id;
     public String service_option_type;
     public Integer amount;

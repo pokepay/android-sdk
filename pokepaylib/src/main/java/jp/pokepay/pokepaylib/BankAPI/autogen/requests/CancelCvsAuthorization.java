@@ -8,20 +8,20 @@ import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
-import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
+import jp.pokepay.pokepaylib.Responses.NoContent;
 
-public class GetCVSAuthorization extends BankRequest {
+public class CancelCvsAuthorization extends BankRequest {
     private String accountId;
     private String orderId;
 
-    public GetCVSAuthorization(String accountId, String orderId) {
+    public CancelCvsAuthorization(String accountId, String orderId) {
         this.accountId = accountId;
         this.orderId = orderId;
     }
 
     @Override
     protected final Request.Method method() {
-        return Request.Method.GET;
+        return Request.Method.DELETE;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class GetCVSAuthorization extends BankRequest {
         }};
     }
 
-    public final CVSAuthorization send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(CVSAuthorization.class, accessToken);
+    public final NoContent send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(NoContent.class, accessToken);
     }
 }
