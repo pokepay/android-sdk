@@ -7,5 +7,6 @@ public class IndividualNumberIdentificationStatus extends Response {
     public Boolean is_valid;
     public String last_identified_at;
     public String expires_at;
+    public Boolean is_resident;
 }
 

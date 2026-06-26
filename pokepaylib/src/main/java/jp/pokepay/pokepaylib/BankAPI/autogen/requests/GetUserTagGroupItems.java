@@ -12,12 +12,12 @@ import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
 public class GetUserTagGroupItems extends BankRequest {
     private String organizationCode;
-    private Uuid tagGroupId;
-    private Uuid before;
-    private Uuid after;
+    private String tagGroupId;
+    private String before;
+    private String after;
     private Integer perPage;
 
-    public GetUserTagGroupItems(String organizationCode, Uuid tagGroupId, Uuid before, Uuid after) {
+    public GetUserTagGroupItems(String organizationCode, String tagGroupId, String before, String after) {
         this.organizationCode = organizationCode;
         this.tagGroupId = tagGroupId;
         this.before = before;

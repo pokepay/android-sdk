@@ -11,12 +11,12 @@ import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
 public class GetCVSAuthorizations extends BankRequest {
-    private Uuid accountId;
+    private String accountId;
     private String before;
     private String after;
     private Integer perPage;
 
-    public GetCVSAuthorizations(Uuid accountId) {
+    public GetCVSAuthorizations(String accountId) {
         this.accountId = accountId;
     }
 

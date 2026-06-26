@@ -78,7 +78,7 @@ public class GetAccountTopupQuotas extends BankRequest {
         }};
     }
 
-    public final NIL send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(NIL.class, accessToken);
+    public final AccountTopupQuotas send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(AccountTopupQuotas.class, accessToken);
     }
 }

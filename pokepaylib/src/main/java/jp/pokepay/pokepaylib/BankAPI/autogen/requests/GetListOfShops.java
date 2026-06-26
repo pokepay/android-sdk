@@ -13,11 +13,11 @@ import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 public class GetListOfShops extends BankRequest {
     private String privateMoneyId;
     private String userTagGroupItemId;
-    private Uuid before;
-    private Uuid after;
+    private String before;
+    private String after;
     private Integer perPage;
 
-    public GetListOfShops(String privateMoneyId, Uuid before, Uuid after) {
+    public GetListOfShops(String privateMoneyId, String before, String after) {
         this.privateMoneyId = privateMoneyId;
         this.before = before;
         this.after = after;
