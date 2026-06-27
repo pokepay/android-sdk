@@ -9,6 +9,7 @@ import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
+import jp.pokepay.pokepaylib.Responses.IdentificationResult;
 
 public class IdentifyIndividual extends BankRequest {
     private String signature;
