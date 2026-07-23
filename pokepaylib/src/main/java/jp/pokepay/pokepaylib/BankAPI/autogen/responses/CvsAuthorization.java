@@ -13,5 +13,9 @@ public class CvsAuthorization extends Response {
     public String tel;
     public String pay_limit;
     public Account account;
+    public String haraikomi_url;
+    public String receipt_no;
+    public String done_at;
+    public String canceled_at;
 }
 
