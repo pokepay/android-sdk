@@ -13,6 +13,7 @@ import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 public class GetListOfShops extends BankRequest {
     private String privateMoneyId;
     private String userTagGroupItemId;
+    private String userTagSubgroupId;
     private String before;
     private String after;
     private Integer perPage;
@@ -23,6 +24,11 @@ public class GetListOfShops extends BankRequest {
 
     public GetListOfShops userTagGroupItemId(String userTagGroupItemId) {
         this.userTagGroupItemId = userTagGroupItemId;
+        return this;
+    }
+
+    public GetListOfShops userTagSubgroupId(String userTagSubgroupId) {
+        this.userTagSubgroupId = userTagSubgroupId;
         return this;
     }
 
@@ -59,6 +65,9 @@ public class GetListOfShops extends BankRequest {
             }
             if (userTagGroupItemId != null) {
                 put("user_tag_group_item_id", userTagGroupItemId);
+            }
+            if (userTagSubgroupId != null) {
+                put("user_tag_subgroup_id", userTagSubgroupId);
             }
             if (before != null) {
                 put("before", before);

@@ -10,35 +10,29 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
-public class GetUserTagGroupItems extends BankRequest {
+public class GetUserTagSubgroups extends BankRequest {
     private String organizationCode;
     private String tagGroupId;
-    private String subgroupId;
     private String before;
     private String after;
     private Integer perPage;
 
-    public GetUserTagGroupItems(String organizationCode, String tagGroupId) {
+    public GetUserTagSubgroups(String organizationCode, String tagGroupId) {
         this.organizationCode = organizationCode;
         this.tagGroupId = tagGroupId;
     }
 
-    public GetUserTagGroupItems subgroupId(String subgroupId) {
-        this.subgroupId = subgroupId;
-        return this;
-    }
-
-    public GetUserTagGroupItems before(String before) {
+    public GetUserTagSubgroups before(String before) {
         this.before = before;
         return this;
     }
 
-    public GetUserTagGroupItems after(String after) {
+    public GetUserTagSubgroups after(String after) {
         this.after = after;
         return this;
     }
 
-    public GetUserTagGroupItems perPage(Integer perPage) {
+    public GetUserTagSubgroups perPage(Integer perPage) {
         this.perPage = perPage;
         return this;
     }
@@ -50,7 +44,7 @@ public class GetUserTagGroupItems extends BankRequest {
 
     @Override
     public String path() {
-        return "/user-tag-groups" + "/" + this.organizationCode + "/items";
+        return "/user-tag-groups" + "/" + this.organizationCode + "/subgroups";
     }
 
     @Override
@@ -58,9 +52,6 @@ public class GetUserTagGroupItems extends BankRequest {
         return new HashMap<String, Object>() {{
             if (tagGroupId != null) {
                 put("tag_group_id", tagGroupId);
-            }
-            if (subgroupId != null) {
-                put("subgroup_id", subgroupId);
             }
             if (before != null) {
                 put("before", before);
@@ -74,7 +65,7 @@ public class GetUserTagGroupItems extends BankRequest {
         }};
     }
 
-    public final PaginatedUserTagGroupItems send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(PaginatedUserTagGroupItems.class, accessToken);
+    public final PaginatedUserTagSubgroups send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(PaginatedUserTagSubgroups.class, accessToken);
     }
 }

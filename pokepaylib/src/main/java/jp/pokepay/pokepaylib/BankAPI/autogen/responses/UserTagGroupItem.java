@@ -6,5 +6,6 @@ import jp.pokepay.pokepaylib.Response;
 public class UserTagGroupItem extends Response {
     public String item_name;
     public String id;
+    public String subgroup_id;
 }
 
