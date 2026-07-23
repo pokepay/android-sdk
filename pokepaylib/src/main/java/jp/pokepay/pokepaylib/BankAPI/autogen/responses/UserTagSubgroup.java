@@ -3,9 +3,8 @@ package jp.pokepay.pokepaylib.BankAPI.autogen.responses;
 
 import jp.pokepay.pokepaylib.Response;
 
-public class UserTagGroup extends Response {
-    public String group_name;
+public class UserTagSubgroup extends Response {
+    public String subgroup_name;
     public String id;
-    public Boolean has_subgroups;
 }
 

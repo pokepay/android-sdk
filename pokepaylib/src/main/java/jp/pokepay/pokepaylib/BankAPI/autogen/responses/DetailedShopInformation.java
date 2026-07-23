@@ -10,6 +10,7 @@ public class DetailedShopInformation extends Response {
     public String business_hours;
     public String regular_closed_days;
     public String url;
+    public String description;
     public String logo_image_url;
     public String[] image_urls;
     public String address;
