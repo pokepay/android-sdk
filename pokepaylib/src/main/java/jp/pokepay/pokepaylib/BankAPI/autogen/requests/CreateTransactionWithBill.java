@@ -10,28 +10,36 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
-public class CreateCheckTransaction extends BankRequest {
+public class CreateTransactionWithBill extends BankRequest {
     private String requestId;
-    private String checkId;
+    private String billId;
     private String accountId;
-    private Integer topupQuotaId;
+    private Double amount;
+    private String couponId;
+    private String strategy;
 
-    public CreateCheckTransaction(String checkId) {
-        this.checkId = checkId;
-    }
-
-    public CreateCheckTransaction requestId(String requestId) {
+    public CreateTransactionWithBill(String requestId, String billId) {
         this.requestId = requestId;
-        return this;
+        this.billId = billId;
     }
 
-    public CreateCheckTransaction accountId(String accountId) {
+    public CreateTransactionWithBill accountId(String accountId) {
         this.accountId = accountId;
         return this;
     }
 
-    public CreateCheckTransaction topupQuotaId(Integer topupQuotaId) {
-        this.topupQuotaId = topupQuotaId;
+    public CreateTransactionWithBill amount(Double amount) {
+        this.amount = amount;
+        return this;
+    }
+
+    public CreateTransactionWithBill couponId(String couponId) {
+        this.couponId = couponId;
+        return this;
+    }
+
+    public CreateTransactionWithBill strategy(String strategy) {
+        this.strategy = strategy;
         return this;
     }
 
@@ -42,7 +50,7 @@ public class CreateCheckTransaction extends BankRequest {
 
     @Override
     public String path() {
-        return "/transactions" + "/check";
+        return "/transactions" + "/bill";
     }
 
     @Override
@@ -51,14 +59,20 @@ public class CreateCheckTransaction extends BankRequest {
             if (requestId != null) {
                 put("request_id", requestId);
             }
-            if (checkId != null) {
-                put("check_id", checkId);
+            if (billId != null) {
+                put("bill_id", billId);
             }
             if (accountId != null) {
                 put("account_id", accountId);
             }
-            if (topupQuotaId != null) {
-                put("topup_quota_id", topupQuotaId);
+            if (amount != null) {
+                put("amount", amount);
+            }
+            if (couponId != null) {
+                put("coupon_id", couponId);
+            }
+            if (strategy != null) {
+                put("strategy", strategy);
             }
         }};
     }

@@ -6,39 +6,36 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
+import jp.pokepay.pokepaylib.Parameters.Product;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
-public class CreateCashtrayTransaction extends BankRequest {
+public class CreateTransactionWithCpm extends BankRequest {
     private String requestId;
-    private String cashtrayId;
+    private String cpmToken;
     private String accountId;
-    private String couponId;
-    private String strategy;
+    private Double amount;
+    private Product[] products;
     private Integer topupQuotaId;
 
-    public CreateCashtrayTransaction(String requestId, String cashtrayId) {
+    public CreateTransactionWithCpm(String requestId, String cpmToken, double amount) {
         this.requestId = requestId;
-        this.cashtrayId = cashtrayId;
+        this.cpmToken = cpmToken;
+        this.amount = amount;
     }
 
-    public CreateCashtrayTransaction accountId(String accountId) {
+    public CreateTransactionWithCpm accountId(String accountId) {
         this.accountId = accountId;
         return this;
     }
 
-    public CreateCashtrayTransaction couponId(String couponId) {
-        this.couponId = couponId;
+    public CreateTransactionWithCpm products(Product[] products) {
+        this.products = products;
         return this;
     }
 
-    public CreateCashtrayTransaction strategy(String strategy) {
-        this.strategy = strategy;
-        return this;
-    }
-
-    public CreateCashtrayTransaction topupQuotaId(Integer topupQuotaId) {
+    public CreateTransactionWithCpm topupQuotaId(Integer topupQuotaId) {
         this.topupQuotaId = topupQuotaId;
         return this;
     }
@@ -50,7 +47,7 @@ public class CreateCashtrayTransaction extends BankRequest {
 
     @Override
     public String path() {
-        return "/transactions" + "/cashtray";
+        return "/transactions" + "/cpm";
     }
 
     @Override
@@ -59,17 +56,17 @@ public class CreateCashtrayTransaction extends BankRequest {
             if (requestId != null) {
                 put("request_id", requestId);
             }
-            if (cashtrayId != null) {
-                put("cashtray_id", cashtrayId);
+            if (cpmToken != null) {
+                put("cpm_token", cpmToken);
             }
             if (accountId != null) {
                 put("account_id", accountId);
             }
-            if (couponId != null) {
-                put("coupon_id", couponId);
+            if (amount != null) {
+                put("amount", amount);
             }
-            if (strategy != null) {
-                put("strategy", strategy);
+            if (products != null) {
+                put("products", products);
             }
             if (topupQuotaId != null) {
                 put("topup_quota_id", topupQuotaId);
@@ -77,7 +74,7 @@ public class CreateCashtrayTransaction extends BankRequest {
         }};
     }
 
-    public final UserTransactionWithFallback send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(UserTransactionWithFallback.class, accessToken);
+    public final UserTransactionWithFallbackAndCustomerBalance send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(UserTransactionWithFallbackAndCustomerBalance.class, accessToken);
     }
 }
