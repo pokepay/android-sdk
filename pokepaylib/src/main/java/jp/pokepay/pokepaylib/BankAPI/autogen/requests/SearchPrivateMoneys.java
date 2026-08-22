@@ -10,45 +10,37 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
-public class GetListOfShops extends BankRequest {
-    private String privateMoneyId;
+public class SearchPrivateMoneys extends BankRequest {
     private String name;
-    private String userTagGroupItemId;
-    private String userTagSubgroupId;
+    private Boolean includeExclusive;
     private String before;
     private String after;
     private Integer perPage;
 
-    public GetListOfShops(String privateMoneyId) {
-        this.privateMoneyId = privateMoneyId;
+    public SearchPrivateMoneys() {
     }
 
-    public GetListOfShops name(String name) {
+    public SearchPrivateMoneys name(String name) {
         this.name = name;
         return this;
     }
 
-    public GetListOfShops userTagGroupItemId(String userTagGroupItemId) {
-        this.userTagGroupItemId = userTagGroupItemId;
+    public SearchPrivateMoneys includeExclusive(Boolean includeExclusive) {
+        this.includeExclusive = includeExclusive;
         return this;
     }
 
-    public GetListOfShops userTagSubgroupId(String userTagSubgroupId) {
-        this.userTagSubgroupId = userTagSubgroupId;
-        return this;
-    }
-
-    public GetListOfShops before(String before) {
+    public SearchPrivateMoneys before(String before) {
         this.before = before;
         return this;
     }
 
-    public GetListOfShops after(String after) {
+    public SearchPrivateMoneys after(String after) {
         this.after = after;
         return this;
     }
 
-    public GetListOfShops perPage(Integer perPage) {
+    public SearchPrivateMoneys perPage(Integer perPage) {
         this.perPage = perPage;
         return this;
     }
@@ -60,23 +52,17 @@ public class GetListOfShops extends BankRequest {
 
     @Override
     public String path() {
-        return "/shops";
+        return "/private-moneys";
     }
 
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
-            if (privateMoneyId != null) {
-                put("private_money_id", privateMoneyId);
-            }
             if (name != null) {
                 put("name", name);
             }
-            if (userTagGroupItemId != null) {
-                put("user_tag_group_item_id", userTagGroupItemId);
-            }
-            if (userTagSubgroupId != null) {
-                put("user_tag_subgroup_id", userTagSubgroupId);
+            if (includeExclusive != null) {
+                put("include_exclusive", includeExclusive);
             }
             if (before != null) {
                 put("before", before);
@@ -90,7 +76,7 @@ public class GetListOfShops extends BankRequest {
         }};
     }
 
-    public final PaginatedShops send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(PaginatedShops.class, accessToken);
+    public final PaginatedPrivateMoneys send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(PaginatedPrivateMoneys.class, accessToken);
     }
 }
