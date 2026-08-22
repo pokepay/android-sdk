@@ -6,36 +6,31 @@ import java.util.Map;
 
 import jp.pokepay.pokepaylib.BankAPI.BankRequest;
 import jp.pokepay.pokepaylib.BankAPI.BankRequestError;
-import jp.pokepay.pokepaylib.Parameters.Product;
 import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
-public class CreateCpmTransaction extends BankRequest {
-    private String requestId;
-    private String cpmToken;
+public class BankPayTopUp extends BankRequest {
     private String accountId;
-    private Double amount;
-    private Product[] products;
+    private String bankId;
+    private Integer amount;
+    private String requestId;
     private Integer topupQuotaId;
+    private String userId;
 
-    public CreateCpmTransaction(String requestId, String cpmToken, double amount) {
-        this.requestId = requestId;
-        this.cpmToken = cpmToken;
+    public BankPayTopUp(String userId, String accountId, String bankId, int amount) {
+        this.userId = userId;
+        this.accountId = accountId;
+        this.bankId = bankId;
         this.amount = amount;
     }
 
-    public CreateCpmTransaction accountId(String accountId) {
-        this.accountId = accountId;
+    public BankPayTopUp requestId(String requestId) {
+        this.requestId = requestId;
         return this;
     }
 
-    public CreateCpmTransaction products(Product[] products) {
-        this.products = products;
-        return this;
-    }
-
-    public CreateCpmTransaction topupQuotaId(Integer topupQuotaId) {
+    public BankPayTopUp topupQuotaId(Integer topupQuotaId) {
         this.topupQuotaId = topupQuotaId;
         return this;
     }
@@ -47,26 +42,23 @@ public class CreateCpmTransaction extends BankRequest {
 
     @Override
     public String path() {
-        return "/transactions" + "/cpm";
+        return "/users" + "/" + this.userId + "/banks" + "/topup";
     }
 
     @Override
     protected final Map<String, Object> parameters() {
         return new HashMap<String, Object>() {{
-            if (requestId != null) {
-                put("request_id", requestId);
-            }
-            if (cpmToken != null) {
-                put("cpm_token", cpmToken);
-            }
             if (accountId != null) {
                 put("account_id", accountId);
+            }
+            if (bankId != null) {
+                put("bank_id", bankId);
             }
             if (amount != null) {
                 put("amount", amount);
             }
-            if (products != null) {
-                put("products", products);
+            if (requestId != null) {
+                put("request_id", requestId);
             }
             if (topupQuotaId != null) {
                 put("topup_quota_id", topupQuotaId);
@@ -74,7 +66,7 @@ public class CreateCpmTransaction extends BankRequest {
         }};
     }
 
-    public final UserTransactionWithFallback send(String accessToken) throws ProcessingError, BankRequestError {
-        return super.send(UserTransactionWithFallback.class, accessToken);
+    public final UserTransaction send(String accessToken) throws ProcessingError, BankRequestError {
+        return super.send(UserTransaction.class, accessToken);
     }
 }

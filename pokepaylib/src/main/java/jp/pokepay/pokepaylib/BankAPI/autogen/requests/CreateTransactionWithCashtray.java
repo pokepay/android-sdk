@@ -10,36 +10,36 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
-public class CreateBillTransaction extends BankRequest {
+public class CreateTransactionWithCashtray extends BankRequest {
     private String requestId;
-    private String billId;
+    private String cashtrayId;
     private String accountId;
-    private Double amount;
     private String couponId;
     private String strategy;
+    private Integer topupQuotaId;
 
-    public CreateBillTransaction(String requestId, String billId) {
+    public CreateTransactionWithCashtray(String requestId, String cashtrayId) {
         this.requestId = requestId;
-        this.billId = billId;
+        this.cashtrayId = cashtrayId;
     }
 
-    public CreateBillTransaction accountId(String accountId) {
+    public CreateTransactionWithCashtray accountId(String accountId) {
         this.accountId = accountId;
         return this;
     }
 
-    public CreateBillTransaction amount(Double amount) {
-        this.amount = amount;
-        return this;
-    }
-
-    public CreateBillTransaction couponId(String couponId) {
+    public CreateTransactionWithCashtray couponId(String couponId) {
         this.couponId = couponId;
         return this;
     }
 
-    public CreateBillTransaction strategy(String strategy) {
+    public CreateTransactionWithCashtray strategy(String strategy) {
         this.strategy = strategy;
+        return this;
+    }
+
+    public CreateTransactionWithCashtray topupQuotaId(Integer topupQuotaId) {
+        this.topupQuotaId = topupQuotaId;
         return this;
     }
 
@@ -50,7 +50,7 @@ public class CreateBillTransaction extends BankRequest {
 
     @Override
     public String path() {
-        return "/transactions" + "/bill";
+        return "/transactions" + "/cashtray";
     }
 
     @Override
@@ -59,20 +59,20 @@ public class CreateBillTransaction extends BankRequest {
             if (requestId != null) {
                 put("request_id", requestId);
             }
-            if (billId != null) {
-                put("bill_id", billId);
+            if (cashtrayId != null) {
+                put("cashtray_id", cashtrayId);
             }
             if (accountId != null) {
                 put("account_id", accountId);
-            }
-            if (amount != null) {
-                put("amount", amount);
             }
             if (couponId != null) {
                 put("coupon_id", couponId);
             }
             if (strategy != null) {
                 put("strategy", strategy);
+            }
+            if (topupQuotaId != null) {
+                put("topup_quota_id", topupQuotaId);
             }
         }};
     }

@@ -3,21 +3,17 @@ package jp.pokepay.pokepaylib.BankAPI.autogen.responses;
 
 import jp.pokepay.pokepaylib.Response;
 
-public class UserTransactionWithFallback extends Response {
+public class UserTransfer extends Response {
     public String id;
+    public String transaction_id;
     public User user;
     public Double balance;
     public Double amount;
     public Double money_amount;
     public Double point_amount;
-    public Double raw_point_amount;
-    public Double campaign_point_amount;
     public Account account;
     public String description;
     public String done_at;
     public String type;
-    public Boolean is_modified;
-    public UserTransferWithoutAccount[] transfers;
-    public UserTransactionWithTransfers[] fallback_transactions;
 }
 
