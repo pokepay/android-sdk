@@ -3,7 +3,7 @@ package jp.pokepay.pokepaylib.BankAPI.autogen.responses;
 
 import jp.pokepay.pokepaylib.Response;
 
-public class UserTransactionWithFallback extends Response {
+public class UserTransaction extends Response {
     public String id;
     public User user;
     public Double balance;
@@ -17,7 +17,5 @@ public class UserTransactionWithFallback extends Response {
     public String done_at;
     public String type;
     public Boolean is_modified;
-    public UserTransferWithoutAccount[] transfers;
-    public UserTransactionWithTransfers[] fallback_transactions;
 }
 
