@@ -8,6 +8,11 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.NoContent;
 
+/**
+ * @deprecated Use {@link jp.pokepay.pokepaylib.BankAPI.autogen.requests.DeleteCheck} instead.
+ *     This hand-written request is being replaced by the auto-generated API.
+ */
+@Deprecated
 public class DeleteCheck extends BankRequest {
     @NonNull
     public String id;

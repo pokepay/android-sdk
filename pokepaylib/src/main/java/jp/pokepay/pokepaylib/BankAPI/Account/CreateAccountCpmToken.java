@@ -13,6 +13,11 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.AccountCpmToken;
 
+/**
+ * @deprecated Use {@link jp.pokepay.pokepaylib.BankAPI.autogen.requests.CreateAccountCpmToken} instead.
+ *     This hand-written request is being replaced by the auto-generated API.
+ */
+@Deprecated
 public class CreateAccountCpmToken extends BankRequest {
 
     public static final int SCOPE_PAYMENT = 1;
