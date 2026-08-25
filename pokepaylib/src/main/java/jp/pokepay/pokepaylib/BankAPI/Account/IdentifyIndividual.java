@@ -13,6 +13,11 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.IdentificationResult;
 
+/**
+ * @deprecated Use {@link jp.pokepay.pokepaylib.BankAPI.autogen.requests.IdentifyIndividual} instead.
+ *     This hand-written request is being replaced by the auto-generated API.
+ */
+@Deprecated
 public class IdentifyIndividual extends BankRequest {
     @NonNull
     public String accountId;

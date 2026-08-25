@@ -12,6 +12,7 @@ import jp.pokepay.pokepaylib.BankAPI.autogen.responses.*;
 
 public class GetListOfShops extends BankRequest {
     private String privateMoneyId;
+    private String name;
     private String userTagGroupItemId;
     private String userTagSubgroupId;
     private String before;
@@ -20,6 +21,11 @@ public class GetListOfShops extends BankRequest {
 
     public GetListOfShops(String privateMoneyId) {
         this.privateMoneyId = privateMoneyId;
+    }
+
+    public GetListOfShops name(String name) {
+        this.name = name;
+        return this;
     }
 
     public GetListOfShops userTagGroupItemId(String userTagGroupItemId) {
@@ -62,6 +68,9 @@ public class GetListOfShops extends BankRequest {
         return new HashMap<String, Object>() {{
             if (privateMoneyId != null) {
                 put("private_money_id", privateMoneyId);
+            }
+            if (name != null) {
+                put("name", name);
             }
             if (userTagGroupItemId != null) {
                 put("user_tag_group_item_id", userTagGroupItemId);

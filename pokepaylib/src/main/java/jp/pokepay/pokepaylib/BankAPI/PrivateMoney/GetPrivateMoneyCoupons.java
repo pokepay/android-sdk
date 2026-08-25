@@ -11,6 +11,11 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.PaginatedCoupons;
 
+/**
+ * @deprecated Use {@link jp.pokepay.pokepaylib.BankAPI.autogen.requests.GetPrivateMoneyCoupons} instead.
+ *     This hand-written request is being replaced by the auto-generated API.
+ */
+@Deprecated
 public class GetPrivateMoneyCoupons extends BankRequest {
     @NonNull
     public String privateMoneyId;

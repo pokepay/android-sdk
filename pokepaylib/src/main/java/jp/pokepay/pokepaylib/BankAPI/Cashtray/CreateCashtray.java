@@ -10,6 +10,11 @@ import jp.pokepay.pokepaylib.ProcessingError;
 import jp.pokepay.pokepaylib.Request;
 import jp.pokepay.pokepaylib.Responses.Cashtray;
 
+/**
+ * @deprecated Use {@link jp.pokepay.pokepaylib.BankAPI.autogen.requests.CreateCashtray} instead.
+ *     This hand-written request is being replaced by the auto-generated API.
+ */
+@Deprecated
 public class CreateCashtray extends BankRequest {
     public double amount;
     public String description;
